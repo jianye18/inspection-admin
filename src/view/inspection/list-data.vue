@@ -8,6 +8,9 @@
 </style>
 <template>
   <div>
+    <div>
+      搜索抽检结果
+    </div>
     <div class="search-con search-con-top">
       <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
         <Option value="" key="">全部</Option>

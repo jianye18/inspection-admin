@@ -3,7 +3,7 @@
     width: 204px !important;
   }
   .main-layout-con ul{
-    /*width: 210px !important;*/
+    width: 199px !important;
   }
   .ivu-menu-item-group-title{
     background-color: #dadee2 !important;
@@ -21,8 +21,8 @@
     </Breadcrumb>
     <Content :style="{minHeight: '280px', background: '#fff'}">
       <Layout style="height: 100%" class="main-layout-con">
-        <Sider hide-trigger style="width: 204px; background-color: #fff; margin-right: 15px; border: 1px solid #dcdee2">
-          <Menu theme="light" @on-select="toRouter" active-name="1" class="main-menu-con" width="auto" style="min-width: 204px; min-height: 600px; height: auto;">
+        <Sider hide-trigger style="background-color: #fff; margin-right: 15px; border: 1px solid #dcdee2">
+          <Menu theme="light" @on-select="toRouter" :active-name="activeName" class="main-menu-con" width="auto" style="height: auto;">
             <MenuGroup title="抽检产品分类">
               <MenuItem name="1">
                 <Icon type="md-document"/>
@@ -34,7 +34,7 @@
               </MenuItem>
               <MenuItem name="3">
                 <Icon type="md-chatbubbles" />
-                指（趾）甲用化妆品
+                指(趾)甲用化妆品
               </MenuItem>
               <MenuItem name="4">
                 <Icon type="md-chatbubbles" />
@@ -43,7 +43,7 @@
             </MenuGroup>
           </Menu>
         </Sider>
-        <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
+        <Content :style="{padding: '24px', minHeight: '280px', height: 'calc(100% - 80px)', overflowY: 'inherit', background: '#fff'}">
           <router-view/>
         </Content>
       </Layout>
@@ -55,17 +55,19 @@ export default {
   data () {
     return {
       productTypeName: ['', '皮肤用化妆品', '毛发用化妆品', '指（趾）甲用化妆品', '口唇用化妆品'],
-      pageName: ''
+      pageName: '',
+      activeName: ''
     }
   },
   mounted () {
-    this.toRouter(1)
+    this.toRouter()
   },
   methods: {
     toRouter (index) {
-      const _this = this;
+      const _this = this
       console.log(index)
       _this.pageName = _this.productTypeName[index]
+      _this.activeName = index
       setTimeout(function () {
         _this.$router.push({
           name: 'list-data'

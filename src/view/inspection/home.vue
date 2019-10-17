@@ -13,8 +13,8 @@
     border-radius: 3px;
     float: left;
     position: relative;
-    top: 4px;
-    left: 130px;
+    /*top: 4px;*/
+    left: 110px;
     font-size: 36px;
     color: #ffffff;
   }
@@ -46,7 +46,7 @@
     <Layout style="height: 100%">
       <Header style="background-color: #2c96cd; height: 70px;">
         <div class="layout-logo">
-          Logo图
+          <img src="../../assets/images/logo.png" />
         </div>
         <div class="layout-nav">
           <ul>

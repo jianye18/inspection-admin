@@ -9,10 +9,6 @@
 <template>
   <div>
     <div class="search-con search-con-top">
-      <Select v-model="formData.productType" style="width:200px" placeholder="请选择产品分类" clearable>
-        <Option value="" key="">全部</Option>
-        <Option v-for="item in productTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-      </Select>
       <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
         <Option value="" key="">全部</Option>
         <Option v-for="item in institutionList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -48,13 +44,12 @@ export default {
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
-        pageSize: 10, // 一页展示数量
+        pageSize: 20, // 一页展示数量
         searchPhrase: '',
         productType: '',
         institution: '',
         checkResult: ''
       },
-      productTypeList: [],
       institutionList: [],
       columns: [
         {
@@ -106,34 +101,6 @@ export default {
     this.getAllSystemDataTypeList()
   },
   methods: {
-    handleBeforeUpload (file) {
-      const _this = this
-      const fileExt = file.name.split('.').pop().toLocaleLowerCase()
-      if (fileExt === 'xlsx' || fileExt === 'xls') {
-        let fileFormData = new FormData()
-        fileFormData.append('file', file)
-        const option = {
-          url: '/spotCheck/upload',
-          data: fileFormData,
-          method: 'post',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-        axios.request(option).then(res => {
-          _this.getTablePageData()
-        }).catch(res => {
-          _this.uploadLoading = false
-        })
-      } else {
-        _this.uploadLoading = false
-        this.$Notice.warning({
-          title: '文件类型错误',
-          desc: '文件：' + file.name + '不是EXCEL文件，请选择后缀为.xlsx或者.xls的EXCEL文件。'
-        })
-      }
-      return false
-    },
     handleUploadFile () {
       this.getTablePageData()
     },
@@ -143,13 +110,12 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.productTypeList = res.data.data.productTypeList
         this.institutionList = res.data.data.institutionList
       })
     },
     getTablePageData () {
       const option = {
-        url: '/spotCheck/getSpotCheckPageList',
+        url: '/show/getSpotCheckPageList',
         data: this.formData,
         method: 'post'
       }

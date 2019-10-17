@@ -17,6 +17,7 @@
 
 <script>
 import LoginForm from '_c/login-form'
+import { setToken } from '@/libs/util'
 import { mapActions } from 'vuex'
 export default {
   components: {
@@ -30,6 +31,7 @@ export default {
     handleSubmit ({ userName, password }) {
       this.handleLogin({ userName, password }).then(res => {
         console.log(res)
+        setToken(res.data.data)
         // this.getUserInfo().then(res => {
         this.$router.push({
           // path: '/home'

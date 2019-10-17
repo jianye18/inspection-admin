@@ -23,6 +23,45 @@ export default [
     component: () => import('@/view/login/login.vue')
   },
   {
+    path: '/inspection',
+    name: 'inspection',
+    meta: {
+      title: '展示首页',
+      hideInMenu: true
+    },
+    component: () => import('@/view/inspection/home.vue'),
+    children: [
+      {
+        path: '/home-content',
+        name: 'home-content',
+        meta: {
+          title: '首页内容',
+          hideInMenu: true
+        },
+        component: () => import('@/view/inspection/home-content.vue')
+      },
+      {
+        path: '/data-view',
+        name: 'data-view',
+        meta: {
+          title: '数据展示页',
+          hideInMenu: true
+        },
+        children: [
+          {
+            path: 'list-data',
+            name: 'list-data',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/list-data.vue')
+          }
+        ],
+        component: () => import('@/view/inspection/inspection.vue')
+      }
+    ]
+  },
+  {
     path: '/',
     name: '_home',
     redirect: '/home',
@@ -321,10 +360,41 @@ export default [
     ]
   },
   {
+    path: '/data',
+    name: 'data',
+    meta: {
+      icon: 'md-menu',
+      title: '数据管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'spot-check',
+        name: 'spot-check',
+        meta: {
+          icon: 'ios-contact',
+          title: '抽检数据',
+          notCache: true
+        },
+        component: () => import('@/view/inspection-data/spot-check/spot-check.vue')
+      },
+      {
+        path: 'mould-data',
+        name: 'mould-data',
+        meta: {
+          icon: 'ios-contact',
+          title: '标准数据',
+          notCache: true
+        },
+        component: () => import('@/view/inspection-data/mould-data/mould-data.vue')
+      }
+    ]
+  },
+  {
     path: '/system',
     name: 'system',
     meta: {
-      icon: 'md-menu',
+      icon: 'md-flower',
       title: '系统管理'
     },
     component: Main,
@@ -333,12 +403,32 @@ export default [
         path: 'user',
         name: 'user',
         meta: {
-          icon: 'md-flower',
+          icon: 'ios-contact',
           title: '用户管理',
           notCache: true
         },
         component: () => import('@/view/system-manager/user/user.vue')
       },
+      {
+        path: 'role',
+        name: 'role',
+        meta: {
+          icon: 'md-contacts',
+          title: '角色管理',
+          notCache: true
+        },
+        component: () => import('@/view/system-manager/role/role.vue')
+      },
+      {
+        path: 'permission',
+        name: 'permission',
+        meta: {
+          icon: 'md-flower',
+          title: '权限管理',
+          notCache: true
+        },
+        component: () => import('@/view/system-manager/permission/permission.vue')
+      }/*,
       {
         path: 'menu',
         name: 'menu',
@@ -348,7 +438,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/menu/')
-      }
+      }*/
     ]
   },
   {

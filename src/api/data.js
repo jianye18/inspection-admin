@@ -2,23 +2,7 @@ import axios from '@/libs/api.request'
 
 export const getTableData = (formData) => {
   return axios.request({
-    url: '/sysUser/getSysUserPageList',
-    data: formData,
-    method: 'post'
-  })
-}
-
-export const saveSysUser = (formData) => {
-  return axios.request({
-    url: '/sysUser/saveSysUser',
-    data: formData,
-    method: 'post'
-  })
-}
-
-export const deleteSysUser = (formData) => {
-  return axios.request({
-    url: '/sysUser/deleteSysUser',
+    url: '/user/getUserPageList',
     data: formData,
     method: 'post'
   })

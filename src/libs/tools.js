@@ -86,8 +86,8 @@ const getHandledValue = num => {
  * @param {Number} timeStamp 传入的时间戳
  * @param {Number} startType 要返回的时间字符串的格式类型，传入'year'则返回年开头的完整时间
  */
-const getDate = (timeStamp, startType) => {
-  const d = new Date(timeStamp * 1000)
+export const getDate = (timeStamp, startType, showSecond) => {
+  const d = new Date(timeStamp)
   const year = d.getFullYear()
   const month = getHandledValue(d.getMonth() + 1)
   const date = getHandledValue(d.getDate())
@@ -95,7 +95,7 @@ const getDate = (timeStamp, startType) => {
   const minutes = getHandledValue(d.getMinutes())
   const second = getHandledValue(d.getSeconds())
   let resStr = ''
-  if (startType === 'year') resStr = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + second
+  if (startType === 'year') resStr = year + '-' + month + '-' + date + (showSecond ? ' ' + hours + ':' + minutes + ':' + second : '')
   else resStr = month + '-' + date + ' ' + hours + ':' + minutes
   return resStr
 }
@@ -212,4 +212,9 @@ export const objEqual = (obj1, obj2) => {
   else if (keysArr1.length === 0 && keysArr2.length === 0) return true
   /* eslint-disable-next-line */
   else return !keysArr1.some(key => obj1[key] != obj2[key])
+}
+
+export const judgeDataIsEmpty = (obj) => {
+  if (obj === '' || obj === null || typeof obj === 'undefined') return true
+  else return false
 }

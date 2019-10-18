@@ -40,10 +40,15 @@
   .layout-nav ul li.active_class{
     background-color: #0b81bf;
   }
+  .layout-footer-center{
+    text-align: center;
+    background-color: #ffffff;
+    height: 200px;
+  }
 </style>
 <template>
   <div class="layout">
-    <Layout style="height: 100%">
+    <Layout style="height: 100%; overflow: hidden ">
       <Header style="background-color: #2c96cd; height: 70px;">
         <div class="layout-logo">
           <img src="../../assets/images/logo.png" />
@@ -90,10 +95,12 @@ export default {
   },
   methods: {
     changeMenu (index) {
-      this.activeIdx = index - 1
-      this.$router.push({
-        name: this.nameList[index]
-      })
+      if (this.activeIdx !== index - 1) {
+        this.activeIdx = index - 1
+        this.$router.push({
+          name: this.nameList[index]
+        })
+      }
     }
   }
 }

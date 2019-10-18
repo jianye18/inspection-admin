@@ -59,14 +59,10 @@
   <Layout :style="{padding: '0 180px', marginTop: '10px'}">
     <Content :style="{minHeight: '620px', marginRight: '15px'}">
       <div class="search-box">
-        <Row>
-          <Col span="24">
-            <Select v-model="dataType" style="width:150px; float: left" placeholder="">
-              <Option value="1" key="1">抽检结果</Option>
-            </Select>
-            <Input search enter-button="搜索" placeholder="请输入您想要查询的关键词" style="width: 400px" />
-          </Col>
-        </Row>
+        <Select v-model="dataType" style="width:150px; float: left" placeholder="">
+          <Option value="1" key="1">抽检结果</Option>
+        </Select>
+        <Input search enter-button="搜索" placeholder="请输入您想要查询的关键词" style="width: 400px" />
       </div>
       <div class="data-con">
         <div class="data-title">

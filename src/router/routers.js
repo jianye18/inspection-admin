@@ -47,17 +47,25 @@ export default [
           title: '数据展示页',
           hideInMenu: true
         },
+        component: () => import('@/view/inspection/inspection.vue'),
         children: [
           {
-            path: 'list-data',
-            name: 'list-data',
+            path: 'spot-check-list-data',
+            name: 'spot-check-list-data',
             meta: {
               notCache: true
             },
-            component: () => import('@/view/inspection/list-data.vue')
+            component: () => import('@/view/inspection/spot-check-list-data.vue')
+          },
+          {
+            path: 'spot-check-detail-data',
+            name: 'spot-check-detail-data',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/spot-check-detail-data.vue')
           }
-        ],
-        component: () => import('@/view/inspection/inspection.vue')
+        ]
       }
     ]
   },

@@ -5,10 +5,20 @@
   .ivu-select{
     margin-left: 2px;
   }
+  .ivu-table-cell {
+    padding-left: 10px !important;
+  }
+  .ivu-table-column-center .ivu-table-cell {
+    padding-left: 0px !important;
+  }
+  .ivu-table-cell span.table-span:hover{
+    color: #0b81bf;
+    cursor: pointer;
+  }
 </style>
 <template>
-  <div>
-    <div>
+  <div style="padding: 24px 24px 60px 24px; background: #fff">
+    <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
       搜索抽检结果
     </div>
     <div class="search-con search-con-top">
@@ -28,8 +38,8 @@
       ref="tables"
       editable
       searchable: false
-      search-place="top" v-model="tableData.list" :columns="columns"/>
-    <div style="padding-top: 15px;">
+      search-place="top" v-model="tableData.list" :columns="columns" no-data-text="暂无相关内容，建议您检查输入内容是否正确"/>
+    <div style="padding-top: 15px; float: right">
       <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
     </div>
   </div>
@@ -38,18 +48,19 @@
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
 export default {
-  name: 'tables_page',
+  name: 'spot_check_list_data_page',
   components: {
     Tables
   },
   data () {
+    const _this = this
     return {
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
         pageSize: 20, // 一页展示数量
         searchPhrase: '',
-        productType: '',
+        productType: 0,
         institution: '',
         checkResult: ''
       },
@@ -57,13 +68,28 @@ export default {
       columns: [
         {
           title: '标称生产企业/进口代理商名称',
-          align: 'center',
-          key: 'producer'
+          key: 'producer',
+          width: 400,
+          tooltip: true,
+          render: function render (h, params) {
+            var content = params.row.producer
+            return h('span', {
+              class: 'table-span',
+              on: {
+                click: () => {
+                  _this.$router.push({
+                    name: 'spot-check-detail-data',
+                    params: params.row
+                  })
+                }
+              }
+            }, content)
+          }
         },
         {
           title: '样品名称',
-          align: 'center',
-          key: 'sample'
+          key: 'sample',
+          tooltip: true
         },
         {
           title: '抽检结果',
@@ -87,6 +113,7 @@ export default {
         {
           title: '公布日期',
           align: 'center',
+          width: 120,
           key: 'publishDate'
         }
       ],
@@ -95,13 +122,18 @@ export default {
         pageNum: 1,
         total: 0,
         pages: 0
-      },
-      uploadLoading: false
+      }
     }
   },
   mounted () {
     this.getTablePageData()
     this.getAllSystemDataTypeList()
+  },
+  watch: {
+    '$store.getters.productType':function (val) {
+      this.formData.productType = val
+      this.getTablePageData()
+    }
   },
   methods: {
     handleUploadFile () {
@@ -117,6 +149,7 @@ export default {
       })
     },
     getTablePageData () {
+      console.log(this.formData)
       const option = {
         url: '/show/getSpotCheckPageList',
         data: this.formData,

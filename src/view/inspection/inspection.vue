@@ -7,7 +7,7 @@
     padding-left: 15px;
     padding-bottom: 16px;
     border-bottom: 1px solid #e5e5e5;
-    background: #e5e5e5;
+    background: #f5f5f5;
     z-index: 1;
     position: relative;
     font-weight: bold;
@@ -26,12 +26,12 @@
     color: #000;
   }
   .menu-ul li.active_class{
-    background-color: #f5f5f5;
+    background-color: #f3f9fc;
   }
   .menu-ul li:hover{
     color: #0b81bf;
     cursor: pointer;
-    background-color: #f5f5f5;
+    background-color: #f3f9fc;
   }
 </style>
 <template>

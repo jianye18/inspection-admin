@@ -386,9 +386,6 @@ export default {
       this.modelShow = false
       this.$Modal.remove()
     },
-    getExpireTime () {
-      this.formItem.expireTime = e
-    },
     saveFormData () {
       const _this = this
       _this.$refs['formItem'].validate(function (valid) {

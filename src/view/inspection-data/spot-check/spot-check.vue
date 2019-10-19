@@ -18,19 +18,20 @@
               </Col>
               <Col span="22">
                 <Select v-model="formData.productType" style="width:200px" placeholder="请选择产品分类" clearable>
-                  <Option value="" key="">全部</Option>
-                  <Option v-for="item in productTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                  <Option value="">全部</Option>
+                  <Option v-for="item in productTypeList" :value="item.value">{{ item.label }}</Option>
                 </Select>
                 <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
-                  <Option value="" key="">全部</Option>
-                  <Option v-for="item in institutionList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                  <Option value="">全部</Option>
+                  <Option v-for="item in institutionList" :value="item.value">{{ item.label }}</Option>
                 </Select>
                 <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
-                  <Option value="" key="">全部</Option>
-                  <Option value="1" key="1">合格</Option>
-                  <Option value="0" key="0">不合格</Option>
+                  <Option value="">全部</Option>
+                  <Option value="1">合格</Option>
+                  <Option value="0">不合格</Option>
                 </Select>
-                <Input @on-change="handleClear" clearable placeholder="输入角色名搜索" class="search-input" v-model="formData.searchPhrase"/>
+                <Input @on-change="handleClear" clearable placeholder="输入代理商或被采样单位名称搜索"
+                       class="search-input" v-model="formData.searchPhrase"/>
                 <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
               </Col>
             </Row>
@@ -50,7 +51,7 @@
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
 export default {
-  name: 'tables_page',
+  name: 'spot_check',
   components: {
     Tables
   },
@@ -72,22 +73,26 @@ export default {
         {
           title: '标称委托企业',
           align: 'center',
-          key: 'company'
+          key: 'company',
+          tooltip: true
         },
         {
           title: '标称生产企业/进口代理商名称',
           align: 'center',
-          key: 'producer'
+          key: 'producer',
+          tooltip: true
         },
         {
           title: '被采样单位名称',
           align: 'center',
-          key: 'unit'
+          key: 'unit',
+          tooltip: true
         },
         {
           title: '样品名称',
           align: 'center',
-          key: 'sample'
+          key: 'sample',
+          tooltip: true
         },
         {
           title: '包装规格',
@@ -97,7 +102,8 @@ export default {
         {
           title: '产品分类',
           align: 'center',
-          key: 'productTypeName'
+          key: 'productTypeName',
+          width: 80
         },
         {
           title: '产地',
@@ -131,7 +137,8 @@ export default {
         {
           title: '公布日期',
           align: 'center',
-          key: 'publishDate'
+          key: 'publishDate',
+          width: 100
         },
         {
           title: '操作',
@@ -207,11 +214,10 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList',
+        url: '/system/getAllSystemDataTypeList/1',
         method: 'get'
       }
       axios.request(option).then(res => {
-        console.log(res)
         this.productTypeList = res.data.data.productTypeList
         this.institutionList = res.data.data.institutionList
       })
@@ -223,7 +229,6 @@ export default {
         method: 'post'
       }
       axios.request(option).then(res => {
-        console.log(res)
         this.tableData.list = res.data.data.list
         this.tableData.pageNum = res.data.data.pageNum
         this.tableData.total = res.data.data.total

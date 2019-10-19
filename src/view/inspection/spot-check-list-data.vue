@@ -130,7 +130,7 @@ export default {
     this.getAllSystemDataTypeList()
   },
   watch: {
-    '$store.getters.productType':function (val) {
+    '$store.getters.productType': function (val) {
       this.formData.productType = val
       this.getTablePageData()
     }
@@ -141,7 +141,7 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList',
+        url: '/system/getAllSystemDataTypeList/1',
         method: 'get'
       }
       axios.request(option).then(res => {
@@ -151,7 +151,7 @@ export default {
     getTablePageData () {
       console.log(this.formData)
       const option = {
-        url: '/show/getSpotCheckPageList',
+        url: '/show/spotCheck/getSpotCheckPageList',
         data: this.formData,
         method: 'post'
       }

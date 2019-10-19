@@ -131,7 +131,7 @@ export const getRelativeTime = timeStamp => {
   else if (diff > 86399 && diff <= 2623859) resStr = Math.floor(diff / 86400) + '天' + dirStr
   // 多于29天59分钟59秒，少于364天23小时59分钟59秒，且传入的时间戳早于当前
   else if (diff > 2623859 && diff <= 31567859 && IS_EARLY) resStr = getDate(timeStamp)
-  else resStr = getDate(timeStamp, 'year')
+  else resStr = getDate(timeStamp, 'year', true)
   return resStr
 }
 

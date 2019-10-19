@@ -2,14 +2,35 @@
   .ivu-table-cell{
     padding:  0px;
   }
+  .search-btn{
+    margin-right: 10px;
+  }
 </style>
 <template>
   <div>
       <Card>
         <div class="search-con search-con-top">
-            <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增角色</Button>
-            <Input @on-change="handleClear" clearable placeholder="输入角色名搜索" class="search-input" v-model="formData.searchPhrase"/>
-            <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
+          <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增标准</Button>
+          <Select v-model="formData.category" style="width:200px" placeholder="请选择一级分类" clearable>
+            <Option value="">全部</Option>
+            <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+          <Select v-model="formData.type" style="width:200px" placeholder="请选择二级分类" clearable>
+            <Option value="">全部</Option>
+            <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+          <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
+            <Option value="">全部</Option>
+            <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+          <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
+            <Option value="">全部</Option>
+            <Option value="1">现行有效</Option>
+            <Option value="2">即将实施</Option>
+            <Option value="3">已经作废</Option>
+          </Select>
+          <Input @on-change="handleClear" clearable placeholder="输入标准数据名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+          <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
         </div>
         <tables
         ref="tables"
@@ -25,38 +46,53 @@
         :title="modelTitle"
         :mask-closable="false">
         <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
-            <FormItem label="角色名" prop="roleName">
-                <Input placeholder="请输入角色名" v-model="formItem.roleName"/>
+            <FormItem label="名称" prop="name">
+                <Input placeholder="请输入角色名" v-model="formItem.name"/>
             </FormItem>
-            <FormItem label="角色编码" prop="roleCode">
-                <Input placeholder="请输入登录名" v-model="formItem.roleCode"/>
+            <FormItem label="一级分类" prop="category">
+              <Select v-model="formItem.category" style="width:200px" placeholder="请选择一级分类" clearable>
+                <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
+              </Select>
             </FormItem>
-            <FormItem label="描述" prop="description">
-                <Input placeholder="请输入角色描述" v-model="formItem.description"/>
+            <FormItem label="二级分类" prop="type">
+              <Select v-model="formItem.type" style="width:200px" placeholder="请选择二级分类" clearable>
+                <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+              </Select>
             </FormItem>
-            <FormItem label="状态" prop="roleStatus">
-              <RadioGroup v-model="formItem.roleStatus">
-                <Radio label="1">启用</Radio>
-                <Radio label="2">禁用</Radio>
-              </RadioGroup>
+            <FormItem label="状态" prop="status">
+              <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
+                <Option value="1">现行有效</Option>
+                <Option value="2">即将实施</Option>
+                <Option value="3">已经作废</Option>
+              </Select>
+            </FormItem>
+            <FormItem label="发布单位" prop="publishUnit">
+              <Select v-model="formItem.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
+                <Option value="1">发布单位1</Option>
+                <Option value="2">发布单位2</Option>
+                <Option value="3">发布单位3</Option>
+              </Select>
+            </FormItem>
+            <FormItem label="发布日期" prop="publishDate">
+              <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.publishDate=$event"
+                          placeholder="请选择发布日期" :value="formItem.publishDate"></DatePicker>
+            </FormItem>
+            <FormItem label="实施日期" prop="implementDate">
+              <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.implementDate=$event"
+                          placeholder="请选择实施日期" :value="formItem.implementDate"></DatePicker>
+            </FormItem>
+            <FormItem label="摘要" prop="summary">
+              <Input placeholder="请输入标准摘要" v-model="formItem.summary" type="textarea" :autosize="{minRows: 3,maxRows: 5}"/>
+            </FormItem>
+            <FormItem label="摘要" prop="summary">
+              <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
+                <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
+              </Upload>
             </FormItem>
         </Form>
         <div slot="footer">
           <Button type="default" size="large" @click="modelCancel">取消</Button>
           <Button type="primary" size="large" @click="saveFormData" :loading="modelButtonLoading">確定</Button>
-        </div>
-      </Modal>
-      <Modal
-        v-model="permissionModelShow"
-        title="绑定权限"
-        :mask-closable="false"
-        width="280">
-        <div style="text-align: center">
-          <Tree :data="permissionTreeData" @on-check-change="initPermissionData" show-checkbox multiple></Tree>
-        </div>
-        <div slot="footer">
-          <Button type="default" size="large" @click="modelCancel">取消</Button>
-          <Button type="primary" size="large" @click="saveRolePermission" :loading="modelButtonLoading">確定</Button>
         </div>
       </Modal>
   </div>
@@ -71,6 +107,22 @@ export default {
   },
   data () {
     var _ths = this
+    const validateName = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('标准数据名称不能为空'))
+      } else {
+        axios.request({
+          url: '/criterion/judgeCriterionNameIsExist?name=' + value + '&criterionId=' + _ths.currentCriterionId,
+          method: 'get'
+        }).then(res => {
+          if (res.data.code === 200) {
+            callback(new Error('标准数据名称已存在'))
+          } else {
+            callback()
+          }
+        })
+      }
+    }
     return {
       modelShow: false,
       formData: {
@@ -78,36 +130,59 @@ export default {
         pageSize: 10, // 一页展示数量
         searchPhrase: ''
       },
+      categoryList: [],
+      typeList: [],
+      publishUnitList: [],
       columns: [
         {
-          title: '角色名',
+          title: '名称',
           align: 'center',
-          key: 'roleName',
-          width: 100
+          key: 'name'
         },
         {
-          title: '角色编码',
+          title: '一级分类',
           align: 'center',
-          key: 'roleCode',
-          width: 120
+          key: 'categoryName',
+          width: 200
         },
         {
-          title: '描述',
+          title: '二级分类',
           align: 'center',
-          key: 'description'
+          key: 'typeName',
+          width: 200
+        },
+        {
+          title: '发布单位',
+          align: 'center',
+          key: 'publishUnitName',
+          width: 200
+        },
+        {
+          title: '发布日期',
+          align: 'center',
+          key: 'publishDate',
+          width: 200
+        },
+        {
+          title: '实施日期',
+          align: 'center',
+          key: 'implementDate',
+          width: 200
         },
         {
           title: '状态',
           align: 'center',
-          key: 'roleStatus',
+          key: 'status',
           width: 120,
           render: function render (h, params) {
             // console.log(params.row)
             var content = ''
-            if (params.row.roleStatus === 1) {
-              content = '启用'
+            if (params.row.status === 1) {
+              content = '现行有效'
+            } else if (params.row.status === 2) {
+              content = '即将实施'
             } else {
-              content = '禁用'
+              content = '已经作废'
             }
             return h('span', content)
           }
@@ -116,7 +191,7 @@ export default {
           title: '操作',
           align: 'center',
           key: 'operation',
-          width: 240,
+          width: 180,
           render: function render (h, params) {
             return h('div', [h('Button', {
               props: {
@@ -150,23 +225,7 @@ export default {
                   _ths.handleEditor(params)
                 }
               }
-            }, '编辑'), h('Button', {
-              props: {
-                type: 'primary',
-                icon: 'ios-construct',
-                disabled: false,
-                size: 'small'
-              },
-              style: {
-                marginLeft: '10px',
-                marginBottom: '5px'
-              },
-              on: {
-                click: () => {
-                  _ths.handlePermission(params.row.id)
-                }
-              }
-            }, '权限')])
+            }, '编辑')])
           }
         }
       ],
@@ -177,41 +236,96 @@ export default {
         pages: 0
       },
       formItem: {},
+      uploadLoading: false,
       ruleValidate: {
-        roleName: [
-          { required: true, message: '角色名不能为空', trigger: 'blur' }
+        name: [
+          { required: true, validator: validateName, trigger: 'blur' }
         ],
-        roleCode: [
-          { required: true, message: '角色编码不能为空', trigger: 'blur' }
+        category: [
+          { required: true, message: '一级分类不能为空', trigger: 'change' }
+        ],
+        type: [
+          { required: true, message: '二级分类不能为空', trigger: 'change' }
+        ],
+        status: [
+          { required: true, message: '状态不能为空', trigger: 'change' }
+        ],
+        publishUnit: [
+          { required: true, message: '发布单位为空', trigger: 'change' }
+        ],
+        publishDate: [
+          { required: true, message: '发布日期不能为空', trigger: 'change' }
+        ],
+        implementDate: [
+          { required: true, message: '实施日期不能为空', trigger: 'change' }
         ]
       },
       modelTitle: '',
       msgTitle: '',
       modelButtonLoading: false,
-      member: '0',
-      currentRoleId: null,
-      permissionModelShow: false,
-      permissionTreeData: [],
-      permissionIds: ''
+      currentCriterionId: 0
     }
   },
   mounted () {
+    this.getAllSystemDataTypeList()
     this.getTablePageData()
   },
   methods: {
+    getAllSystemDataTypeList () {
+      const option = {
+        url: '/system/getAllSystemDataTypeList/2',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.categoryList = res.data.data.categoryList
+        this.typeList = res.data.data.typeList
+        this.publishUnitList = res.data.data.publishUnitList
+      })
+    },
     getTablePageData () {
       const option = {
-        url: '/role/getRolePageList',
+        url: '/criterion/getCriterionPageList',
         data: this.formData,
         method: 'post'
       }
       axios.request(option).then(res => {
-        console.log(res)
         this.tableData.list = res.data.data.list
         this.tableData.pageNum = res.data.data.pageNum
         this.tableData.total = res.data.data.total
         this.tableData.pages = res.data.data.pages
       })
+    },
+    handleBeforeUpload (file) {
+      const _this = this
+      const fileExt = file.name.split('.').pop().toLocaleLowerCase()
+      if (fileExt === 'xlsx' || fileExt === 'xls') {
+        let fileFormData = new FormData()
+        fileFormData.append('file', file)
+        const option = {
+          url: '/spotCheck/upload',
+          data: fileFormData,
+          method: 'post',
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+        axios.request(option).then(res => {
+          console.log(res)
+          _this.getTablePageData()
+        }).catch(res => {
+          _this.uploadLoading = false
+        })
+      } else {
+        _this.uploadLoading = false
+        this.$Notice.warning({
+          title: '文件类型错误',
+          desc: '文件：' + file.name + '不是EXCEL文件，请选择后缀为.xlsx或者.xls的EXCEL文件。'
+        })
+      }
+      return false
+    },
+    handleUploadFile () {
+      this.getTablePageData()
     },
     // 翻页钩子
     changePage (page) {
@@ -226,26 +340,33 @@ export default {
     },
     handleAddData () {
       this.formItem = {
-        roleName: '管理员',
-        roleCode: 'sys-admin',
-        description: '测试',
-        roleStatus: '1'
+        name: '标准数据',
+        category: '1',
+        type: '2',
+        status: '1',
+        publishUnit: '1',
+        publishDate: '',
+        implementDate: '',
+        summary: '摘要'
       }
       this.modelShow = true
       this.$refs['formItem'].resetFields()
-      this.modelTitle = '新增角色'
-      this.msgTitle = '新增角色信息成功'
+      this.modelTitle = '新增标准'
+      this.msgTitle = '新增标准数据成功'
     },
     handleEditor (params) {
       this.formItem = params.row
-      this.formItem.roleStatus = this.formItem.roleStatus + ''
+      this.formItem.category = this.formItem.category + ''
+      this.formItem.type = this.formItem.type + ''
+      this.formItem.publishUnit = this.formItem.publishUnit + ''
+      this.formItem.status = this.formItem.status + ''
       this.modelShow = true
-      this.modelTitle = '编辑角色'
-      this.msgTitle = '修改角色信息成功'
+      this.modelTitle = '编辑标准'
+      this.msgTitle = '修改标准数据成功'
     },
     handleDelete (params) {
       console.log(params.row.id)
-      this.msgTitle = '删除角色信息成功'
+      this.msgTitle = '删除标准数据成功'
       this.$Modal.confirm({
         title: '删除',
         content: '你确定要删除吗?',
@@ -255,16 +376,8 @@ export default {
         }
       })
     },
-    handlePermission (roleId) {
-      this.currentRoleId = roleId
-      this.permissionIds = ''
-      this.permissionTreeData = []
-      this.getPermissionTreeData()
-      this.permissionModelShow = true
-    },
     modelCancel () {
       this.modelShow = false
-      this.permissionModelShow = false
       this.$Modal.remove()
     },
     saveFormData () {
@@ -274,7 +387,7 @@ export default {
           _this.modelButtonLoading = true
           console.log(_this.formItem)
           axios.request({
-            url: '/role/saveRole',
+            url: '/criterion/saveCriterion',
             data: _this.formItem,
             method: 'post'
           }).then(res => {
@@ -299,92 +412,16 @@ export default {
     deleteData (id) {
       const _this = this
       axios.request({
-        url: '/role/deleteRole/' + id,
+        url: '/criterion/deleteCriterion/' + id,
         method: 'delete'
       }).then(res => {
         _this.$Modal.remove()
         if (res.data.code === 200) {
           _this.$Message.success(_this.msgTitle)
           _this.getTablePageData()
-        } else if (res.data.code === 301) {
-          _this.$Message.error(res.data.msg)
         } else {
           _this.$Message.error('网络异常，请稍后重试')
         }
-      })
-    },
-    getPermissionTreeData () {
-      const _this = this
-      axios.request({
-        url: '/permission/getPermissionTreeData/' + _this.currentRoleId,
-        method: 'get'
-      }).then(res => {
-        if (res.data.code === 200) {
-          _this.permissionTreeData = res.data.data
-          console.log(_this.permissionTreeData)
-        } else {
-          _this.$Message.error('网络异常，请稍后重试')
-        }
-      })
-    },
-    initPermissionData (nodes) {
-      const _this = this
-      // console.log(nodes)
-      // 循环执行所有选中的节点链，放到arr1数组里
-      let arr = []
-      for (let i = 0; i < nodes.length; i++) {
-        // 单条数据链
-        let aData = _this.getTreeParentData(_this.permissionTreeData, [], nodes[i].id) // 方法入口在这里
-        // console.log(aData)
-        for (let y = 0; y < aData.length; y++) {
-          // 拆分成单个json数组放到arr1里
-          arr.push(aData[y])
-        }
-      }
-      console.log(Array.from(new Set(arr)))
-      _this.permissionIds = Array.from(new Set(arr)).join(',')
-    },
-    getTreeParentData (array, childs, ids) {
-      const _this = this
-      for (let i = 0; i < array.length; i++) {
-        let item = array[i]
-        if (Number(item.id) === Number(ids)) {
-          childs.push(item.id)
-          return childs
-        }
-        if (item.children && item.children.length > 0) {
-          childs.push(item.id)
-          let rs = _this.getTreeParentData(item.children, childs, ids)
-          if (rs) return rs
-          // else childs.remove(item.id)
-        }
-      }
-      return false
-    },
-    saveRolePermission () {
-      const _this = this
-      axios.request({
-        url: '/role/saveRolePermission',
-        params: {roleId: _this.currentRoleId, permissionIds: _this.permissionIds},
-        method: 'post'
-      }).then(res => {
-        if (res.data.code === 200) {
-          setTimeout(function () {
-            _this.modelButtonLoading = false
-            if (res.data.code === 200) {
-              _this.$Message.success('角色绑定权限成功')
-              _this.permissionModelShow = false
-              // _this.$Modal.remove();
-              _this.getTablePageData()
-            } else {
-              _this.$Message.error('网络异常，请稍后重试')
-            }
-          }, 1500)
-        } else {
-          _this.$Message.error('网络异常，请稍后重试')
-        }
-      }).catch(res => {
-        _this.modelButtonLoading = false
       })
     }
   }

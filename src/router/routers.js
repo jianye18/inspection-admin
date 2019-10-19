@@ -390,7 +390,7 @@ export default [
         path: 'mould-data',
         name: 'mould-data',
         meta: {
-          icon: 'ios-contact',
+          icon: 'ios-browsers',
           title: '标准数据',
           notCache: true
         },

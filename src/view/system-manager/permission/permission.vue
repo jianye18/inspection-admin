@@ -29,7 +29,7 @@
                 <Input placeholder="请输入权限名" v-model="formItem.name"/>
             </FormItem>
             <FormItem label="权限编码" prop="code">
-                <Input placeholder="请输入登录名" v-model="formItem.code"/>
+                <Input placeholder="请输入权限编码" v-model="formItem.code"/>
             </FormItem>
             <FormItem label="描述" prop="description">
                 <Input placeholder="请输入权限描述" v-model="formItem.description"/>

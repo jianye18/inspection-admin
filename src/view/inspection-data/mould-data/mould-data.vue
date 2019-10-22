@@ -143,31 +143,30 @@ export default {
           title: '一级分类',
           align: 'center',
           key: 'categoryName',
-          width: 200
+          width: 120
         },
         {
           title: '二级分类',
           align: 'center',
           key: 'typeName',
-          width: 200
+          width: 120
         },
         {
           title: '发布单位',
           align: 'center',
-          key: 'publishUnitName',
-          width: 200
+          key: 'publishUnitName'
         },
         {
           title: '发布日期',
           align: 'center',
           key: 'publishDate',
-          width: 200
+          width: 120
         },
         {
           title: '实施日期',
           align: 'center',
           key: 'implementDate',
-          width: 200
+          width: 120
         },
         {
           title: '状态',

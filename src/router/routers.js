@@ -436,6 +436,16 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/permission/permission.vue')
+      },
+      {
+        path: 'data-type',
+        name: 'data-type',
+        meta: {
+          icon: 'md-flower',
+          title: '常量管理',
+          notCache: true
+        },
+        component: () => import('@/view/system-manager/constant/data-type.vue')
       }/*,
       {
         path: 'menu',

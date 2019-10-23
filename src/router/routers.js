@@ -395,6 +395,16 @@ export default [
           notCache: true
         },
         component: () => import('@/view/inspection-data/mould-data/mould-data.vue')
+      },
+      {
+        path: 'law-data',
+        name: 'law-data',
+        meta: {
+          icon: 'ios-browsers',
+          title: '法规数据',
+          notCache: true
+        },
+        component: () => import('@/view/inspection-data/law-data/law-data.vue')
       }
     ]
   },

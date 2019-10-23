@@ -109,6 +109,11 @@ export default {
           key: 'description'
         },
         {
+          title: '父级',
+          align: 'center',
+          key: 'parentName'
+        },
+        {
           title: '操作',
           align: 'center',
           key: 'operation',

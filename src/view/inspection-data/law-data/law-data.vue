@@ -2,15 +2,15 @@
   .ivu-table-cell{
     padding:  0px;
   }
-  .search-btn{
-    margin-right: 10px;
+  .ivu-select{
+    margin-left: 2px;
   }
 </style>
 <template>
   <div>
       <Card>
         <div class="search-con search-con-top">
-          <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增标准</Button>
+          <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增法规</Button>
           <Select v-model="formData.category" style="width:200px" placeholder="请选择一级分类" clearable>
             <Option value="">全部</Option>
             <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
@@ -29,7 +29,8 @@
             <Option value="2">即将实施</Option>
             <Option value="3">已经作废</Option>
           </Select>
-          <Input @on-change="handleClear" clearable placeholder="输入标准数据名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+          <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索"
+                 class="search-input" v-model="formData.searchPhrase"/>
           <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
         </div>
         <tables
@@ -41,89 +42,77 @@
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
         </div>
       </Card>
-      <Modal
-        v-model="modelShow"
-        :title="modelTitle"
-        :mask-closable="false">
-        <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
-            <FormItem label="名称" prop="name">
-                <Input placeholder="请输入角色名" v-model="formItem.name"/>
-            </FormItem>
-            <FormItem label="一级分类" prop="category">
-              <Select v-model="formItem.category" style="width:200px" placeholder="请选择一级分类" clearable>
-                <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
-              </Select>
-            </FormItem>
-            <FormItem label="二级分类" prop="type">
-              <Select v-model="formItem.type" style="width:200px" placeholder="请选择二级分类" clearable>
-                <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
-              </Select>
-            </FormItem>
-            <FormItem label="状态" prop="status">
-              <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
-                <Option value="1">现行有效</Option>
-                <Option value="2">即将实施</Option>
-                <Option value="3">已经作废</Option>
-              </Select>
-            </FormItem>
-            <FormItem label="发布单位" prop="publishUnit">
-              <Select v-model="formItem.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
-                <Option value="1">发布单位1</Option>
-                <Option value="2">发布单位2</Option>
-                <Option value="3">发布单位3</Option>
-              </Select>
-            </FormItem>
-            <FormItem label="发布日期" prop="publishDate">
-              <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.publishDate=$event"
-                          placeholder="请选择发布日期" :value="formItem.publishDate"></DatePicker>
-            </FormItem>
-            <FormItem label="实施日期" prop="implementDate">
-              <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.implementDate=$event"
-                          placeholder="请选择实施日期" :value="formItem.implementDate"></DatePicker>
-            </FormItem>
-            <FormItem label="摘要" prop="summary">
-              <Input placeholder="请输入标准摘要" v-model="formItem.summary" type="textarea" :autosize="{minRows: 3,maxRows: 5}"/>
-            </FormItem>
-            <FormItem label="附件">
-              <span v-if="fileNames" v-for="item in fileNames" :key="item">{{item}}&nbsp;</span>
-              <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
-                <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
-              </Upload>
-            </FormItem>
-        </Form>
-        <div slot="footer">
-          <Button type="default" size="large" @click="modelCancel">取消</Button>
-          <Button type="primary" size="large" @click="saveFormData" :loading="modelButtonLoading">確定</Button>
-        </div>
-      </Modal>
+
+    <Modal
+      v-model="modelShow"
+      :title="modelTitle"
+      :mask-closable="false"
+      width="820px">
+      <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
+        <FormItem label="名称" prop="name">
+          <Input placeholder="请输入角色名" v-model="formItem.name" style="width:200px"/>
+        </FormItem>
+        <FormItem label="一级分类" prop="category">
+          <Select v-model="formItem.category" style="width:200px" placeholder="请选择一级分类" clearable>
+            <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="二级分类" prop="type">
+          <Select v-model="formItem.type" style="width:200px" placeholder="请选择二级分类" clearable>
+            <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="状态" prop="status">
+          <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
+            <Option value="1">现行有效</Option>
+            <Option value="2">即将实施</Option>
+            <Option value="3">已经作废</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="发布单位" prop="publishUnit">
+          <Select v-model="formItem.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
+            <Option value="1">发布单位1</Option>
+            <Option value="2">发布单位2</Option>
+            <Option value="3">发布单位3</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="发布日期" prop="publishDate">
+          <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.publishDate=$event"
+                      placeholder="请选择发布日期" :value="formItem.publishDate"></DatePicker>
+        </FormItem>
+        <FormItem label="实施日期" prop="implementDate">
+          <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.implementDate=$event"
+                      placeholder="请选择实施日期" :value="formItem.implementDate"></DatePicker>
+        </FormItem>
+        <FormItem label="内容" prop="content">
+          <editor ref="editor" v-model="formItem.content"/>
+        </FormItem>
+        <FormItem label="附件">
+          <span v-if="annexs" v-for="item in annexs" :key="item">{{item}}&nbsp;</span>
+          <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
+            <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
+          </Upload>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="default" size="large" @click="modelCancel">取消</Button>
+        <Button type="primary" size="large" @click="saveFormData" :loading="modelButtonLoading">確定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
+import Editor from '_c/editor'
 export default {
-  name: 'tables_page',
+  name: 'law_page',
   components: {
-    Tables
+    Tables,
+    Editor
   },
   data () {
     var _ths = this
-    const validateName = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('标准数据名称不能为空'))
-      } else {
-        axios.request({
-          url: '/criterion/judgeCriterionNameIsExist?name=' + value + '&criterionId=' + _ths.currentCriterionId,
-          method: 'get'
-        }).then(res => {
-          if (res.data.code === 200) {
-            callback(new Error('标准数据名称已存在'))
-          } else {
-            callback()
-          }
-        })
-      }
-    }
     return {
       modelShow: false,
       formData: {
@@ -239,7 +228,7 @@ export default {
       uploadLoading: false,
       ruleValidate: {
         name: [
-          { required: true, validator: validateName, trigger: 'blur' }
+          { required: true, message: '法规名称不能为空', trigger: 'blur' }
         ],
         category: [
           { required: true, message: '一级分类不能为空', trigger: 'change' }
@@ -264,8 +253,7 @@ export default {
       msgTitle: '',
       modelButtonLoading: false,
       currentCriterionId: 0,
-      filePaths: [],
-      fileNames: []
+      annexs: []
     }
   },
   mounted () {
@@ -286,7 +274,7 @@ export default {
     },
     getTablePageData () {
       const option = {
-        url: '/criterion/getCriterionPageList',
+        url: '/law/getLawPageList',
         data: this.formData,
         method: 'post'
       }
@@ -313,9 +301,8 @@ export default {
         _this.uploadLoading = false
         if (res.data.code === 200) {
           _this.$Message.success('上传成功！')
-          _this.fileNames.push(file.name)
-          _this.filePaths.push(res.data.data)
-          console.log(_this.filePaths)
+          _this.annexs.push(res.data.data)
+          console.log(_this.annexs)
         } else {
           _this.$Message.error('上传失败，请稍后重试')
         }
@@ -340,7 +327,7 @@ export default {
     },
     handleAddData () {
       this.formItem = {
-        name: '标准数据',
+        name: '法规数据',
         category: '1',
         type: '2',
         status: '1',
@@ -349,10 +336,11 @@ export default {
         implementDate: '',
         summary: '摘要'
       }
+      this.$refs.editor.setHtml('')
       this.modelShow = true
       this.$refs['formItem'].resetFields()
-      this.modelTitle = '新增标准'
-      this.msgTitle = '新增标准数据成功'
+      this.modelTitle = '新增法规'
+      this.msgTitle = '新增法规数据成功'
     },
     handleEditor (params) {
       this.formItem = params.row
@@ -361,8 +349,8 @@ export default {
       this.formItem.publishUnit = this.formItem.publishUnit + ''
       this.formItem.status = this.formItem.status + ''
       this.modelShow = true
-      this.modelTitle = '编辑标准'
-      this.msgTitle = '修改标准数据成功'
+      this.modelTitle = '编辑法规'
+      this.msgTitle = '修改法规数据成功'
     },
     handleDelete (params) {
       console.log(params.row.id)
@@ -385,6 +373,7 @@ export default {
       _this.$refs['formItem'].validate(function (valid) {
         if (valid) {
           _this.modelButtonLoading = true
+          _this.formItem.annexs = JSON.stringify(annexs)
           console.log(_this.formItem)
           axios.request({
             url: '/criterion/saveCriterion',

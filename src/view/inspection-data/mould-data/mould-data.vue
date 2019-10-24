@@ -85,7 +85,7 @@
               <Input placeholder="请输入标准摘要" v-model="formItem.summary" type="textarea" :autosize="{minRows: 3,maxRows: 5}"/>
             </FormItem>
             <FormItem label="附件">
-              <span v-if="fileNames" v-for="item in fileNames" :key="item">{{item}}&nbsp;</span>
+              <span v-if="annexs" v-for="item in annexs" :key="item">{{item}}&nbsp;</span>
               <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
                 <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
               </Upload>
@@ -177,9 +177,10 @@ export default {
           render: function render (h, params) {
             // console.log(params.row)
             var content = ''
-            if (params.row.status === 1) {
+            let status = params.row.status + ''
+            if (status === '1') {
               content = '现行有效'
-            } else if (params.row.status === 2) {
+            } else if (status === '2') {
               content = '即将实施'
             } else {
               content = '已经作废'
@@ -264,8 +265,7 @@ export default {
       msgTitle: '',
       modelButtonLoading: false,
       currentCriterionId: 0,
-      filePaths: [],
-      fileNames: []
+      annexs: []
     }
   },
   mounted () {
@@ -313,8 +313,7 @@ export default {
         _this.uploadLoading = false
         if (res.data.code === 200) {
           _this.$Message.success('上传成功！')
-          _this.fileNames.push(file.name)
-          _this.filePaths.push(res.data.data)
+          _this.annexs.push(res.data.data)
           console.log(_this.filePaths)
         } else {
           _this.$Message.error('上传失败，请稍后重试')
@@ -385,6 +384,7 @@ export default {
       _this.$refs['formItem'].validate(function (valid) {
         if (valid) {
           _this.modelButtonLoading = true
+          _this.formItem.annexs = JSON.stringify(_this.annexs)
           console.log(_this.formItem)
           axios.request({
             url: '/criterion/saveCriterion',

@@ -104,7 +104,8 @@ export default {
           render: function render (h, params) {
             // console.log(params.row)
             var content = ''
-            if (params.row.roleStatus === 1) {
+            let roleStatus = params.row.roleStatus + ''
+            if (roleStatus === '1') {
               content = '启用'
             } else {
               content = '禁用'

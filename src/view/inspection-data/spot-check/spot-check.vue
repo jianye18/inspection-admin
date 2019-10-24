@@ -117,7 +117,8 @@ export default {
           width: 80,
           render: function render (h, params) {
             var content = ''
-            if (params.row.checkResult === 1) {
+            let checkResult = params.row.checkResult + ''
+            if (checkResult === '1') {
               content = '合格'
             } else {
               content = '不合格'

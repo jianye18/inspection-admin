@@ -151,11 +151,12 @@ export default {
           render: function render (h, params) {
             // console.log(params.row)
             var content = ''
-            if (params.row.parentId === 2) {
+            let parentId = params.row.parentId + ''
+            if (parentId === '2') {
               content = '用户管理'
-            } else if (params.row.parentId === 3) {
+            } else if (parentId === '3') {
               content = '角色管理'
-            } else if (params.row.parentId === 4) {
+            } else if (parentId === '4') {
               content = '权限管理'
             } else {
               content = '——'
@@ -171,9 +172,10 @@ export default {
           render: function render (h, params) {
             // console.log(params.row)
             var content = ''
-            if (params.row.type === 1) {
+            let type = params.row.type + ''
+            if (type === '1') {
               content = 'page'
-            } else if (params.row.type === 2) {
+            } else if (type === '2') {
               content = 'link'
             } else {
               content = 'button'
@@ -227,7 +229,8 @@ export default {
           render: function render (h, params) {
             // console.log(params.row)
             var content = ''
-            if (params.row.status === 1) {
+            let status = params.row.status + ''
+            if (status === '1') {
               content = '启用'
             } else {
               content = '禁用'

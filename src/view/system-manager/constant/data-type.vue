@@ -95,7 +95,8 @@ export default {
           key: 'type',
           render: function render (h, params) {
             var content = ''
-            if (params.row.type === 1) {
+            let type = params.row.type + ''
+            if (type === '1') {
               content = '抽检'
             } else {
               content = '标准'

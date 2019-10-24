@@ -134,9 +134,10 @@ export default {
           render: function render (h, params) {
             // console.log(params.row)
             var content = ''
-            if (params.row.gender === 1) {
+            let gender = params.row.gender + ''
+            if (gender === '1') {
               content = '男'
-            } else if (params.row.gender === 2) {
+            } else if (gender === '2') {
               content = '女'
             }
             return h('span', content)

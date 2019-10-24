@@ -314,7 +314,7 @@ export default {
         if (res.data.code === 200) {
           _this.$Message.success('上传成功！')
           _this.annexs.push(res.data.data)
-          console.log(_this.filePaths)
+          console.log(_this.annexs)
         } else {
           _this.$Message.error('上传失败，请稍后重试')
         }

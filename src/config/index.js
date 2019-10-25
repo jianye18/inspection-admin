@@ -14,6 +14,6 @@ export default {
    */
   baseUrl: {
     dev: '/api',
-    pro: 'https://produce.com'
+    pro: '/api'
   }
 }

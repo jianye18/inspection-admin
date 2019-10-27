@@ -5,6 +5,27 @@
   .search-btn{
     margin-right: 10px;
   }
+  .close {
+    position: absolute;
+    /*right: 32px;*/
+    top: 5px;
+    width: 5px;
+    height: 5px;
+  }
+  .close:before, .close:after {
+    position: absolute;
+    left: 5px;
+    content: ' ';
+    height: 10px;
+    width: 2px;
+    background-color: #f54040;
+  }
+  .close:before {
+    transform: rotate(45deg);
+  }
+  .close:after {
+    transform: rotate(-45deg);
+  }
 </style>
 <template>
   <div>
@@ -44,7 +65,8 @@
       <Modal
         v-model="modelShow"
         :title="modelTitle"
-        :mask-closable="false">
+        :mask-closable="false"
+        @on-visible-change="initData">
         <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
             <FormItem label="名称" prop="name">
                 <Input placeholder="请输入角色名" v-model="formItem.name"/>
@@ -85,7 +107,10 @@
               <Input placeholder="请输入标准摘要" v-model="formItem.summary" type="textarea" :autosize="{minRows: 3,maxRows: 5}"/>
             </FormItem>
             <FormItem label="附件">
-              <span v-if="annexs" v-for="item in annexs" :key="item">{{item}}&nbsp;</span>
+              <span v-if="annexs" v-for="item in annexs" :key="item" style="margin-right: 15px;">
+                {{item}}
+                <a href="#" class="close" @click="deleteAnnex(item)"></a>
+              </span>
               <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
                 <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
               </Upload>
@@ -314,7 +339,6 @@ export default {
         if (res.data.code === 200) {
           _this.$Message.success('上传成功！')
           _this.annexs.push(res.data.data)
-          console.log(_this.annexs)
         } else {
           _this.$Message.error('上传失败，请稍后重试')
         }
@@ -354,7 +378,13 @@ export default {
       this.msgTitle = '新增标准数据成功'
     },
     handleEditor (params) {
+      const _this = this
       this.formItem = params.row
+      params.row.annexList.forEach(function (item) {
+        _this.annexs.push(item.name)
+      })
+      console.log(_this.annexs)
+      this.currentCriterionId = params.row.id
       this.formItem.category = this.formItem.category + ''
       this.formItem.type = this.formItem.type + ''
       this.formItem.publishUnit = this.formItem.publishUnit + ''
@@ -362,6 +392,12 @@ export default {
       this.modelShow = true
       this.modelTitle = '编辑标准'
       this.msgTitle = '修改标准数据成功'
+    },
+    initData (flag) {
+      if (!flag) {
+        this.annexs = []
+        this.currentCriterionId = 0
+      }
     },
     handleDelete (params) {
       console.log(params.row.id)
@@ -384,7 +420,9 @@ export default {
       _this.$refs['formItem'].validate(function (valid) {
         if (valid) {
           _this.modelButtonLoading = true
-          _this.formItem.annexs = JSON.stringify(_this.annexs)
+          if (_this.annexs.length > 0) {
+            _this.formItem.annexs = JSON.stringify(_this.annexs)
+          }
           console.log(_this.formItem)
           axios.request({
             url: '/criterion/saveCriterion',
@@ -397,7 +435,6 @@ export default {
               if (res.data.code === 200) {
                 _this.$Message.success(_this.msgTitle)
                 _this.modelShow = false
-                // _this.$Modal.remove();
                 _this.getTablePageData()
               } else {
                 _this.$Message.error('网络异常，请稍后重试')
@@ -419,6 +456,24 @@ export default {
         if (res.data.code === 200) {
           _this.$Message.success(_this.msgTitle)
           _this.getTablePageData()
+        } else {
+          _this.$Message.error('网络异常，请稍后重试')
+        }
+      })
+    },
+    deleteAnnex (fileName) {
+      const _this = this
+      axios.request({
+        url: '/common/deleteFile/' + fileName,
+        method: 'delete'
+      }).then(res => {
+        if (res.data.code === 200) {
+          _this.annexs.forEach(function (item, index) {
+            if (fileName === item) {
+              _this.annexs.splice(index, 1)
+            }
+          })
+          console.log(_this.annexs)
         } else {
           _this.$Message.error('网络异常，请稍后重试')
         }

@@ -11,14 +11,7 @@
       <Card>
         <div class="search-con search-con-top">
           <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增法规</Button>
-          <Select v-model="formData.category" style="width:200px" placeholder="请选择一级分类" clearable>
-            <Option value="">全部</Option>
-            <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
-          </Select>
-          <Select v-model="formData.type" style="width:200px" placeholder="请选择二级分类" clearable>
-            <Option value="">全部</Option>
-            <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
-          </Select>
+          <Cascader :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer></Cascader>
           <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
             <Option value="">全部</Option>
             <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
@@ -52,7 +45,7 @@
         <FormItem label="名称" prop="name">
           <Input placeholder="请输入角色名" v-model="formItem.name" style="width:200px"/>
         </FormItem>
-        <FormItem label="一级分类" prop="category">
+        <!--<FormItem label="一级分类" prop="category">
           <Select v-model="formItem.category" style="width:200px" placeholder="请选择一级分类" clearable>
             <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
           </Select>
@@ -61,7 +54,7 @@
           <Select v-model="formItem.type" style="width:200px" placeholder="请选择二级分类" clearable>
             <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
           </Select>
-        </FormItem>
+        </FormItem>-->
         <FormItem label="状态" prop="status">
           <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
             <Option value="1">现行有效</Option>
@@ -120,8 +113,7 @@ export default {
         pageSize: 10, // 一页展示数量
         searchPhrase: ''
       },
-      categoryList: [],
-      typeList: [],
+      cascaderData: [],
       publishUnitList: [],
       columns: [
         {
@@ -263,12 +255,12 @@ export default {
   methods: {
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/2',
+        url: '/system/getAllSystemDataTypeList/3',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.categoryList = res.data.data.categoryList
-        this.typeList = res.data.data.typeList
+        this.cascaderData = res.data.data.categoryList
+        console.log(this.cascaderData)
         this.publishUnitList = res.data.data.publishUnitList
       })
     },

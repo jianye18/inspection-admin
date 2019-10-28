@@ -22,9 +22,7 @@
           </Select>
           <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
             <Option value="">全部</Option>
-            <Option value="1">现行有效</Option>
-            <Option value="2">即将实施</Option>
-            <Option value="3">已经作废</Option>
+            <Option v-for="item in statusList" :value="item.value" >{{item.label}}</Option>
           </Select>
           <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索"
                  class="search-input" v-model="formData.searchPhrase"/>
@@ -44,7 +42,8 @@
       v-model="modelShow"
       :title="modelTitle"
       :mask-closable="false"
-      width="820px">
+      width="820px"
+      @on-visible-change="initData">
       <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
         <FormItem label="名称" prop="name">
           <Input placeholder="请输入角色名" v-model="formItem.name" style="width:200px"/>
@@ -55,28 +54,24 @@
         </FormItem>
         <FormItem label="状态" prop="status">
           <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
-            <Option value="1">现行有效</Option>
-            <Option value="2">即将实施</Option>
-            <Option value="3">已经作废</Option>
+            <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
           </Select>
         </FormItem>
         <FormItem label="发布单位" prop="publishUnit">
           <Select v-model="formItem.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
-            <Option value="1">发布单位1</Option>
-            <Option value="2">发布单位2</Option>
-            <Option value="3">发布单位3</Option>
+            <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
           </Select>
         </FormItem>
         <FormItem label="发布日期" prop="publishDate">
           <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.publishDate=$event"
-                      placeholder="请选择发布日期" :value="formItem.publishDate"></DatePicker>
+                      placeholder="请选择发布日期" :value="formItem.publishDate" transfer></DatePicker>
         </FormItem>
         <FormItem label="实施日期" prop="implementDate">
           <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.implementDate=$event"
-                      placeholder="请选择实施日期" :value="formItem.implementDate"></DatePicker>
+                      placeholder="请选择实施日期" :value="formItem.implementDate" transfer></DatePicker>
         </FormItem>
         <FormItem label="内容" prop="content">
-          <editor ref="editor" v-model="formItem.content"/>
+          <editor ref="editor" :value="formItem.content" @on-change="handleChange"/>
         </FormItem>
         <FormItem label="附件">
           <span v-if="annexs" v-for="item in annexs" :key="item">{{item}}&nbsp;</span>
@@ -113,6 +108,12 @@ export default {
       },
       cascaderData: [],
       publishUnitList: [],
+      statusList: [
+        {value: '1', label: '现行有效'},
+        {value: '2', label: '征求意见'},
+        {value: '3', label: '已经废止'},
+        {value: '4', label: '未知状态'}
+      ],
       columns: [
         {
           title: '名称',
@@ -221,10 +222,7 @@ export default {
           { required: true, message: '法规名称不能为空', trigger: 'blur' }
         ],
         category: [
-          { required: true, message: '一级分类不能为空', trigger: 'change' }
-        ],
-        type: [
-          { required: true, message: '二级分类不能为空', trigger: 'change' }
+          { required: true,type: 'array', message: '法规分类不能为空', trigger: 'change' }
         ],
         status: [
           { required: true, message: '状态不能为空', trigger: 'change' }
@@ -237,12 +235,14 @@ export default {
         ],
         implementDate: [
           { required: true, message: '实施日期不能为空', trigger: 'change' }
+        ],
+        content: [
+          { required: true, message: '法律内容不能为空', trigger: 'change' }
         ]
       },
       modelTitle: '',
       msgTitle: '',
       modelButtonLoading: false,
-      currentCriterionId: 0,
       annexs: []
     }
   },
@@ -260,7 +260,6 @@ export default {
       }
       axios.request(option).then(res => {
         this.cascaderData = res.data.data.categoryList
-        console.log(this.cascaderData)
         this.publishUnitList = res.data.data.publishUnitList
       })
     },
@@ -317,16 +316,10 @@ export default {
     handleSearch () {
       this.getTablePageData()
     },
+    handleChange (html, text) {
+      this.formItem.content = html
+    },
     handleAddData () {
-      this.formItem = {
-        name: '法规数据',
-        status: '1',
-        publishUnit: '1',
-        publishDate: '',
-        implementDate: '',
-        content: '摘要'
-      }
-      this.$refs.editor.setHtml('')
       this.modelShow = true
       this.$refs['formItem'].resetFields()
       this.modelTitle = '新增法规'
@@ -358,36 +351,49 @@ export default {
       this.modelShow = false
       this.$Modal.remove()
     },
+    initData (flag) {
+      if (!flag) {
+        this.annexs = []
+        this.$refs.editor.setHtml('')
+      }
+    },
     saveFormData () {
       const _this = this
-      console.log(_this.formItem)
-      // _this.$refs['formItem'].validate(function (valid) {
-      //   if (valid) {
-      //     _this.modelButtonLoading = true
-      //     _this.formItem.annexs = JSON.stringify(annexs)
-      //     console.log(_this.formItem)
-      //     axios.request({
-      //       url: '/criterion/saveCriterion',
-      //       data: _this.formItem,
-      //       method: 'post'
-      //     }).then(res => {
-      //       // console.log(res)
-      //       setTimeout(function () {
-      //         _this.modelButtonLoading = false
-      //         if (res.data.code === 200) {
-      //           _this.$Message.success(_this.msgTitle)
-      //           _this.modelShow = false
-      //           // _this.$Modal.remove();
-      //           _this.getTablePageData()
-      //         } else {
-      //           _this.$Message.error('网络异常，请稍后重试')
-      //         }
-      //       }, 1500)
-      //     }).catch(res => {
-      //       _this.modelButtonLoading = false
-      //     })
-      //   }
-      // })
+      _this.$refs['formItem'].validate(function (valid) {
+        console.log(_this.formItem)
+        if (valid) {
+          _this.modelButtonLoading = true
+          let postData = _this.formItem
+          postData.annexs = JSON.stringify(postData.annexs)
+          if (_this.formItem.category.length === 1) {
+            postData.category = postData.category[0]
+          }
+          if (_this.formItem.category.length === 2) {
+            postData.category = postData.category[0]
+            postData.type = postData.category[1]
+          }
+          axios.request({
+            url: '/law/saveLaw',
+            data: _this.formItem,
+            method: 'post'
+          }).then(res => {
+            // console.log(res)
+            setTimeout(function () {
+              _this.modelButtonLoading = false
+              if (res.data.code === 200) {
+                _this.$Message.success(_this.msgTitle)
+                _this.modelShow = false
+                // _this.$Modal.remove();
+                _this.getTablePageData()
+              } else {
+                _this.$Message.error('网络异常，请稍后重试')
+              }
+            }, 1500)
+          }).catch(res => {
+            _this.modelButtonLoading = false
+          })
+        }
+      })
     },
     deleteData (id) {
       const _this = this

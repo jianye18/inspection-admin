@@ -46,9 +46,7 @@
           </Select>
           <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
             <Option value="">全部</Option>
-            <Option value="1">现行有效</Option>
-            <Option value="2">即将实施</Option>
-            <Option value="3">已经作废</Option>
+            <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
           </Select>
           <Input @on-change="handleClear" clearable placeholder="输入标准数据名称搜索" class="search-input" v-model="formData.searchPhrase"/>
           <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
@@ -83,9 +81,7 @@
             </FormItem>
             <FormItem label="状态" prop="status">
               <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
-                <Option value="1">现行有效</Option>
-                <Option value="2">即将实施</Option>
-                <Option value="3">已经作废</Option>
+                <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
               </Select>
             </FormItem>
             <FormItem label="发布单位" prop="publishUnit">
@@ -157,6 +153,11 @@ export default {
       categoryList: [],
       typeList: [],
       publishUnitList: [],
+      statusList: [
+        {value: '1', label: '现行有效'},
+        {value: '2', label: '即将实施'},
+        {value: '3', label: '已经作废'}
+      ],
       columns: [
         {
           title: '名称',

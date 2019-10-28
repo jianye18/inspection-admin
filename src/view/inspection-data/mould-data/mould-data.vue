@@ -69,7 +69,7 @@
         @on-visible-change="initData">
         <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
             <FormItem label="名称" prop="name">
-                <Input placeholder="请输入角色名" v-model="formItem.name"/>
+                <Input placeholder="请输入标准名称" v-model="formItem.name"/>
             </FormItem>
             <FormItem label="一级分类" prop="category">
               <Select v-model="formItem.category" style="width:200px" placeholder="请选择一级分类" clearable>
@@ -90,9 +90,7 @@
             </FormItem>
             <FormItem label="发布单位" prop="publishUnit">
               <Select v-model="formItem.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
-                <Option value="1">发布单位1</Option>
-                <Option value="2">发布单位2</Option>
-                <Option value="3">发布单位3</Option>
+                <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
               </Select>
             </FormItem>
             <FormItem label="发布日期" prop="publishDate">

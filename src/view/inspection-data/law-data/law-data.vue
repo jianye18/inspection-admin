@@ -5,13 +5,17 @@
   .ivu-select{
     margin-left: 2px;
   }
+  .ivu-input-small{
+    height: 32px !important;
+  }
 </style>
 <template>
   <div>
       <Card>
         <div class="search-con search-con-top">
           <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增法规</Button>
-          <Cascader :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer></Cascader>
+          <Cascader :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer
+                    style="display: inline-block; margin-left: 5px;"></Cascader>
           <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
             <Option value="">全部</Option>
             <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
@@ -45,16 +49,10 @@
         <FormItem label="名称" prop="name">
           <Input placeholder="请输入角色名" v-model="formItem.name" style="width:200px"/>
         </FormItem>
-        <!--<FormItem label="一级分类" prop="category">
-          <Select v-model="formItem.category" style="width:200px" placeholder="请选择一级分类" clearable>
-            <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
-          </Select>
+        <FormItem label="分类" prop="category">
+          <Cascader v-model="formItem.category" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer
+                    style="display: inline-block; width: 200px;"></Cascader>
         </FormItem>
-        <FormItem label="二级分类" prop="type">
-          <Select v-model="formItem.type" style="width:200px" placeholder="请选择二级分类" clearable>
-            <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
-          </Select>
-        </FormItem>-->
         <FormItem label="状态" prop="status">
           <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
             <Option value="1">现行有效</Option>
@@ -248,8 +246,10 @@ export default {
       annexs: []
     }
   },
-  mounted () {
+  created: function () {
     this.getAllSystemDataTypeList()
+  },
+  mounted () {
     this.getTablePageData()
   },
   methods: {
@@ -320,13 +320,11 @@ export default {
     handleAddData () {
       this.formItem = {
         name: '法规数据',
-        category: '1',
-        type: '2',
         status: '1',
         publishUnit: '1',
         publishDate: '',
         implementDate: '',
-        summary: '摘要'
+        content: '摘要'
       }
       this.$refs.editor.setHtml('')
       this.modelShow = true
@@ -362,33 +360,34 @@ export default {
     },
     saveFormData () {
       const _this = this
-      _this.$refs['formItem'].validate(function (valid) {
-        if (valid) {
-          _this.modelButtonLoading = true
-          _this.formItem.annexs = JSON.stringify(annexs)
-          console.log(_this.formItem)
-          axios.request({
-            url: '/criterion/saveCriterion',
-            data: _this.formItem,
-            method: 'post'
-          }).then(res => {
-            // console.log(res)
-            setTimeout(function () {
-              _this.modelButtonLoading = false
-              if (res.data.code === 200) {
-                _this.$Message.success(_this.msgTitle)
-                _this.modelShow = false
-                // _this.$Modal.remove();
-                _this.getTablePageData()
-              } else {
-                _this.$Message.error('网络异常，请稍后重试')
-              }
-            }, 1500)
-          }).catch(res => {
-            _this.modelButtonLoading = false
-          })
-        }
-      })
+      console.log(_this.formItem)
+      // _this.$refs['formItem'].validate(function (valid) {
+      //   if (valid) {
+      //     _this.modelButtonLoading = true
+      //     _this.formItem.annexs = JSON.stringify(annexs)
+      //     console.log(_this.formItem)
+      //     axios.request({
+      //       url: '/criterion/saveCriterion',
+      //       data: _this.formItem,
+      //       method: 'post'
+      //     }).then(res => {
+      //       // console.log(res)
+      //       setTimeout(function () {
+      //         _this.modelButtonLoading = false
+      //         if (res.data.code === 200) {
+      //           _this.$Message.success(_this.msgTitle)
+      //           _this.modelShow = false
+      //           // _this.$Modal.remove();
+      //           _this.getTablePageData()
+      //         } else {
+      //           _this.$Message.error('网络异常，请稍后重试')
+      //         }
+      //       }, 1500)
+      //     }).catch(res => {
+      //       _this.modelButtonLoading = false
+      //     })
+      //   }
+      // })
     },
     deleteData (id) {
       const _this = this

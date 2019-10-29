@@ -61,7 +61,7 @@
               </RadioGroup>
             </FormItem>
             <FormItem label="到期时间" prop="expireTime" v-if="member == 1">
-              <DatePicker type="date" format="yyyy-MM-dd" placeholder="请选择会员到期时间" v-model="formItem.expireTime"></DatePicker>
+              <DatePicker type="date" format="yyyy-MM-dd" placeholder="请选择会员到期时间" v-model="formItem.expireTime" style="width:200px"></DatePicker>
             </FormItem>
         </Form>
         <div slot="footer">

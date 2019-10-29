@@ -8,8 +8,7 @@
       <Card>
         <div class="search-con search-con-top">
             <Select v-model="formData.type" style="width:200px" placeholder="请选择常量类别" clearable>
-              <Option value="1">抽检</Option>
-              <Option value="2">标准</Option>
+              <Option v-for="item in typeList" :value="item.value">{{item.label}}</Option>
             </Select>
             <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增常量</Button>
             <Input @on-change="handleClear" clearable placeholder="输入常量名搜索" class="search-input" v-model="formData.searchPhrase"/>
@@ -38,10 +37,12 @@
             <FormItem label="编码" prop="code">
                 <Input placeholder="请输入编码" v-model="formItem.code"/>
             </FormItem>
+            <FormItem label="参数" prop="param">
+                <Input placeholder="请输入编码" v-model="formItem.param"/>
+            </FormItem>
             <FormItem label="类型" prop="type">
               <Select v-model="formItem.type">
-                <Option value="1">抽检</Option>
-                <Option value="2">标准</Option>
+                <Option v-for="item in typeList" :value="item.value">{{item.label}}</Option>
               </Select>
             </FormItem>
             <FormItem label="描述" prop="description">
@@ -73,6 +74,11 @@ export default {
         searchPhrase: '',
         type: null
       },
+      typeList: [
+        {value: '1', label:'抽检'},
+        {value: '2', label:'标准'},
+        {value: '3', label:'法规'}
+      ],
       columns: [
         {
           title: '名称',
@@ -90,6 +96,11 @@ export default {
           key: 'code'
         },
         {
+          title: '参数',
+          align: 'center',
+          key: 'param'
+        },
+        {
           title: '类型',
           align: 'center',
           key: 'type',
@@ -98,8 +109,10 @@ export default {
             let type = params.row.type + ''
             if (type === '1') {
               content = '抽检'
-            } else {
+            } else if (type === '2') {
               content = '标准'
+            } else {
+              content = '法规'
             }
             return h('span', content)
           }

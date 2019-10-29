@@ -1,4 +1,4 @@
-<style scoped>
+<style>
   .layout-footer-center{
     text-align: center;
   }
@@ -26,9 +26,12 @@
   .data-type-select{
     font-size: 14px;
     float: right;
-    margin-right: 30px;
+    margin-right: 10px;
   }
-  .data-type-select:hover{
+  .data-type-select-active{
+    color: #2d8cf0;
+  }
+  .data-type-select-hover:hover{
     color: #2d8cf0;
     cursor: pointer;
   }
@@ -54,9 +57,39 @@
     margin-left: 10px;
     margin-right: 10px;
   }
+  .article_class{
+    margin-top: 10px;
+    background-color: #ffffff;
+  }
+  .article_class .ivu-tabs-bar{
+    margin-bottom: 0px;
+  }
+  .article_class .ivu-tabs-bar .ivu-tabs-nav-scroll .nav-text{
+    height: 60px;
+  }
+  .article_class .ivu-tabs-bar .ivu-tabs-nav-scroll .nav-text div.ivu-tabs-tab{
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 40px;
+  }
+  .article_class ul{
+    list-style: none;
+  }
+  .article_class ul li{
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 15px;
+    height: 45px;
+    line-height: 45px;
+    max-width: 360px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #f5f5f5;
+  }
 </style>
 <template>
-  <Layout :style="{padding: '0 180px', marginTop: '10px'}">
+  <Layout :style="{padding: '0 180px', marginTop: '10px', minHeight: '800px'}">
     <Content :style="{minHeight: '620px', marginRight: '15px'}">
       <div class="search-box">
         <Select v-model="dataType" style="width:150px; float: left" placeholder="">
@@ -64,32 +97,72 @@
         </Select>
         <Input search enter-button="搜索" placeholder="请输入您想要查询的关键词" style="width: 400px" />
       </div>
-      <div class="data-con">
+      <div class="data-con" v-for="(item, index) in contentData">
         <div class="data-title">
-              <span style="font-size: 18px; font-weight: bold;">
-                <Icon type="ios-flask"/>
-                &nbsp;
-                抽检结果
-              </span>
-          <span class="data-type-select">
-                按产品分类
-              </span>
+            <span style="font-size: 18px; font-weight: bold;">
+              <Icon type="ios-flask"/>
+              &nbsp;
+              {{item.title}}
+            </span>
+          <span v-for="(type, idx) in item.typeName" :class="type.active ? 'data-type-select data-type-select-active' : 'data-type-select'">
+              <span class="data-type-select-hover" @click="changeItem(index, idx, type.name)">{{type.name}}</span>
+              <span v-if="idx != 0" style="margin-left: 10px;">/</span>
+          </span>
         </div>
         <div class="data-list">
-          <span>皮肤用化妆品</span>
-          <span class="data-line">|</span>
-          <span>毛发用化妆品</span>
-          <span class="data-line">|</span>
-          <span>指（趾）甲用化妆品</span>
-          <span class="data-line">|</span>
-          <span>口唇用化妆品</span>
-          <span class="data-line">|</span>
+          <span v-for="typeData in item.typeList">
+            <span @click="toShowList(item.dataType, typeData.code, typeData.name)">{{typeData.name}}</span>
+            <span class="data-line">|</span>
+          </span>
           <span><a href="data-view">更多 ></a></span>
         </div>
       </div>
     </Content>
-    <Sider hide-trigger :style="{background: '#fff'}" width="400">
-      右侧
+    <Sider hide-trigger :style="{background: '#f5f7f9'}" width="400">
+      <div style="height: 200px">
+        <Carousel
+          v-model="value3"
+          autoplay
+          :autoplay-speed="autoplaySpeed"
+          dots="inside"
+          radius-dot
+          trigger="hover"
+          arrow="hover">
+          <CarouselItem>
+            <div class="demo-carousel">
+              <img src="../../assets/images/home/1.png"/>
+            </div>
+          </CarouselItem>
+          <CarouselItem>
+            <div class="demo-carousel">
+              <img src="../../assets/images/home/2.png"/></div>
+          </CarouselItem>
+          <CarouselItem>
+            <div class="demo-carousel">
+              <img src="../../assets/images/home/3.png"/></div>
+          </CarouselItem>
+          <CarouselItem>
+            <div class="demo-carousel">
+              <img src="../../assets/images/home/4.png"/></div>
+          </CarouselItem>
+        </Carousel>
+      </div>
+      <div class="article_class">
+        <Tabs value="newArticle">
+          <TabPane label="最新文章" name="newArticle">
+            <ul>
+              <li v-for="item in newArticle" :title="item.title">{{item.title}}</li>
+              <li v-for="item in newArticle" :title="item.title">{{item.title}}</li>
+            </ul>
+          </TabPane>
+          <TabPane label="热门文章" name="hotArticle">
+            <ul>
+              <li v-for="item in hotArticle" :title="item.title">{{item.title}}</li>
+              <li v-for="item in hotArticle" :title="item.title">{{item.title}}</li>
+            </ul>
+          </TabPane>
+        </Tabs>
+      </div>
     </Sider>
   </Layout>
 </template>
@@ -99,7 +172,65 @@ export default {
     return {
       dataType: '1',
       productTypeName: ['', '皮肤用化妆品', '毛发用化妆品', '指（趾）甲用化妆品', '口唇用化妆品'],
-      pageName: ''
+      pageName: '',
+      value3: 0,
+      autoplaySpeed: 2500,
+      newArticle: [{title:'最新文章1'}, {title:'最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1'}, {title:'最新文章1'}, {title:'最新文章1'}, {title:'最新文章1'}],
+      hotArticle: [{title:'热门文章1'}, {title:'热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1'}, {title:'热门文章1'}, {title:'热门文章1'}, {title:'热门文章1'}],
+      contentData: [
+        {
+          title: '抽检标准',
+          dataType: 2,
+          typeName: [
+            {name: '按标准来源搜索', active: false},
+            {name: '按产品分类搜索', active: true}
+          ],
+          typeList: [
+            {
+              code: 'product_type',
+              name: '皮肤用化妆品'
+            },
+            {
+              code: 'product_type',
+              name: '毛发用化妆品'
+            },
+            {
+              code: 'product_type',
+              name: '指（趾）甲用化妆品'
+            },
+            {
+              code: 'product_type',
+              name: '口唇用化妆品'
+            }
+          ]
+        },
+        {
+          title: '抽检法规',
+          dataType: 3,
+          typeName: [
+            {name: '按法规来源搜索', active: false},
+            {name: '按产品分类搜索', active: true}
+          ],
+          typeList: [
+            {
+              code: 'product_type',
+              name: '皮肤用化妆品'
+            },
+            {
+              code: 'product_type',
+              name: '毛发用化妆品'
+            },
+            {
+              code: 'product_type',
+              name: '指（趾）甲用化妆品'
+            },
+            {
+              code: 'product_type',
+              name: '口唇用化妆品'
+            }
+          ]
+        }
+      ]
     }
   },
   methods: {
@@ -108,6 +239,83 @@ export default {
       this.$router.push({
         name: this.nameList[index]
       })
+    },
+    changeItem (index, idx, typeName) {
+      console.log(index + ',' + idx + ',' + typeName)
+      if (idx == 0) {
+        this.contentData[index].typeList = [
+          {
+            code: 'criterion_category',
+            name: '国际标准'
+          },
+          {
+            code: 'criterion_category',
+            name: '国家标准'
+          },
+          {
+            code: 'criterion_category',
+            name: '行业标准'
+          },
+          {
+            code: 'criterion_category',
+            name: '地方标准'
+          },
+          {
+            code: 'criterion_category',
+            name: '团体标准'
+          },
+          {
+            code: 'criterion_category',
+            name: '其他标准'
+          },
+          {
+            code: 'criterion_type',
+            name: '基础标准'
+          },
+          {
+            code: 'criterion_type',
+            name: '产品标准'
+          },
+          {
+            code: 'criterion_type',
+            name: '方法标准'
+          },
+          {
+            code: 'criterion_type',
+            name: '安全标准'
+          },
+          {
+            code: 'criterion_type',
+            name: '卫生标准'
+          }
+        ]
+      } else {
+        this.contentData[index].typeList = [
+          {
+            code: 'product_type',
+            name: '皮肤用化妆品'
+          },
+          {
+            code: 'product_type',
+            name: '毛发用化妆品'
+          },
+          {
+            code: 'product_type',
+            name: '指（趾）甲用化妆品'
+          },
+          {
+            code: 'product_type',
+            name: '口唇用化妆品'
+          }
+        ]
+      }
+      this.contentData[index].typeName.forEach(function (item) {
+        item.active = false
+      })
+      this.contentData[index].typeName[idx].active = true
+    },
+    toShowList (dataType, code, name) {
+      console.log(dataType + ',' + code + ',' + name)
     }
   }
 }

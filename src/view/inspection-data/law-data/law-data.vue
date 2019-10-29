@@ -14,7 +14,7 @@
       <Card>
         <div class="search-con search-con-top">
           <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增法规</Button>
-          <Cascader :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer
+          <Cascader v-model="formData.kind" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer
                     style="display: inline-block; margin-left: 5px;"></Cascader>
           <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
             <Option value="">全部</Option>
@@ -48,9 +48,9 @@
         <FormItem label="名称" prop="name">
           <Input placeholder="请输入角色名" v-model="formItem.name" style="width:200px"/>
         </FormItem>
-        <FormItem label="分类" prop="category">
-          <Cascader v-model="formItem.category" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer
-                    style="display: inline-block; width: 200px;"></Cascader>
+        <FormItem label="分类" prop="kind">
+          <Cascader v-model="formItem.kind" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" transfer
+                    style="display: inline-block; width: 200px;" @on-change="changeCategory"></Cascader>
         </FormItem>
         <FormItem label="状态" prop="status">
           <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
@@ -59,16 +59,26 @@
         </FormItem>
         <FormItem label="发布单位" prop="publishUnit">
           <Select v-model="formItem.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
-            <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
+            <Option v-for="item in publishUnitList" :value="item.value">{{item.label}}</Option>
           </Select>
         </FormItem>
         <FormItem label="发布日期" prop="publishDate">
           <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.publishDate=$event"
-                      placeholder="请选择发布日期" :value="formItem.publishDate" transfer></DatePicker>
+                      placeholder="请选择发布日期" :value="formItem.publishDate" transfer style="width:200px"></DatePicker>
         </FormItem>
         <FormItem label="实施日期" prop="implementDate">
           <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.implementDate=$event"
-                      placeholder="请选择实施日期" :value="formItem.implementDate" transfer></DatePicker>
+                      placeholder="请选择实施日期" :value="formItem.implementDate" transfer style="width:200px"></DatePicker>
+        </FormItem>
+        <FormItem label="来源" prop="source">
+          <Select v-model="formItem.source" style="width:200px" placeholder="请选择来源" clearable>
+            <Option v-for="item in sourceList" :value="item.value">{{item.label}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="环节" prop="process">
+          <Select v-model="formItem.process" style="width:200px" placeholder="请选择环节" clearable>
+            <Option value="">全部</Option>
+          </Select>
         </FormItem>
         <FormItem label="内容" prop="content">
           <editor ref="editor" :value="formItem.content" @on-change="handleChange"/>
@@ -104,16 +114,19 @@ export default {
       formData: {
         pageNum: 1, // 当前页
         pageSize: 10, // 一页展示数量
-        searchPhrase: ''
+        searchPhrase: '',
+        kind: []
       },
       cascaderData: [],
       publishUnitList: [],
+      sourceList: [],
       statusList: [
         {value: '1', label: '现行有效'},
         {value: '2', label: '征求意见'},
         {value: '3', label: '已经废止'},
         {value: '4', label: '未知状态'}
       ],
+      processList: [],
       columns: [
         {
           title: '名称',
@@ -123,14 +136,21 @@ export default {
         {
           title: '一级分类',
           align: 'center',
-          key: 'categoryName',
-          width: 120
+          key: 'categoryName'
         },
         {
           title: '二级分类',
           align: 'center',
           key: 'typeName',
-          width: 120
+          render: function render (h, params) {
+            var content = ''
+            if (params.row.typeName) {
+              content = params.row.typeName
+            } else {
+              content = '-'
+            }
+            return h('span', content)
+          }
         },
         {
           title: '发布单位',
@@ -141,28 +161,44 @@ export default {
           title: '发布日期',
           align: 'center',
           key: 'publishDate',
-          width: 120
+          width: 100
         },
         {
           title: '实施日期',
           align: 'center',
           key: 'implementDate',
-          width: 120
+          width: 100
+        },
+        {
+          title: '来源',
+          align: 'center',
+          key: 'sourceName',
+          render: function render (h, params) {
+            var content = ''
+            if (params.row.sourceName) {
+              content = params.row.sourceName
+            } else {
+              content = '-'
+            }
+            return h('span', content)
+          }
         },
         {
           title: '状态',
           align: 'center',
           key: 'status',
-          width: 120,
+          width: 80,
           render: function render (h, params) {
-            // console.log(params.row)
             var content = ''
-            if (params.row.status === 1) {
+            let status = params.row.status + ''
+            if (status === '1') {
               content = '现行有效'
-            } else if (params.row.status === 2) {
-              content = '即将实施'
+            } else if (status === '2') {
+              content = '征求意见'
+            }  else if (status === '3') {
+              content = '已经废止'
             } else {
-              content = '已经作废'
+              content = '未知状态'
             }
             return h('span', content)
           }
@@ -171,7 +207,7 @@ export default {
           title: '操作',
           align: 'center',
           key: 'operation',
-          width: 180,
+          width: 150,
           render: function render (h, params) {
             return h('div', [h('Button', {
               props: {
@@ -221,8 +257,8 @@ export default {
         name: [
           { required: true, message: '法规名称不能为空', trigger: 'blur' }
         ],
-        category: [
-          { required: true,type: 'array', message: '法规分类不能为空', trigger: 'change' }
+        kind: [
+          { required: true, type: 'array', message: '法规分类不能为空', trigger: 'change' }
         ],
         status: [
           { required: true, message: '状态不能为空', trigger: 'change' }
@@ -252,6 +288,23 @@ export default {
   mounted () {
     this.getTablePageData()
   },
+  watch: {
+    'formData.kind': function (val) {
+      if (val) {
+        if (val.length === 0) {
+          this.formData.category = ''
+          this.formData.type = ''
+        }
+        if (val.length === 1) {
+          this.formData.category = val[0]
+        }
+        if (val.length === 2) {
+          this.formData.category = val[0]
+          this.formData.type = val[1]
+        }
+      }
+    }
+  },
   methods: {
     getAllSystemDataTypeList () {
       const option = {
@@ -261,6 +314,7 @@ export default {
       axios.request(option).then(res => {
         this.cascaderData = res.data.data.categoryList
         this.publishUnitList = res.data.data.publishUnitList
+        this.sourceList = res.data.data.sourceList
       })
     },
     getTablePageData () {
@@ -319,6 +373,10 @@ export default {
     handleChange (html, text) {
       this.formItem.content = html
     },
+    changeCategory (value, selectedData) {
+      console.log(value)
+      console.log(selectedData)
+    },
     handleAddData () {
       this.modelShow = true
       this.$refs['formItem'].resetFields()
@@ -327,10 +385,16 @@ export default {
     },
     handleEditor (params) {
       this.formItem = params.row
-      this.formItem.category = this.formItem.category + ''
-      this.formItem.type = this.formItem.type + ''
+      if (this.formItem.type) {
+        this.formItem.kind = [this.formItem.category + '', this.formItem.type + '']
+      } else {
+        this.formItem.kind = [this.formItem.category + '']
+      }
       this.formItem.publishUnit = this.formItem.publishUnit + ''
       this.formItem.status = this.formItem.status + ''
+      this.formItem.source = this.formItem.source + ''
+      this.$refs.editor.setHtml(this.formItem.content)
+      console.log(this.formItem)
       this.modelShow = true
       this.modelTitle = '编辑法规'
       this.msgTitle = '修改法规数据成功'
@@ -354,6 +418,7 @@ export default {
     initData (flag) {
       if (!flag) {
         this.annexs = []
+        this.formItem.kind = []
         this.$refs.editor.setHtml('')
       }
     },
@@ -363,14 +428,15 @@ export default {
         console.log(_this.formItem)
         if (valid) {
           _this.modelButtonLoading = true
-          let postData = _this.formItem
-          postData.annexs = JSON.stringify(postData.annexs)
-          if (_this.formItem.category.length === 1) {
-            postData.category = postData.category[0]
+          if (_this.annexs.length > 0) {
+            _this.formItem.annexs = JSON.stringify(_this.annexs)
           }
-          if (_this.formItem.category.length === 2) {
-            postData.category = postData.category[0]
-            postData.type = postData.category[1]
+          if (_this.formItem.kind.length === 1) {
+            _this.formItem.category = _this.formItem.kind[0]
+          }
+          if (_this.formItem.kind.length === 2) {
+            _this.formItem.category = _this.formItem.kind[0]
+            _this.formItem.type = _this.formItem.kind[1]
           }
           axios.request({
             url: '/law/saveLaw',

@@ -91,11 +91,11 @@
             </FormItem>
             <FormItem label="发布日期" prop="publishDate">
               <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.publishDate=$event"
-                          placeholder="请选择发布日期" :value="formItem.publishDate"></DatePicker>
+                          placeholder="请选择发布日期" :value="formItem.publishDate" style="width:200px"></DatePicker>
             </FormItem>
             <FormItem label="实施日期" prop="implementDate">
               <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.implementDate=$event"
-                          placeholder="请选择实施日期" :value="formItem.implementDate"></DatePicker>
+                          placeholder="请选择实施日期" :value="formItem.implementDate" style="width:200px"></DatePicker>
             </FormItem>
             <FormItem label="摘要" prop="summary">
               <Input placeholder="请输入标准摘要" v-model="formItem.summary" type="textarea" :autosize="{minRows: 3,maxRows: 5}"/>

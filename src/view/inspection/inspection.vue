@@ -37,7 +37,7 @@
 <template>
   <Layout style="padding: 0 180px; max-height: calc(100vh - 200px); min-height: calc(100vh - 200px); overflow: auto">
     <Breadcrumb separator=">" :style="{margin: '10px 0'}">
-      <BreadcrumbItem v-for="(item, key) in breadList" :key="item" v-if="key == 1">{{item}}</BreadcrumbItem>
+      <BreadcrumbItem v-for="item in breadList" :key="item">{{item}}</BreadcrumbItem>
     </Breadcrumb>
     <Content>
       <Layout class="main-layout-con">
@@ -68,10 +68,10 @@ export default {
       menuData: {
         title: '抽检产品分类',
         menuList: [
-          {value: '1', label: '皮肤用化妆品'},
-          {value: '2', label: '毛发用化妆品'},
-          {value: '3', label: '指（趾）甲用化妆品'},
-          {value: '4', label: '口唇用化妆品'}
+          { value: '1', label: '皮肤用化妆品' },
+          { value: '2', label: '毛发用化妆品' },
+          { value: '3', label: '指（趾）甲用化妆品' },
+          { value: '4', label: '口唇用化妆品' }
         ]
       },
       activeIdx: null

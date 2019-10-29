@@ -48,7 +48,7 @@
 </style>
 <template>
   <div class="layout">
-    <Layout style="height: 100%; overflow: hidden ">
+    <Layout>
       <Header style="background-color: #2c96cd; height: 70px;">
         <div class="layout-logo">
           <img src="../../assets/images/logo.png" />
@@ -69,10 +69,10 @@ export default {
   data () {
     return {
       menuList: [
-        {value: '1', label: '首页'},
-        {value: '2', label: '抽检结果'},
-        {value: '3', label: '具体标准'},
-        {value: '4', label: '法律法规'}
+        { value: '1', label: '首页' },
+        { value: '2', label: '抽检结果' },
+        { value: '3', label: '具体标准' },
+        { value: '4', label: '法律法规' }
       ],
       nameList: ['', 'home-content', 'data-view', '3', '4'],
       activeIdx: 0

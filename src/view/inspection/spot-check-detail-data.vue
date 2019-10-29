@@ -27,6 +27,41 @@
     border: 1px solid #e5e5e5;
     height: 45px;
   }
+  .data-detail-about{
+    display: inline-block;
+    font-weight: normal;
+    margin-top: 20px;
+    width: 49%;
+    border: 1px solid #e5e5e5;
+  }
+  .data-detail-about div.data-detail-about-title{
+    margin: 0px;
+    height: 40px;
+    border-bottom: 1px solid #e8e8e8;
+    font-size: 18px;
+    color: #000000;
+    line-height: 40px;
+    padding: 0px 0px 0px 15px;
+    background-color: #f8f8f8;
+  }
+  .data-detail-about-more-span{
+    float: right;
+    font-size: 13px;
+    color: #2d8cf0;
+  }
+  .data-detail-about-more-span:hover{
+    cursor: pointer;
+  }
+  .data-detail-about-content ul{
+    position: relative;
+    top: -1px;
+    list-style: none;
+  }
+  .data-detail-about-content ul li{
+    height: 35px;
+    line-height: 35px;
+    border-bottom: 1px dashed #e5e5e5;
+  }
 </style>
 <template>
   <div>
@@ -100,6 +135,32 @@
           <td colspan="3"><a :href="spotCheckData.sourceLink" target="view_window">{{spotCheckData.sourceLink}}</a></td>
         </tr>
       </table>
+      <div>
+        <div class="data-detail-about">
+          <div class="data-detail-about-title">
+            <span>相关标准</span>
+            <span class="data-detail-about-more-span">
+              更多
+              <Icon type="ios-arrow-dropright" color="#d0d0d0" size="20"/>
+            </span>
+          </div>
+          <div class="data-detail-about-content">
+            <ul>
+              <li>
+                <span>
+                  <a href="#">祟拜你协商的发货速度覅俺还是短发还是短发</a>
+                </span>
+                <em>现行</em>
+              </li>
+              <li>2</li>
+              <li>3</li>
+              <li>4</li>
+              <li>5</li>
+            </ul>
+          </div>
+        </div>
+        <div class="data-detail-about" style="margin-left: 2%;">2</div>
+      </div>
     </div>
   </div>
 </template>

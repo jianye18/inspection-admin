@@ -38,6 +38,7 @@
   .data-list{
     min-height: 50px;
     padding: 10px 20px;
+    display: inline-block;
   }
   .data-list span{
     font-size: 13px;
@@ -54,8 +55,12 @@
     text-decoration: #2d8cf0;
   }
   .data-list span.data-line{
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+  .data-list-div{
+    display: inline-block;
+    margin: 15px 0;
   }
   .article_class{
     margin-top: 10px;
@@ -87,13 +92,31 @@
     text-overflow: ellipsis;
     border-bottom: 1px solid #f5f5f5;
   }
+  .article_class ul li:hover{
+    color: #2d8cf0;
+    cursor: pointer;
+  }
+  .article_more{
+    height: 50px;
+    width: 200px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 14px;
+    border: 1px solid #e5e5e5;
+    margin: 5px 100px 5px 100px;
+  }
+  .article_more:hover{
+    color: #2d8cf0;
+    cursor: pointer;
+  }
 </style>
 <template>
-  <Layout :style="{padding: '0 180px', marginTop: '10px', minHeight: '800px'}">
+  <Layout style="padding: 10px 180px; max-top: 15px; max-height: calc(100vh - 200px); min-height: calc(100vh - 200px); overflow: auto">
     <Content :style="{minHeight: '620px', marginRight: '15px'}">
       <div class="search-box">
         <Select v-model="dataType" style="width:150px; float: left" placeholder="">
-          <Option value="1" key="1">抽检结果</Option>
+          <Option value="2">抽检标准</Option>
+          <Option value="3">抽检法规</Option>
         </Select>
         <Input search enter-button="搜索" placeholder="请输入您想要查询的关键词" style="width: 400px" />
       </div>
@@ -104,16 +127,17 @@
               &nbsp;
               {{item.title}}
             </span>
-          <span v-for="(type, idx) in item.typeName" :class="type.active ? 'data-type-select data-type-select-active' : 'data-type-select'">
-              <span class="data-type-select-hover" @click="changeItem(index, idx, type.name)">{{type.name}}</span>
+          <span class="data-type-select" v-for="(type, idx) in item.typeName">
+              <span :class="type.active ? 'data-type-select-hover data-type-select-active' : 'data-type-select-hover'"
+                    @click="changeItem(index, idx, type.name)">{{type.name}}</span>
               <span v-if="idx != 0" style="margin-left: 10px;">/</span>
           </span>
         </div>
         <div class="data-list">
-          <span v-for="typeData in item.typeList">
+          <div class="data-list-div" v-for="typeData in item.typeList">
             <span @click="toShowList(item.dataType, typeData.code, typeData.name)">{{typeData.name}}</span>
             <span class="data-line">|</span>
-          </span>
+          </div>
           <span><a href="data-view">更多 ></a></span>
         </div>
       </div>
@@ -152,14 +176,18 @@
           <TabPane label="最新文章" name="newArticle">
             <ul>
               <li v-for="item in newArticle" :title="item.title">{{item.title}}</li>
-              <li v-for="item in newArticle" :title="item.title">{{item.title}}</li>
             </ul>
+            <div class="article_more">
+              查看更多
+            </div>
           </TabPane>
           <TabPane label="热门文章" name="hotArticle">
             <ul>
               <li v-for="item in hotArticle" :title="item.title">{{item.title}}</li>
-              <li v-for="item in hotArticle" :title="item.title">{{item.title}}</li>
             </ul>
+            <div class="article_more">
+              查看更多
+            </div>
           </TabPane>
         </Tabs>
       </div>
@@ -170,20 +198,42 @@
 export default {
   data () {
     return {
-      dataType: '1',
+      dataType: '2',
       productTypeName: ['', '皮肤用化妆品', '毛发用化妆品', '指（趾）甲用化妆品', '口唇用化妆品'],
       pageName: '',
       value3: 0,
       autoplaySpeed: 2500,
-      newArticle: [{title:'最新文章1'}, {title:'最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1'}, {title:'最新文章1'}, {title:'最新文章1'}, {title:'最新文章1'}],
-      hotArticle: [{title:'热门文章1'}, {title:'热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1'}, {title:'热门文章1'}, {title:'热门文章1'}, {title:'热门文章1'}],
+      newArticle: [
+        { title: '最新文章1' },
+        { title: '最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1' },
+        { title: '最新文章1' },
+        { title: '最新文章1' },
+        { title: '最新文章1' },
+        { title: '最新文章1' },
+        { title: '最新文章1' },
+        { title: '最新文章1' },
+        { title: '最新文章1' },
+        { title: '最新文章1' }
+      ],
+      hotArticle: [
+        { title: '热门文章1' },
+        { title: '热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1' },
+        { title: '热门文章1' },
+        { title: '热门文章1' },
+        { title: '热门文章1' },
+        { title: '热门文章1' },
+        { title: '热门文章1' },
+        { title: '热门文章1' },
+        { title: '热门文章1' },
+        { title: '热门文章1' }
+      ],
       contentData: [
         {
           title: '抽检标准',
           dataType: 2,
           typeName: [
-            {name: '按标准来源搜索', active: false},
-            {name: '按产品分类搜索', active: true}
+            { name: '按标准来源搜索', active: false },
+            { name: '按产品分类搜索', active: true }
           ],
           typeList: [
             {
@@ -208,8 +258,8 @@ export default {
           title: '抽检法规',
           dataType: 3,
           typeName: [
-            {name: '按法规来源搜索', active: false},
-            {name: '按产品分类搜索', active: true}
+            { name: '按法规来源搜索', active: false },
+            { name: '按产品分类搜索', active: true }
           ],
           typeList: [
             {
@@ -242,7 +292,7 @@ export default {
     },
     changeItem (index, idx, typeName) {
       console.log(index + ',' + idx + ',' + typeName)
-      if (idx == 0) {
+      if (idx === 0) {
         this.contentData[index].typeList = [
           {
             code: 'criterion_category',

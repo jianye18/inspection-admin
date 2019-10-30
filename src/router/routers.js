@@ -64,6 +64,22 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/spot-check-detail-data.vue')
+          },
+          {
+            path: 'criterion-list-data',
+            name: 'criterion-list-data',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/criterion-list-data.vue')
+          },
+          {
+            path: 'criterion-detail-data',
+            name: 'criterion-detail-data',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/criterion-detail-data.vue')
           }
         ]
       }

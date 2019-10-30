@@ -1,12 +1,15 @@
 <style scoped>
   .main-layout-con ul{
-    width: 199px !important;
+    width: 198px !important;
   }
   .menu-title{
     padding-top: 17px;
     padding-left: 15px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #e5e5e5;
+    /*border-bottom: 1px solid #e5e5e5;*/
+    /*border-top: 1px solid #dcdee2;*/
+    /*border-left: 1px solid #dcdee2;*/
+    /*border-right: 1px solid #dcdee2;*/
     background: #f5f5f5;
     z-index: 1;
     position: relative;
@@ -22,8 +25,11 @@
     line-height: 50px;
     padding-left: 20px;
     font-size: 16px;
-    border-bottom: 1px dashed #e5e5e5;
+    border-top: 1px dashed #e5e5e5;
+    /*border-left: 1px solid #dcdee2;*/
+    /*border-right: 1px solid #dcdee2;*/
     color: #000;
+    background: #ffffff;
   }
   .menu-ul li.active_class{
     background-color: #f3f9fc;
@@ -35,37 +41,45 @@
   }
 </style>
 <template>
-  <Layout style="padding: 0 180px; max-height: calc(100vh - 200px); min-height: calc(100vh - 200px); overflow: auto">
+  <Layout style="padding: 0 180px 100px; max-height: calc(100vh); overflow-y: auto">
     <Breadcrumb separator=">" :style="{margin: '10px 0'}">
       <BreadcrumbItem v-for="item in breadList" :key="item">{{item}}</BreadcrumbItem>
     </Breadcrumb>
     <Content>
       <Layout class="main-layout-con">
-        <Sider hide-trigger style="height: 262px; background-color: #fff; margin-right: 15px; border: 1px solid #dcdee2">
-          <div class="menu-title">
-            <Icon type="md-chatbubbles" />
-            {{menuData.title}}
+        <Sider hide-trigger style="background-color: #f5f7f9; margin-right: 15px;">
+          <div v-for="(item, index) in menuData" style="border: 1px solid #dcdee2; margin-bottom: 15px;">
+            <div class="menu-title">
+              <Icon type="md-chatbubbles" />
+              {{item.title}}
+            </div>
+            <ul class="menu-ul">
+              <li v-for="(menu, idx) in item.menuList" :key="menu.value" :class="idx === activeIdx ? 'active_class' : ''"
+                  @click="toRouter(index, idx, menu.value)">{{menu.label}}</li>
+            </ul>
           </div>
-          <ul class="menu-ul">
-            <li v-for="(item, idx) in menuData.menuList" :key="item.value" :class="idx === activeIdx ? 'active_class' : ''"
-                @click="toRouter(item.value)">{{item.label}}</li>
-          </ul>
         </Sider>
         <Content>
           <router-view/>
         </Content>
       </Layout>
     </Content>
+    <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer>
   </Layout>
 </template>
 <script>
+import axios from '@/libs/api.request'
 export default {
   data () {
     return {
+      type: '1',
       productTypeName: ['', '皮肤用化妆品', '毛发用化妆品', '指（趾）甲用化妆品', '口唇用化妆品'],
-      pageName: '',
+      breadData: [
+        {list: ['抽检数据', '产品分类']},
+        {list: ['标准数据', '标准分类']}
+      ],
       breadList: [],
-      menuData: {
+      menuData: [{
         title: '抽检产品分类',
         menuList: [
           { value: '1', label: '皮肤用化妆品' },
@@ -73,32 +87,72 @@ export default {
           { value: '3', label: '指（趾）甲用化妆品' },
           { value: '4', label: '口唇用化妆品' }
         ]
-      },
-      activeIdx: null
+      }],
+      activeIdx: null,
+
+    }
+  },
+  // created () {
+  //   if (this.$route.params.type) {
+  //     this.type = this.$route.params.type
+  //   }
+  // },
+  watch: {
+    '$route': function (to, from) {
+      console.log(to)
+      this.type = to.params.type ? Number(to.params.type) : 1
+      if (to.name !== 'data-view') {
+        this.getLeftMenuData(this.type)
+      }
+      if (to.name === 'data-view') {
+        this.breadList = this.breadData[this.type - 1].list
+        this.$router.push({
+          name: this.type === 1 ? 'spot-check-list-data' : 'criterion-list-data',
+          params: {
+            type: this.type
+          }
+        })
+      }
     }
   },
   mounted () {
-    this.toRouter(0)
+    this.toRouter(0, 0, 0)
   },
   methods: {
-    toRouter (index) {
-      const _this = this
-      _this.breadList = ['抽检数据', '产品分类']
-      if (index !== 0) {
-        _this.pageName = _this.productTypeName[index]
-        _this.activeIdx = index - 1
-        _this.breadList.push(_this.productTypeName[index])
+    getLeftMenuData (type) {
+      let _this = this
+      _this.menuData= []
+      const option = {
+        url: '/system/getAllSystemDataTypeList/' + type,
+        method: 'get'
       }
-      this.$store.dispatch('CreateProductType', index)
+      axios.request(option).then(res => {
+        if (type === 1) {
+          _this.menuData.push({title: '抽检产品分类', menuList: res.data.data.productTypeList})
+        }
+        if (type === 2) {
+          _this.menuData.push({title: '标准一级分类', menuList: res.data.data.categoryList})
+          _this.menuData.push({title: '标准二级分类', menuList: res.data.data.typeList})
+        }
+      })
+    },
+    toRouter (index, idx, val) {
+      const _this = this
+      this.breadList = this.breadData[this.type - 1].list
+      if (val !== 0) {
+        _this.activeIdx = idx
+        _this.breadList.push(_this.menuData[index].menuList[idx].label)
+      }
+      this.$store.dispatch('CreateProductType', val)
       setTimeout(function () {
         // console.log(index)
         _this.$router.push({
           name: 'spot-check-list-data',
           params: {
-            productType: index !== 0 ? index : ''
+            productType: val !== 0 ? val : ''
           }
         })
-      }, index === 0 ? 300 : 0)
+      }, val === 0 ? 300 : 0)
     }
   }
 }

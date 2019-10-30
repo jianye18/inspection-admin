@@ -19,19 +19,18 @@
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-      搜索抽检结果
+      搜索标准结果
     </div>
     <div class="search-con search-con-top">
-      <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
+      <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
         <Option value="" key="">全部</Option>
-        <Option v-for="item in institutionList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
-      <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
+      <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
         <Option value="" key="">全部</Option>
-        <Option value="1" key="1">合格</Option>
-        <Option value="0" key="0">不合格</Option>
+        <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
       </Select>
-      <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+      <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
     </div>
     <tables
@@ -64,21 +63,26 @@ export default {
         institution: '',
         checkResult: ''
       },
-      institutionList: [],
+      publishUnitList: [],
+      statusList: [
+        {value: '1', label: '现行有效'},
+        {value: '2', label: '即将实施'},
+        {value: '3', label: '已经作废'}
+      ],
       columns: [
         {
-          title: '标称生产企业/进口代理商名称',
-          key: 'producer',
+          title: '标准名称',
+          key: 'name',
           width: 400,
           tooltip: true,
           render: function render (h, params) {
-            var content = params.row.producer
+            var content = params.row.name
             return h('span', {
               class: 'table-span',
               on: {
                 click: () => {
                   _this.$router.push({
-                    name: 'spot-check-detail-data',
+                    name: 'criterion-detail-data',
                     params: params.row
                   })
                 }
@@ -87,34 +91,33 @@ export default {
           }
         },
         {
-          title: '样品名称',
-          key: 'sample',
+          title: '发布单位',
+          key: 'publishUnitName',
           tooltip: true
         },
         {
-          title: '抽检结果',
+          title: '状态',
           align: 'center',
-          key: 'checkResult',
-          width: 80,
+          key: 'status',
+          width: 120,
           render: function render (h, params) {
             var content = ''
-            if (params.row.checkResult === 1) {
-              content = '合格'
+            let status = params.row.status + ''
+            if (status === '1') {
+              content = '现行有效'
+            } else if (status === '2') {
+              content = '即将实施'
             } else {
-              content = '不合格'
+              content = '已经作废'
             }
-            return h('span', {
-              style: {
-                color: params.row.checkResult !== 1 ? 'red' : ''
-              }
-            }, content)
+            return h('span', content)
           }
         },
         {
-          title: '公布日期',
+          title: '实施日期',
           align: 'center',
-          width: 120,
-          key: 'publishDate'
+          width: 140,
+          key: 'implementDate'
         }
       ],
       tableData: {
@@ -141,17 +144,17 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/1',
+        url: '/system/getAllSystemDataTypeList/2',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.institutionList = res.data.data.institutionList
+        this.publishUnitList = res.data.data.publishUnitList
       })
     },
     getTablePageData () {
       console.log(this.formData)
       const option = {
-        url: '/show/getSpotCheckPageList',
+        url: '/show/getCriterionPageList',
         data: this.formData,
         method: 'post'
       }

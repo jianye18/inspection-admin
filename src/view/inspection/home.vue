@@ -41,6 +41,7 @@
     background-color: #0b81bf;
   }
   .layout-footer-center{
+    margin-top: 5px;
     text-align: center;
     background-color: #ffffff;
     height: 200px;
@@ -60,7 +61,6 @@
         </div>
       </Header>
       <router-view></router-view>
-      <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer>
     </Layout>
   </div>
 </template>
@@ -69,17 +69,18 @@ export default {
   data () {
     return {
       menuList: [
-        { value: '1', label: '首页' },
-        { value: '2', label: '抽检结果' },
-        { value: '3', label: '具体标准' },
-        { value: '4', label: '法律法规' }
+        { value: '0', label: '首页', path: 'home-content' },
+        { value: '1', label: '抽检结果', path: 'data-view' },
+        { value: '2', label: '具体标准', path: 'data-view' },
+        { value: '3', label: '法律法规', path: 'data-view' }
       ],
-      nameList: ['', 'home-content', 'data-view', '3', '4'],
+      nameList: ['home-content', 'data-view', '3', '4'],
       activeIdx: 0
     }
   },
-  mounted () {
+  created () {
     const path = this.$route.path
+    console.log(path)
     if (path.indexOf('inspection') !== -1) {
       this.activeIdx = 0
       this.$router.push({
@@ -88,18 +89,33 @@ export default {
     }
     if (path.indexOf('data-view') !== -1) {
       this.activeIdx = 1
+      let type = '1'
+      if (path.indexOf('criterion-list-data') > -1) {
+        type = '2'
+      }
       this.$router.push({
-        name: 'data-view'
+        name: 'data-view',
+        params: {
+          type: type
+        }
       })
     }
   },
   methods: {
     changeMenu (index) {
-      if (this.activeIdx !== index - 1) {
-        this.activeIdx = index - 1
-        this.$router.push({
-          name: this.nameList[index]
-        })
+      console.log(index)
+      let _this = this
+      if (_this.activeIdx !== index) {
+        _this.activeIdx = Number(index)
+        _this.$store.dispatch('CreateType', index)
+        setTimeout(function () {
+          _this.$router.push({
+            name: _this.menuList[index].path,
+            params: {
+              type: _this.menuList[index].value
+            }
+          })
+        }, 300)
       }
     }
   }

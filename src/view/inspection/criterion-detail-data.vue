@@ -98,56 +98,49 @@
   <div>
     <div class="detail-data detail-title">
       <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-        搜索抽检结果
+        搜索标准结果
       </div>
       <div class="search-con search-con-top">
-        <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
+        <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
           <Option value="" key="">全部</Option>
-          <Option v-for="item in institutionList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
-        <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
+        <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
           <Option value="" key="">全部</Option>
-          <Option value="1" key="1">合格</Option>
-          <Option value="0" key="0">不合格</Option>
+          <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
         </Select>
-        <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+        <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
       </div>
     </div>
     <div class="detail-data detail-con">
       <div>
-        {{spotCheckData.sample}}
+        {{criterionData.name}}
       </div>
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
-          <td>标称生产企业/进口代理商名称</td>
-          <td colspan="3">{{spotCheckData.producer}}</td>
+          <td>标准状态</td>
+          <td>{{criterionData.statusName}}</td>
+          <td>标准分类</td>
+          <td>{{criterionData.typeName}}</td>
         </tr>
         <tr>
-          <td>委托企业名称</td>
-          <td colspan="3">{{spotCheckData.company}}</td>
+          <td>发布日期</td>
+          <td>{{criterionData.publishDate}}</td>
+          <td>实施日期</td>
+          <td>{{criterionData.implementDate}}</td>
         </tr>
         <tr>
-          <td>被采样单位名称</td>
-          <td colspan="3">{{spotCheckData.unit}}</td>
+          <td>发布单位</td>
+          <td colspan="3">{{criterionData.publishUnitName}}</td>
         </tr>
         <tr>
-          <td>样品名称</td>
-          <td>{{spotCheckData.sample}}</td>
-          <td>包装规格</td>
-          <td>{{spotCheckData.specification}}</td>
+          <td>标准摘要</td>
+          <td colspan="3">{{criterionData.summary}}</td>
         </tr>
         <tr>
-          <td>抽检结果</td>
-          <td>{{spotCheckData.resultName}}</td>
-          <td>不合格项目</td>
-          <td>{{spotCheckData.subject}}</td>
-        </tr>
-        <tr>
-          <td>保质期</td>
-          <td>{{spotCheckData.expireTime}}</td>
-          <td>产品分类</td>
-          <td>{{spotCheckData.productTypeName}}</td>
+          <td>附件下载</td>
+          <td colspan="3">{{criterionData.summary}}</td>
         </tr>
         <tr>
           <td>产地</td>
@@ -229,8 +222,13 @@ export default {
         institution: '',
         checkResult: ''
       },
-      institutionList: [],
-      spotCheckData: {},
+      publishUnitList: [],
+      statusList: [
+        {value: '1', label: '现行有效'},
+        {value: '2', label: '即将实施'},
+        {value: '3', label: '已经作废'}
+      ],
+      criterionData: {},
       leftAboutData: {
         title: '相关分类抽检结果',
         type: 'product_type',
@@ -247,9 +245,9 @@ export default {
   },
   mounted () {
     this.getAllSystemDataTypeList()
-    this.spotCheckData = this.$route.params
-    this.spotCheckData['resultName'] = this.spotCheckData.checkResult === 1 ? '合格' : '不合格'
-    this.spotCheckData['fakeName'] = this.spotCheckData.isFake === 1 ? '是' : '否'
+    this.criterionData = this.$route.params
+    this.spotCheckData['statusName'] = this.statusList[this.criterionData.status]
+    this.spotCheckData['annexs'] = this.spotCheckData.annexList.join(' ')
   },
   methods: {
     handleUploadFile () {
@@ -257,11 +255,11 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/1',
+        url: '/system/getAllSystemDataTypeList/2',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.institutionList = res.data.data.institutionList
+        this.publishUnitList = res.data.data.publishUnitList
       })
     },
     handleClear (e) {

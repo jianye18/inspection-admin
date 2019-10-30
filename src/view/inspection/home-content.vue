@@ -62,6 +62,9 @@
     display: inline-block;
     margin: 15px 0;
   }
+  .ivu-layout-sider-children{
+   height: auto;
+  }
   .article_class{
     margin-top: 10px;
     background-color: #ffffff;
@@ -103,7 +106,7 @@
     text-align: center;
     font-size: 14px;
     border: 1px solid #e5e5e5;
-    margin: 5px 100px 5px 100px;
+    margin: 10px 100px 10px 100px;
   }
   .article_more:hover{
     color: #2d8cf0;
@@ -111,90 +114,96 @@
   }
 </style>
 <template>
-  <Layout style="padding: 10px 180px; max-top: 15px; max-height: calc(100vh - 200px); min-height: calc(100vh - 200px); overflow: auto">
-    <Content :style="{minHeight: '620px', marginRight: '15px'}">
-      <div class="search-box">
-        <Select v-model="dataType" style="width:150px; float: left" placeholder="">
-          <Option value="2">抽检标准</Option>
-          <Option value="3">抽检法规</Option>
-        </Select>
-        <Input search enter-button="搜索" placeholder="请输入您想要查询的关键词" style="width: 400px" />
-      </div>
-      <div class="data-con" v-for="(item, index) in contentData">
-        <div class="data-title">
+  <Layout style="padding: 10px 180px 100px; max-top: 15px; max-height: calc(100vh); overflow-y: auto">
+    <Content>
+      <Layout>
+        <Content :style="{minHeight: '620px', marginRight: '15px'}">
+          <div class="search-box">
+            <Select v-model="dataType" style="width:150px; float: left" placeholder="">
+              <Option value="2">抽检标准</Option>
+              <Option value="3">抽检法规</Option>
+            </Select>
+            <Input search enter-button="搜索" placeholder="请输入您想要查询的关键词" style="width: 400px" />
+          </div>
+          <div class="data-con" v-for="(item, index) in contentData">
+            <div class="data-title">
             <span style="font-size: 18px; font-weight: bold;">
               <Icon type="ios-flask"/>
               &nbsp;
               {{item.title}}
             </span>
-          <span class="data-type-select" v-for="(type, idx) in item.typeName">
+              <span class="data-type-select" v-for="(type, idx) in item.typeName">
               <span :class="type.active ? 'data-type-select-hover data-type-select-active' : 'data-type-select-hover'"
-                    @click="changeItem(index, idx, type.name)">{{type.name}}</span>
+                    @click="changeItem(index, idx, item.dataType, type.name)">{{type.name}}</span>
               <span v-if="idx != 0" style="margin-left: 10px;">/</span>
           </span>
-        </div>
-        <div class="data-list">
-          <div class="data-list-div" v-for="typeData in item.typeList">
-            <span @click="toShowList(item.dataType, typeData.code, typeData.name)">{{typeData.name}}</span>
-            <span class="data-line">|</span>
+            </div>
+            <div class="data-list">
+              <div class="data-list-div" v-for="typeData in item.typeList">
+                <span @click="toShowList(item.dataType, typeData.code, typeData.name)">{{typeData.name}}</span>
+                <span class="data-line">|</span>
+              </div>
+              <span><a href="data-view">更多 ></a></span>
+            </div>
           </div>
-          <span><a href="data-view">更多 ></a></span>
-        </div>
-      </div>
+        </Content>
+        <Sider hide-trigger :style="{background: '#f5f7f9', height: '100%'}" width="400">
+          <div style="height: 200px">
+            <Carousel
+              v-model="value3"
+              autoplay
+              :autoplay-speed="autoplaySpeed"
+              dots="inside"
+              radius-dot
+              trigger="hover"
+              arrow="hover">
+              <CarouselItem>
+                <div class="demo-carousel">
+                  <img src="../../assets/images/home/1.png"/>
+                </div>
+              </CarouselItem>
+              <CarouselItem>
+                <div class="demo-carousel">
+                  <img src="../../assets/images/home/2.png"/></div>
+              </CarouselItem>
+              <CarouselItem>
+                <div class="demo-carousel">
+                  <img src="../../assets/images/home/3.png"/></div>
+              </CarouselItem>
+              <CarouselItem>
+                <div class="demo-carousel">
+                  <img src="../../assets/images/home/4.png"/></div>
+              </CarouselItem>
+            </Carousel>
+          </div>
+          <div class="article_class">
+            <Tabs value="newArticle">
+              <TabPane label="最新文章" name="newArticle">
+                <ul>
+                  <li v-for="item in newArticle" :title="item.title">{{item.title}}</li>
+                </ul>
+                <div class="article_more">
+                  查看更多
+                </div>
+              </TabPane>
+              <TabPane label="热门文章" name="hotArticle">
+                <ul>
+                  <li v-for="item in hotArticle" :title="item.title">{{item.title}}</li>
+                </ul>
+                <div class="article_more">
+                  查看更多
+                </div>
+              </TabPane>
+            </Tabs>
+          </div>
+        </Sider>
+      </Layout>
     </Content>
-    <Sider hide-trigger :style="{background: '#f5f7f9'}" width="400">
-      <div style="height: 200px">
-        <Carousel
-          v-model="value3"
-          autoplay
-          :autoplay-speed="autoplaySpeed"
-          dots="inside"
-          radius-dot
-          trigger="hover"
-          arrow="hover">
-          <CarouselItem>
-            <div class="demo-carousel">
-              <img src="../../assets/images/home/1.png"/>
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="demo-carousel">
-              <img src="../../assets/images/home/2.png"/></div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="demo-carousel">
-              <img src="../../assets/images/home/3.png"/></div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="demo-carousel">
-              <img src="../../assets/images/home/4.png"/></div>
-          </CarouselItem>
-        </Carousel>
-      </div>
-      <div class="article_class">
-        <Tabs value="newArticle">
-          <TabPane label="最新文章" name="newArticle">
-            <ul>
-              <li v-for="item in newArticle" :title="item.title">{{item.title}}</li>
-            </ul>
-            <div class="article_more">
-              查看更多
-            </div>
-          </TabPane>
-          <TabPane label="热门文章" name="hotArticle">
-            <ul>
-              <li v-for="item in hotArticle" :title="item.title">{{item.title}}</li>
-            </ul>
-            <div class="article_more">
-              查看更多
-            </div>
-          </TabPane>
-        </Tabs>
-      </div>
-    </Sider>
+    <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer>
   </Layout>
 </template>
 <script>
+import axios from '@/libs/api.request'
 export default {
   data () {
     return {
@@ -280,8 +289,12 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      filterItemList: []
     }
+  },
+  mounted () {
+    this.getHomePageFilterItem()
   },
   methods: {
     changeMenu (index) {
@@ -290,55 +303,10 @@ export default {
         name: this.nameList[index]
       })
     },
-    changeItem (index, idx, typeName) {
+    changeItem (index, idx, type, typeName) {
       console.log(index + ',' + idx + ',' + typeName)
       if (idx === 0) {
-        this.contentData[index].typeList = [
-          {
-            code: 'criterion_category',
-            name: '国际标准'
-          },
-          {
-            code: 'criterion_category',
-            name: '国家标准'
-          },
-          {
-            code: 'criterion_category',
-            name: '行业标准'
-          },
-          {
-            code: 'criterion_category',
-            name: '地方标准'
-          },
-          {
-            code: 'criterion_category',
-            name: '团体标准'
-          },
-          {
-            code: 'criterion_category',
-            name: '其他标准'
-          },
-          {
-            code: 'criterion_type',
-            name: '基础标准'
-          },
-          {
-            code: 'criterion_type',
-            name: '产品标准'
-          },
-          {
-            code: 'criterion_type',
-            name: '方法标准'
-          },
-          {
-            code: 'criterion_type',
-            name: '安全标准'
-          },
-          {
-            code: 'criterion_type',
-            name: '卫生标准'
-          }
-        ]
+        this.contentData[index].typeList = this.getItemListByType(type)
       } else {
         this.contentData[index].typeList = [
           {
@@ -366,6 +334,27 @@ export default {
     },
     toShowList (dataType, code, name) {
       console.log(dataType + ',' + code + ',' + name)
+    },
+    getItemListByType (type) {
+      let _this = this
+      let list = []
+      for (let i = 0; i < _this.filterItemList.length; i++) {
+        console.log(_this.filterItemList[i].type)
+        if (_this.filterItemList[i].type === type) {
+          list = _this.filterItemList[i].list
+          break
+        }
+      }
+      return list
+    },
+    getHomePageFilterItem () {
+      const option = {
+        url: '/system/getHomePageFilterItem',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.filterItemList = res.data.data
+      })
     }
   }
 }

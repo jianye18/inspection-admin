@@ -1,16 +1,19 @@
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-      搜索标准结果
+      搜索法规结果
     </div>
     <div class="search-con search-con-top">
       <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
         <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
+      <Select v-model="formData.source" style="width:200px" placeholder="请选择法规来源" clearable>
+        <Option v-for="item in sourceList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+      </Select>
       <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
         <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
       </Select>
-      <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+      <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
     </div>
     <tables
@@ -28,7 +31,7 @@ import Tables from '_c/tables'
 import axios from '@/libs/api.request'
 import './list.less'
 export default {
-  name: 'Criterion',
+  name: 'Law',
   components: {
     Tables
   },
@@ -46,14 +49,16 @@ export default {
         status: ''
       },
       publishUnitList: [],
+      sourceList: [],
       statusList: [
         {value: '1', label: '现行有效'},
-        {value: '2', label: '即将实施'},
-        {value: '3', label: '已经作废'}
+        {value: '2', label: '征求意见'},
+        {value: '3', label: '已经废止'},
+        {value: '4', label: '未知状态'}
       ],
       columns: [
         {
-          title: '标准名称',
+          title: '法规名称',
           key: 'name',
           width: 400,
           tooltip: true,
@@ -64,7 +69,7 @@ export default {
               on: {
                 click: () => {
                   _this.$router.push({
-                    name: 'criterionDetail',
+                    name: 'lawDetail',
                     query: {id: params.row.id}
                   })
                 }
@@ -88,9 +93,11 @@ export default {
             if (status === '1') {
               content = '现行有效'
             } else if (status === '2') {
-              content = '即将实施'
+              content = '征求意见'
+            }  else if (status === '3') {
+              content = '已经废止'
             } else {
-              content = '已经作废'
+              content = '未知状态'
             }
             return h('span', content)
           }
@@ -124,11 +131,11 @@ export default {
     this.getAllSystemDataTypeList()
   },
   watch: {
-    '$store.getters.criterionCategory': function (val) {
+    '$store.getters.lawCategory': function (val) {
       this.formData.category = val
       this.getTablePageData()
     },
-    '$store.getters.criterionType': function (val) {
+    '$store.getters.lawType': function (val) {
       this.formData.type = val
       this.getTablePageData()
     }
@@ -139,17 +146,18 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/2',
+        url: '/system/getAllSystemDataTypeList/3',
         method: 'get'
       }
       axios.request(option).then(res => {
         this.publishUnitList = res.data.data.publishUnitList
+        this.sourceList = res.data.data.sourceList
       })
     },
     getTablePageData () {
       // console.log(this.formData)
       const option = {
-        url: '/show/getCriterionPageList',
+        url: '/show/getLawPageList',
         data: this.formData,
         method: 'post'
       }

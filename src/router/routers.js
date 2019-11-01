@@ -26,14 +26,15 @@ export default [
     path: '/inspection',
     name: 'inspection',
     meta: {
-      title: '展示首页',
-      hideInMenu: true
+      title: '展示页',
+      hideInMenu: true,
+      notCache: true
     },
     component: () => import('@/view/inspection/home.vue'),
     children: [
       {
-        path: '/home-content',
-        name: 'home-content',
+        path: '/main',
+        name: 'main',
         meta: {
           title: '首页内容',
           hideInMenu: true
@@ -41,8 +42,8 @@ export default [
         component: () => import('@/view/inspection/home-content.vue')
       },
       {
-        path: '/data-view',
-        name: 'data-view',
+        path: '/view',
+        name: 'view',
         meta: {
           title: '数据展示页',
           hideInMenu: true
@@ -50,36 +51,52 @@ export default [
         component: () => import('@/view/inspection/inspection.vue'),
         children: [
           {
-            path: 'spot-check-list-data',
-            name: 'spot-check-list-data',
+            path: 'spotCheck',
+            name: 'spotCheck',
             meta: {
               notCache: true
             },
             component: () => import('@/view/inspection/spot-check-list-data.vue')
           },
           {
-            path: 'spot-check-detail-data',
-            name: 'spot-check-detail-data',
+            path: 'spotCheckDetail',
+            name: 'spotCheckDetail',
             meta: {
               notCache: true
             },
             component: () => import('@/view/inspection/spot-check-detail-data.vue')
           },
           {
-            path: 'criterion-list-data',
-            name: 'criterion-list-data',
+            path: 'criterion',
+            name: 'criterion',
             meta: {
               notCache: true
             },
             component: () => import('@/view/inspection/criterion-list-data.vue')
           },
           {
-            path: 'criterion-detail-data',
-            name: 'criterion-detail-data',
+            path: 'criterionDetail',
+            name: 'criterionDetail',
             meta: {
               notCache: true
             },
             component: () => import('@/view/inspection/criterion-detail-data.vue')
+          },
+          {
+            path: 'law',
+            name: 'law',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/law-list-data.vue')
+          },
+          {
+            path: 'lawDetail',
+            name: 'lawDetail',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/law-detail-data.vue')
           }
         ]
       }

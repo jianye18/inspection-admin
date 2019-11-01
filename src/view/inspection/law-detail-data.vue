@@ -2,72 +2,59 @@
   <div>
     <div class="detail-data detail-title">
       <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-        搜索抽检结果
+        搜索法规结果
       </div>
       <div class="search-con search-con-top">
-        <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
-          <Option value="" key="">全部</Option>
-          <Option v-for="item in institutionList" :value="item.label" :key="item.value">{{ item.label }}</Option>
+        <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
+          <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
-        <Select v-model="formData.checkResult" style="width:200px; margin-left: 2px;" placeholder="请选择抽检结果" clearable>
-          <Option value="1" key="1">合格</Option>
-          <Option value="0" key="0">不合格</Option>
+        <Select v-model="formData.source" style="width:200px" placeholder="请选择法规来源" clearable>
+          <Option v-for="item in sourceList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
-        <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+        <Select v-model="formData.status" style="width:200px; margin-left: 2px;" placeholder="请选择状态" clearable>
+          <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
+        </Select>
+        <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
       </div>
     </div>
     <div class="detail-data detail-con">
       <div>
-        {{spotCheckData.sample}}
+        {{lawData.name}}
       </div>
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
-          <td>标称生产企业/进口代理商名称</td>
-          <td colspan="3">{{spotCheckData.producer}}</td>
+          <td>法规名称</td>
+          <td colspan="3" class="detail-content">{{lawData.name}}</td>
         </tr>
         <tr>
-          <td>委托企业名称</td>
-          <td colspan="3">{{spotCheckData.company}}</td>
+          <td>发布单位</td>
+          <td class="detail-content">{{lawData.publishUnitName}}</td>
+          <td>文号</td>
+          <td class="detail-content">{{lawData.codeNumber}}</td>
         </tr>
         <tr>
-          <td>被采样单位名称</td>
-          <td colspan="3">{{spotCheckData.unit}}</td>
+          <td>发布日期</td>
+          <td class="detail-content">{{lawData.publishDate}}</td>
+          <td>实施日期</td>
+          <td class="detail-content">{{lawData.implementDate}}</td>
         </tr>
         <tr>
-          <td>样品名称</td>
-          <td>{{spotCheckData.sample}}</td>
-          <td>包装规格</td>
-          <td>{{spotCheckData.specification}}</td>
+          <td>法规内容</td>
+          <td colspan="3" class="detail-content">{{lawData.content}}</td>
         </tr>
         <tr>
-          <td>抽检结果</td>
-          <td>{{spotCheckData.resultName}}</td>
-          <td>不合格项目</td>
-          <td>{{spotCheckData.subject}}</td>
+          <td>附件下载</td>
+          <td colspan="3" class="detail-content">
+            {{lawData.annexs}}
+            <Button size="large" type="primary" icon="ios-book-outline" style="float: right; margin-right: 10px;">浏览文件</Button>
+            <Button size="large" type="success" icon="ios-download-outline" style="float: right; margin-right: 10px;">下载文件</Button>
+          </td>
         </tr>
-        <tr>
-          <td>保质期</td>
-          <td>{{spotCheckData.expireTime}}</td>
-          <td>产品分类</td>
-          <td>{{spotCheckData.productTypeName}}</td>
-        </tr>
-        <tr>
-          <td>产地</td>
-          <td>{{spotCheckData.location}}</td>
-          <td>公布日期</td>
-          <td>{{spotCheckData.publishDate}}</td>
-        </tr>
-        <tr>
-          <td>涉嫌假冒</td>
-          <td>{{spotCheckData.fakeName}}</td>
-          <td>公布机构</td>
-          <td>{{spotCheckData.institution}}</td>
-        </tr>
-        <tr>
-          <td>来源链接</td>
-          <td colspan="3"><a :href="spotCheckData.sourceLink" target="view_window">{{spotCheckData.sourceLink}}</a></td>
-        </tr>
+        <!--<tr>-->
+          <!--<td>一键分享</td>-->
+          <!--<td colspan="3">{{lawData.annexs}}</td>-->
+        <!--</tr>-->
       </table>
       <div>
         <div class="data-detail-about">
@@ -82,9 +69,9 @@
             <ul>
               <li v-for="item in leftAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.sample">{{item.sample}}</a>
+                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
                 </span>
-                <em>{{item.checkResult === 1 ? '合格' : '不合格'}}</em>
+                <em>{{statusList[item.status].label}}</em>
               </li>
               <li v-if="leftAboutData.list.length === 0">
                 <span>
@@ -106,9 +93,9 @@
             <ul>
               <li v-for="item in rightAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.sample">{{item.sample}}</a>
+                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
                 </span>
-                <em>{{item.checkResult === 1 ? '合格' : '不合格'}}</em>
+                <em>{{statusList[item.status].label}}</em>
               </li>
               <li v-if="rightAboutData.list.length === 0">
                 <span>
@@ -135,29 +122,36 @@ import axios from '@/libs/api.request'
 import './search.less'
 import './detail.less'
 export default {
-  name: 'SpotCheckDetail',
+  name: 'CriterionDetail',
   data () {
     return {
       modelShow: false,
       formData: {
         searchPhrase: '',
-        institution: '',
-        checkResult: '',
-        productType: this.$store.getters.productType
+        publishUnit: '',
+        status: '',
+        source: ''
       },
       currentId: 0,
-      institutionList: [],
-      spotCheckData: {},
+      publishUnitList: [],
+      sourceList: [],
+      statusList: [
+        {value: '1', label: '现行有效'},
+        {value: '2', label: '征求意见'},
+        {value: '3', label: '已经废止'},
+        {value: '4', label: '未知状态'}
+      ],
+      lawData: {},
       leftAboutData: {
-        title: '相关分类抽检结果',
-        type: 'product_type',
-        code: '皮肤用化妆品',
+        title: '相关发布单位法规',
+        type: 'publish_unit',
+        code: '',
         list: []
       },
       rightAboutData: {
-        title: '相关机构抽检结果',
-        type: 'institution',
-        code: '皮肤用化妆品',
+        title: '最新法规',
+        type: 'new',
+        code: '',
         list: []
       }
     }
@@ -165,75 +159,74 @@ export default {
   mounted () {
     this.getAllSystemDataTypeList()
     this.currentId = this.$route.query.id
-    this.getSpotCheckById()
+    this.getLawById()
   },
   methods: {
+    handleUploadFile () {
+      this.getTablePageData()
+    },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/1',
+        url: '/system/getAllSystemDataTypeList/3',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.institutionList = res.data.data.institutionList
+        this.publishUnitList = res.data.data.publishUnitList
+        this.sourceList = res.data.data.sourceList
       })
     },
-    getSpotCheckById () {
+    getLawById () {
       const _this = this
       const option = {
-        url: '/show/getSpotCheckById/' + this.currentId,
+        url: '/show/getLawById/' + this.currentId,
         method: 'get'
       }
       axios.request(option).then(res => {
         if (res.data.code === 200) {
-          _this.spotCheckData = res.data.data
-          _this.spotCheckData['resultName'] = _this.spotCheckData.checkResult === 1 ? '合格' : '不合格'
-          _this.spotCheckData['fakeName'] = _this.spotCheckData.isFake === 1 ? '是' : '否'
+          _this.lawData = res.data.data
+          _this.lawData['statusName'] = _this.statusList[_this.lawData.status].label
+          // _this.lawData['annexs'] = _this.lawData.annexList ? _this.lawData.annexList.join(' ') : ''
           _this.getTablePageData(1)
           _this.getTablePageData(2)
         }
       })
     },
-    handleSearch () {
-      this.$router.push({
-        name: 'spotCheck',
-        params: this.formData
-      })
-    },
     handleClear (e) {
 
+    },
+    handleSearch () {
+      this.$router.push({
+        name: 'law',
+        params: this.formData
+      })
     },
     getTablePageData (param) {
       // console.log(this.formData)
       const _this = this
       const option = {
-        url: '/show/getSpotCheckPageList',
+        url: '/show/getLawPageList',
         data: {
           pageNum: 1, // 当前页
           pageSize: 5, // 一页展示数量
-          productType: param === 1 ? _this.spotCheckData.productType : 0,
-          institution: param === 2 ? _this.spotCheckData.institution : '',
-          currentId: _this.spotCheckData.id
+          publishUnit: param === 1 ? _this.lawData.publishUnit : 0,
+          currentId: _this.lawData.id
         },
         method: 'post'
       }
       axios.request(option).then(res => {
         if (param === 1) {
-          _this.leftAboutData.code = _this.spotCheckData.productTypeName
+          _this.leftAboutData.code = _this.lawData.publishUnitName
           _this.leftAboutData.list = res.data.data.list
         }
         if (param === 2) {
-          _this.rightAboutData.code = _this.spotCheckData.institution
+          _this.rightAboutData.code = _this.lawData.codeNumber
           _this.rightAboutData.list = res.data.data.list
         }
       })
     },
     getMoreAboutData (param) {
       if (param === 1) {
-        this.$store.dispatch('CreateProductType',  this.spotCheckData.productType)
-        this.formData.productType = this.spotCheckData.productType
-      }
-      if (param === 2) {
-        this.formData.institution = this.spotCheckData.institution
+        this.formData.publishUnit = this.lawData.publishUnit
       }
       this.handleSearch()
     }

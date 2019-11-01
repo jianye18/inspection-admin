@@ -40,12 +40,6 @@
   .layout-nav ul li.active_class{
     background-color: #0b81bf;
   }
-  .layout-footer-center{
-    margin-top: 5px;
-    text-align: center;
-    background-color: #ffffff;
-    height: 200px;
-  }
 </style>
 <template>
   <div class="layout">
@@ -69,45 +63,35 @@ export default {
   data () {
     return {
       menuList: [
-        { value: '0', label: '首页', path: 'home-content' },
-        { value: '1', label: '抽检结果', path: 'data-view' },
-        { value: '2', label: '具体标准', path: 'data-view' },
-        { value: '3', label: '法律法规', path: 'data-view' }
+        { value: '0', label: '首页', path: 'main' },
+        { value: '1', label: '抽检结果', path: 'spotCheck' },
+        { value: '2', label: '具体标准', path: 'criterion' },
+        { value: '3', label: '法律法规', path: 'law' }
       ],
-      nameList: ['home-content', 'data-view', '3', '4'],
       activeIdx: 0
     }
   },
   created () {
     const path = this.$route.path
-    console.log(path)
-    if (path.indexOf('inspection') !== -1) {
+    if (path.indexOf('main') !== -1) {
       this.activeIdx = 0
-      this.$router.push({
-        name: 'home-content'
-      })
     }
-    if (path.indexOf('data-view') !== -1) {
+    if (path.indexOf('spotCheck') !== -1) {
       this.activeIdx = 1
-      let type = '1'
-      if (path.indexOf('criterion-list-data') > -1) {
-        type = '2'
-      }
-      this.$router.push({
-        name: 'data-view',
-        params: {
-          type: type
-        }
-      })
+    }
+    if (path.indexOf('criterion') !== -1) {
+      this.activeIdx = 2
+    }
+    if (path.indexOf('law') !== -1) {
+      this.activeIdx = 3
     }
   },
   methods: {
     changeMenu (index) {
-      console.log(index)
+      this.$store.dispatch('CreateType', index)
       let _this = this
       if (_this.activeIdx !== index) {
         _this.activeIdx = Number(index)
-        _this.$store.dispatch('CreateType', index)
         setTimeout(function () {
           _this.$router.push({
             name: _this.menuList[index].path,
@@ -121,7 +105,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

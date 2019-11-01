@@ -6,10 +6,6 @@
     padding-top: 17px;
     padding-left: 15px;
     padding-bottom: 16px;
-    /*border-bottom: 1px solid #e5e5e5;*/
-    /*border-top: 1px solid #dcdee2;*/
-    /*border-left: 1px solid #dcdee2;*/
-    /*border-right: 1px solid #dcdee2;*/
     background: #f5f5f5;
     z-index: 1;
     position: relative;
@@ -26,8 +22,6 @@
     padding-left: 20px;
     font-size: 16px;
     border-top: 1px dashed #e5e5e5;
-    /*border-left: 1px solid #dcdee2;*/
-    /*border-right: 1px solid #dcdee2;*/
     color: #000;
     background: #ffffff;
   }
@@ -39,23 +33,47 @@
     cursor: pointer;
     background-color: #f3f9fc;
   }
+  .bread_active_class:hover{
+    color: #0b81bf;
+    cursor: pointer;
+  }
+  .layout-footer-center{
+    text-align: center;
+    height: 100px;
+    margin-bottom: 50px;
+  }
 </style>
 <template>
-  <Layout style="padding: 0 180px 100px; max-height: calc(100vh); overflow-y: auto">
+  <Layout style="padding: 0 180px 0;min-height: calc(100vh); max-height: calc(100vh); overflow-y: auto">
     <Breadcrumb separator=">" :style="{margin: '10px 0'}">
-      <BreadcrumbItem v-for="item in breadList" :key="item">{{item}}</BreadcrumbItem>
+      <BreadcrumbItem
+        v-for="(item, index) in breadList"
+        :key="item.value"
+        :class="index === 1 && breadList.length !== 2 ? 'bread_active_class' : ''">
+        <span @click="backList(item.value)">{{item.name}}</span>
+      </BreadcrumbItem>
     </Breadcrumb>
     <Content>
       <Layout class="main-layout-con">
         <Sider hide-trigger style="background-color: #f5f7f9; margin-right: 15px;">
-          <div v-for="(item, index) in menuData" style="border: 1px solid #dcdee2; margin-bottom: 15px;">
+          <div style="border: 1px solid #dcdee2; margin-bottom: 15px;">
             <div class="menu-title">
               <Icon type="md-chatbubbles" />
-              {{item.title}}
+              {{leftUpData.title}}
             </div>
             <ul class="menu-ul">
-              <li v-for="(menu, idx) in item.menuList" :key="menu.value" :class="idx === activeIdx ? 'active_class' : ''"
-                  @click="toRouter(index, idx, menu.value)">{{menu.label}}</li>
+              <li v-for="(menu, idx) in leftUpData.menuList" :key="menu.value" :class="idx === upActiveIdx ? 'active_class' : ''"
+                  @click="toRouter('up', menu.code, idx, menu.value)">{{menu.label}}</li>
+            </ul>
+          </div>
+          <div v-if="Number(type) === 2" style="border: 1px solid #dcdee2; margin-bottom: 15px;">
+            <div class="menu-title">
+              <Icon type="md-chatbubbles" />
+              {{leftDownData.title}}
+            </div>
+            <ul class="menu-ul">
+              <li v-for="(menu, idx) in leftDownData.menuList" :key="menu.value" :class="idx === downActiveIdx ? 'active_class' : ''"
+                  @click="toRouter('down', menu.code, idx, menu.value)">{{menu.label}}</li>
             </ul>
           </div>
         </Sider>
@@ -72,92 +90,169 @@ import axios from '@/libs/api.request'
 export default {
   data () {
     return {
-      type: '1',
-      productTypeName: ['', '皮肤用化妆品', '毛发用化妆品', '指（趾）甲用化妆品', '口唇用化妆品'],
+      type: 1,
       breadData: [
-        {list: ['抽检数据', '产品分类']},
-        {list: ['标准数据', '标准分类']}
+        {list: [{value: '', name: '抽检数据'}, {value: 'reload', name: '产品分类'}]},
+        {list: [{value: '', name: '标准数据'}, {value: 'reload', name: '标准分类'}]},
+        {list: [{value: '', name: '法规数据'}, {value: 'reload', name: '法规分类'}]}
       ],
       breadList: [],
-      menuData: [{
-        title: '抽检产品分类',
-        menuList: [
-          { value: '1', label: '皮肤用化妆品' },
-          { value: '2', label: '毛发用化妆品' },
-          { value: '3', label: '指（趾）甲用化妆品' },
-          { value: '4', label: '口唇用化妆品' }
-        ]
-      }],
-      activeIdx: null,
+      leftUpData: {},
+      leftDownData: {},
+      upActiveIdx: null,
+      downActiveIdx: null
 
     }
   },
-  // created () {
-  //   if (this.$route.params.type) {
-  //     this.type = this.$route.params.type
-  //   }
-  // },
+  created () {
+    const path = this.$route.path
+    if (path.indexOf('spotCheck') !== -1) {
+      this.type = 1
+    }
+    if (path.indexOf('criterion') !== -1) {
+      this.type = 2
+    }
+    if (path.indexOf('law') !== -1) {
+      this.type = 3
+    }
+    this.getLeftMenuData()
+    this.breadList = this.breadData[this.type - 1].list
+  },
   watch: {
-    '$route': function (to, from) {
-      console.log(to)
-      this.type = to.params.type ? Number(to.params.type) : 1
-      if (to.name !== 'data-view') {
-        this.getLeftMenuData(this.type)
-      }
-      if (to.name === 'data-view') {
-        this.breadList = this.breadData[this.type - 1].list
-        this.$router.push({
-          name: this.type === 1 ? 'spot-check-list-data' : 'criterion-list-data',
-          params: {
-            type: this.type
+    // '$route': function (to, from) {
+    //   console.log(from)
+    //   console.log(to)
+    // },
+    '$store.getters.type': function (val) {
+      this.type = val
+      this.getLeftMenuData()
+      this.breadList = this.breadData[val - 1].list
+    },
+    '$store.getters.productType': function (val) {
+      const _this = this
+      if (Number(_this.type) === 1) {
+        let list = _this.leftUpData.menuList;
+        for (let i = 0; i < list.length; i++) {
+          let value = Number( list[i].value)
+          if (value === val) {
+            _this.upActiveIdx = i
+            break
           }
-        })
+        }
+      }
+    },
+    '$store.getters.criterionCategory': function (val) {
+      const _this = this
+      if (Number(_this.type) === 2) {
+        let list = _this.leftUpData.menuList;
+        for (let i = 0; i < list.length; i++) {
+          let value = Number( list[i].value)
+          if (value === val) {
+            _this.upActiveIdx = i
+            break
+          }
+        }
       }
     }
   },
   mounted () {
-    this.toRouter(0, 0, 0)
+    this.toRouter('up', '', 0, 0)
   },
   methods: {
-    getLeftMenuData (type) {
+    getLeftMenuData () {
       let _this = this
-      _this.menuData= []
+      _this.leftUpData= {}
+      _this.leftDownData= {}
       const option = {
-        url: '/system/getAllSystemDataTypeList/' + type,
+        url: '/system/getAllSystemDataTypeList/' + _this.type,
         method: 'get'
       }
       axios.request(option).then(res => {
-        if (type === 1) {
-          _this.menuData.push({title: '抽检产品分类', menuList: res.data.data.productTypeList})
+        if (Number(_this.type) === 1) {
+          _this.leftUpData = {title: '抽检产品分类', menuList: res.data.data.productTypeList}
         }
-        if (type === 2) {
-          _this.menuData.push({title: '标准一级分类', menuList: res.data.data.categoryList})
-          _this.menuData.push({title: '标准二级分类', menuList: res.data.data.typeList})
+        if (Number(_this.type) === 2) {
+          _this.leftUpData = {title: '标准一级分类', menuList: res.data.data.categoryList}
+          _this.leftDownData = {title: '标准二级分类', menuList: res.data.data.typeList}
+        }
+        if (Number(_this.type) === 3) {
+          _this.leftUpData = {title: '法律法规分类', menuList: res.data.data.typeList}
         }
       })
     },
-    toRouter (index, idx, val) {
+    toRouter (option, param, idx, val) {
+      console.log('列表左侧菜单点击参数：' + option + '***' + param + '***' + idx + '***' + val)
       const _this = this
-      this.breadList = this.breadData[this.type - 1].list
-      if (val !== 0) {
-        _this.activeIdx = idx
-        _this.breadList.push(_this.menuData[index].menuList[idx].label)
+      this.breadList = this.breadData[this.type - 1].list.concat([])
+      if (option === 'up') {
+        if (Number(_this.type) === 1) {
+          this.$store.dispatch('CreateProductType', Number(val))
+        }
+        if (Number(_this.type) === 2) {
+          this.$store.dispatch('CreateCriterionCategory', Number(val))
+        }
+        if (Number(_this.type) === 3 && param === 'law_category') {
+          this.$store.dispatch('CreateLawCategory', Number(val))
+        }
+        if (Number(_this.type) === 3 && param === 'law_type') {
+          this.$store.dispatch('CreateLawType', Number(val))
+        }
+        if (val !== 0) {
+          _this.upActiveIdx = idx
+          _this.breadList.push({value: _this.leftUpData.menuList[idx].value, name: _this.leftUpData.menuList[idx].label})
+          this.toList()
+        }
       }
-      this.$store.dispatch('CreateProductType', val)
-      setTimeout(function () {
-        // console.log(index)
-        _this.$router.push({
-          name: 'spot-check-list-data',
-          params: {
-            productType: val !== 0 ? val : ''
-          }
-        })
-      }, val === 0 ? 300 : 0)
+      if (Number(_this.type) === 2 && option === 'down') {
+        this.$store.dispatch('CreateCriterionType', Number(val))
+        if (val !== 0) {
+          _this.downActiveIdx = idx
+          _this.breadList.push({value: _this.leftDownData.menuList[idx].value, name: _this.leftDownData.menuList[idx].label})
+          this.toList()
+        }
+      }
+
+    },
+    backList (path) {
+      if (path === 'reload') {
+        this.breadList = this.breadData[this.type - 1].list.concat([])
+        this.upActiveIdx = null
+        this.downActiveIdx = null
+        if (Number(this.type) === 1) {
+          this.$store.dispatch('CreateProductType', '')
+        }
+        if (Number(this.type) === 2) {
+          this.$store.dispatch('CreateCriterionCategory', '')
+          this.$store.dispatch('CreateCriterionType', '')
+        }
+        if (Number(this.type) === 3) {
+          this.$store.dispatch('CreateLawCategory', '')
+          this.$store.dispatch('CreateLawType', '')
+        }
+        this.toList()
+      }
+    },
+    toList () {
+      const _this = this
+      const path = _this.$route.path
+      if (path.indexOf('spotCheck') === -1 || path.indexOf('criterion') === -1 || path.indexOf('law') === -1) {
+        if (Number(_this.type) === 1) {
+          _this.$router.push({
+            name: 'spotCheck'
+          })
+        }
+        if (Number(_this.type) === 2) {
+          _this.$router.push({
+            name: 'criterion'
+          })
+        }
+        if (Number(_this.type) === 3) {
+          _this.$router.push({
+            name: 'law'
+          })
+        }
+      }
     }
   }
 }
 </script>
-
-<style>
-
-</style>

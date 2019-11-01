@@ -1,21 +1,3 @@
-<style>
-  .ivu-table-cell{
-    padding:  0px;
-  }
-  .ivu-select{
-    margin-left: 2px;
-  }
-  .ivu-table-cell {
-    padding-left: 10px !important;
-  }
-  .ivu-table-column-center .ivu-table-cell {
-    padding-left: 0px !important;
-  }
-  .ivu-table-cell span.table-span:hover{
-    color: #0b81bf;
-    cursor: pointer;
-  }
-</style>
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
@@ -23,11 +5,9 @@
     </div>
     <div class="search-con search-con-top">
       <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
-        <Option value="" key="">全部</Option>
-        <Option v-for="item in institutionList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Option v-for="item in institutionList" :value="item.label" :key="item.value">{{ item.label }}</Option>
       </Select>
       <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
-        <Option value="" key="">全部</Option>
         <Option value="1" key="1">合格</Option>
         <Option value="0" key="0">不合格</Option>
       </Select>
@@ -47,8 +27,9 @@
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
+import './list.less'
 export default {
-  name: 'spot_check_list_data_page',
+  name: 'SpotCheck',
   components: {
     Tables
   },
@@ -78,8 +59,8 @@ export default {
               on: {
                 click: () => {
                   _this.$router.push({
-                    name: 'spot-check-detail-data',
-                    params: params.row
+                    name: 'spotCheckDetail',
+                    query: {id: params.row.id}
                   })
                 }
               }
@@ -126,11 +107,20 @@ export default {
     }
   },
   mounted () {
+    if (JSON.stringify(this.$route.params) !== '{}') {
+      if (!this.$route.params.type) {
+        this.formData.searchPhrase = this.$route.params.searchPhrase
+        this.formData.productType = this.$route.params.productType
+        this.formData.institution = this.$route.params.institution
+        this.formData.checkResult = this.$route.params.checkResult
+      }
+    }
     this.getTablePageData()
     this.getAllSystemDataTypeList()
   },
   watch: {
     '$store.getters.productType': function (val) {
+      console.log(val)
       this.formData.productType = val
       this.getTablePageData()
     }
@@ -149,7 +139,7 @@ export default {
       })
     },
     getTablePageData () {
-      console.log(this.formData)
+      // console.log(this.formData)
       const option = {
         url: '/show/getSpotCheckPageList',
         data: this.formData,

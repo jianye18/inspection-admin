@@ -1,99 +1,3 @@
-<style>
-  .detail-data{
-    border: 1px solid #e5e5e5;
-    background-color: #ffffff;
-    padding: 20px;
-  }
-  .detail-title{
-    height: 100px;
-    margin-bottom: 10px ;
-  }
-  .detail-con{
-    padding-top: 30px;
-  }
-  .detail-con>div{
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  .detail-con-tab{
-    width: 100%;
-    /*border: 1px solid #e5e5e5;*/
-    border-collapse: collapse;
-  }
-  .detail-con-tab td{
-    width: 25%;
-    text-align: center;
-    border: 1px solid #e5e5e5;
-    height: 45px;
-  }
-  .data-detail-about{
-    display: inline-block;
-    font-weight: normal;
-    margin-top: 20px;
-    width: 49%;
-    border: 1px solid #e5e5e5;
-  }
-  .data-detail-about div.data-detail-about-title{
-    margin: 0px;
-    height: 40px;
-    border-bottom: 1px solid #e8e8e8;
-    font-size: 18px;
-    color: #000000;
-    line-height: 40px;
-    padding: 0px 0px 0px 15px;
-    background-color: #f8f8f8;
-  }
-  .data-detail-about-more-span{
-    float: right;
-    font-size: 13px;
-    color: #2d8cf0;
-  }
-  .data-detail-about-more-span:hover{
-    cursor: pointer;
-  }
-  .data-detail-about-content ul{
-    position: relative;
-    top: -1px;
-    list-style: none;
-  }
-  .data-detail-about-content ul li{
-    height: 35px;
-    line-height: 35px;
-    border-top: 1px dashed #e8e8e8;
-  }
-  .data-detail-about-content ul li span a{
-    background: url(../../assets/images/gb_odds.jpg) left center no-repeat;
-    width: 80%;
-    color: #666666;
-    display: block;
-    float: left;
-    padding-left: 8px;
-    font-size: 12px;
-    margin-left: 19px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  .data-detail-about-content ul li em{
-    float: right;
-    font-size: 12px;
-    color: #888888;
-    margin-right: 19px;
-  }
-  .statement-con span.statement-con-title{
-    font-size: 16px;
-    color: #888;
-    display: block;
-    margin-top: 18px;
-  }
-  .statement-con p{
-    font-size: 12px;
-    color: #888;
-    display: block;
-    margin-top: 18px;
-  }
-</style>
 <template>
   <div>
     <div class="detail-data detail-title">
@@ -102,11 +6,9 @@
       </div>
       <div class="search-con search-con-top">
         <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
-          <Option value="" key="">全部</Option>
           <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
-        <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
-          <Option value="" key="">全部</Option>
+        <Select v-model="formData.status" style="width:200px; margin-left: 2px;" placeholder="请选择状态" clearable>
           <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
         </Select>
         <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
@@ -120,50 +22,42 @@
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
           <td>标准状态</td>
-          <td>{{criterionData.statusName}}</td>
+          <td class="detail-content">{{criterionData.statusName}}</td>
           <td>标准分类</td>
-          <td>{{criterionData.typeName}}</td>
+          <td class="detail-content">{{criterionData.typeName}}</td>
         </tr>
         <tr>
           <td>发布日期</td>
-          <td>{{criterionData.publishDate}}</td>
+          <td class="detail-content">{{criterionData.publishDate}}</td>
           <td>实施日期</td>
-          <td>{{criterionData.implementDate}}</td>
+          <td class="detail-content">{{criterionData.implementDate}}</td>
         </tr>
         <tr>
           <td>发布单位</td>
-          <td colspan="3">{{criterionData.publishUnitName}}</td>
+          <td colspan="3" class="detail-content">{{criterionData.publishUnitName}}</td>
         </tr>
         <tr>
           <td>标准摘要</td>
-          <td colspan="3">{{criterionData.summary}}</td>
+          <td colspan="3" class="detail-content">{{criterionData.summary}}</td>
         </tr>
         <tr>
           <td>附件下载</td>
-          <td colspan="3">{{criterionData.summary}}</td>
+          <td colspan="3" class="detail-content">
+            {{criterionData.annexs}}
+            <Button size="large" type="primary" icon="ios-book-outline" style="float: right; margin-right: 10px;">浏览文件</Button>
+            <Button size="large" type="success" icon="ios-download-outline" style="float: right; margin-right: 10px;">下载文件</Button>
+          </td>
         </tr>
-        <tr>
-          <td>产地</td>
-          <td>{{spotCheckData.location}}</td>
-          <td>公布日期</td>
-          <td>{{spotCheckData.publishDate}}</td>
-        </tr>
-        <tr>
-          <td>涉嫌假冒</td>
-          <td>{{spotCheckData.fakeName}}</td>
-          <td>公布机构</td>
-          <td>{{spotCheckData.institution}}</td>
-        </tr>
-        <tr>
-          <td>来源链接</td>
-          <td colspan="3"><a :href="spotCheckData.sourceLink" target="view_window">{{spotCheckData.sourceLink}}</a></td>
-        </tr>
+        <!--<tr>-->
+          <!--<td>一键分享</td>-->
+          <!--<td colspan="3">{{criterionData.annexs}}</td>-->
+        <!--</tr>-->
       </table>
       <div>
         <div class="data-detail-about">
           <div class="data-detail-about-title">
             <span>{{leftAboutData.title}}</span>
-            <span class="data-detail-about-more-span">
+            <span class="data-detail-about-more-span" @click="getMoreAboutData(1)">
               更多
               <Icon type="ios-arrow-dropright" color="#d0d0d0" size="20" style="margin-top: -3px;"/>
             </span>
@@ -172,28 +66,38 @@
             <ul>
               <li v-for="item in leftAboutData.list" :key="item.id">
                 <span>
-                  <a href="#" :title="item.name">{{item.name}}</a>
+                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
                 </span>
-                <em>{{item.status}}</em>
+                <em>{{statusList[item.status].label}}</em>
+              </li>
+              <li v-if="leftAboutData.list.length === 0">
+                <span>
+                  <a href="#">暂无相关内容</a>
+                </span>
               </li>
             </ul>
           </div>
         </div>
         <div class="data-detail-about" style="margin-left: 2%;">
           <div class="data-detail-about-title">
-            <span>{{leftAboutData.title}}</span>
-            <span class="data-detail-about-more-span">
+            <span>{{rightAboutData.title}}</span>
+            <span class="data-detail-about-more-span" @click="getMoreAboutData(2)">
               更多
               <Icon type="ios-arrow-dropright" color="#d0d0d0" size="20" style="margin-top: -3px;"/>
             </span>
           </div>
           <div class="data-detail-about-content">
             <ul>
-              <li v-for="item in leftAboutData.list" :key="item.id">
+              <li v-for="item in rightAboutData.list" :key="item.id">
                 <span>
-                  <a href="#" :title="item.name">{{item.name}}</a>
+                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
                 </span>
-                <em>{{item.status}}</em>
+                <em>{{statusList[item.status].label}}</em>
+              </li>
+              <li v-if="rightAboutData.list.length === 0">
+                <span>
+                  <a href="#">暂无相关内容</a>
+                </span>
               </li>
             </ul>
           </div>
@@ -212,8 +116,10 @@
 </template>
 <script>
 import axios from '@/libs/api.request'
+import './search.less'
+import './detail.less'
 export default {
-  name: 'spot_check_detail_data_page',
+  name: 'CriterionDetail',
   data () {
     return {
       modelShow: false,
@@ -222,6 +128,7 @@ export default {
         institution: '',
         checkResult: ''
       },
+      currentId: 0,
       publishUnitList: [],
       statusList: [
         {value: '1', label: '现行有效'},
@@ -230,24 +137,23 @@ export default {
       ],
       criterionData: {},
       leftAboutData: {
-        title: '相关分类抽检结果',
-        type: 'product_type',
+        title: '相关机构标准',
+        type: 'publish_unit',
         code: '皮肤用化妆品',
-        list: [
-          {id: 1, name: '祟拜你协商的发货速度覅俺还是短发还是短发', status: '合格'},
-          {id: 2, name: '祟拜你协商的发货速度覅俺还是短发还是短发祟拜你协商的发货速度覅俺还是短发还是短发祟拜你协商的发货速度覅俺还是短发还是短发', status: '不合格'},
-          {id: 3, name: '祟拜你协商的发货速度覅俺还是短发还是短发祟拜你协商的发货速度覅俺还是短发还是短发祟拜你协商的发货速度覅俺还是短发还是短发', status: '合格'},
-          {id: 4, name: '祟拜你协商的发货速度覅俺还是短发还是短发', status: '不合格'},
-          {id: 5, name: '祟拜你协商的发货速度覅俺还是短发还是短发', status: '合格'}
-        ]
+        list: []
+      },
+      rightAboutData: {
+        title: '相关分类标准',
+        type: 'category',
+        code: '皮肤用化妆品',
+        list: []
       }
     }
   },
   mounted () {
     this.getAllSystemDataTypeList()
-    this.criterionData = this.$route.params
-    this.spotCheckData['statusName'] = this.statusList[this.criterionData.status]
-    this.spotCheckData['annexs'] = this.spotCheckData.annexList.join(' ')
+    this.currentId = this.$route.query.id
+    this.getCriterionById()
   },
   methods: {
     handleUploadFile () {
@@ -262,11 +168,65 @@ export default {
         this.publishUnitList = res.data.data.publishUnitList
       })
     },
+    getCriterionById () {
+      const _this = this
+      const option = {
+        url: '/show/getCriterionById/' + this.currentId,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        if (res.data.code === 200) {
+          _this.criterionData = res.data.data
+          _this.criterionData['statusName'] = _this.statusList[_this.criterionData.status].label
+          // _this.criterionData['annexs'] = _this.criterionData.annexList ? _this.criterionData.annexList.join(' ') : ''
+          _this.getTablePageData(1)
+          _this.getTablePageData(2)
+        }
+      })
+    },
     handleClear (e) {
 
     },
     handleSearch () {
-
+      this.$router.push({
+        name: 'criterion',
+        params: this.formData
+      })
+    },
+    getTablePageData (param) {
+      // console.log(this.formData)
+      const _this = this
+      const option = {
+        url: '/show/getCriterionPageList',
+        data: {
+          pageNum: 1, // 当前页
+          pageSize: 5, // 一页展示数量
+          publishUnit: param === 1 ? _this.criterionData.publishUnit : 0,
+          category: param === 2 ? _this.criterionData.category : 0,
+          currentId: _this.criterionData.id
+        },
+        method: 'post'
+      }
+      axios.request(option).then(res => {
+        if (param === 1) {
+          _this.leftAboutData.code = _this.criterionData.publishUnitName
+          _this.leftAboutData.list = res.data.data.list
+        }
+        if (param === 2) {
+          _this.rightAboutData.code = _this.criterionData.categoryName
+          _this.rightAboutData.list = res.data.data.list
+        }
+      })
+    },
+    getMoreAboutData (param) {
+      if (param === 1) {
+        this.formData.publishUnit = this.criterionData.publishUnit
+      }
+      if (param === 2) {
+        this.$store.dispatch('CreateCriterionCategory', this.criterionData.category)
+        this.formData.category = this.criterionData.category
+      }
+      this.handleSearch()
     }
   }
 }

@@ -47,9 +47,9 @@ export default {
       },
       publishUnitList: [],
       statusList: [
-        {value: '1', label: '现行有效'},
-        {value: '2', label: '即将实施'},
-        {value: '3', label: '已经作废'}
+        { value: '1', label: '现行有效' },
+        { value: '2', label: '即将实施' },
+        { value: '3', label: '已经作废' }
       ],
       columns: [
         {
@@ -65,7 +65,7 @@ export default {
                 click: () => {
                   _this.$router.push({
                     name: 'criterionDetail',
-                    query: {id: params.row.id}
+                    query: { id: params.row.id }
                   })
                 }
               }
@@ -112,12 +112,16 @@ export default {
   },
   mounted () {
     if (JSON.stringify(this.$route.params) !== '{}') {
+      this.formData.type = this.$route.params.type
       if (!this.$route.params.type) {
         this.formData.searchPhrase = this.$route.params.searchPhrase
         this.formData.publishUnit = this.$route.params.publishUnit
         this.formData.category = this.$route.params.category
-        this.formData.type = this.$route.params.type
         this.formData.status = this.$route.params.status
+      } else {
+        if (this.$route.params.category) {
+          this.formData.category = this.$route.params.category
+        }
       }
     }
     this.getTablePageData()

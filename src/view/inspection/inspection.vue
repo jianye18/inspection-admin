@@ -92,9 +92,9 @@ export default {
     return {
       type: 1,
       breadData: [
-        {list: [{value: '', name: '抽检数据'}, {value: 'reload', name: '产品分类'}]},
-        {list: [{value: '', name: '标准数据'}, {value: 'reload', name: '标准分类'}]},
-        {list: [{value: '', name: '法规数据'}, {value: 'reload', name: '法规分类'}]}
+        { list: [{ value: '', name: '抽检数据' }, { value: 'reload', name: '产品分类' }] },
+        { list: [{ value: '', name: '标准数据' }, { value: 'reload', name: '标准分类' }] },
+        { list: [{ value: '', name: '法规数据' }, { value: 'reload', name: '法规分类' }] }
       ],
       breadList: [],
       leftUpData: {},
@@ -115,8 +115,33 @@ export default {
     if (path.indexOf('law') !== -1) {
       this.type = 3
     }
-    this.getLeftMenuData()
+    this.getLeftMenuData().then(res => {
+      if (this.$store.getters.productType) {
+        this.initMenuActive(this.$store.getters.productType)
+      } else if (this.$store.getters.criterionCategory) {
+        this.initMenuActive(this.$store.getters.criterionCategory)
+      } else if (this.$store.getters.lawCategory) {
+        this.initMenuActive(this.$store.getters.lawCategory)
+      } else if (this.$store.getters.lawType) {
+        this.initMenuActive(this.$store.getters.lawType)
+      } else if (this.$store.getters.criterionType) {
+        const _this = this
+        let list = _this.leftUpData.menuList
+        for (let i = 0; i < list.length; i++) {
+          let value = Number(list[i].value)
+          if (value === this.$store.getters.criterionType) {
+            _this.downActiveIdx = i
+            break
+          }
+        }
+      } else {
+        this.toRouter('up', '', 0, 0)
+      }
+    })
     this.breadList = this.breadData[this.type - 1].list
+  },
+  mounted () {
+
   },
   watch: {
     // '$route': function (to, from) {
@@ -124,60 +149,58 @@ export default {
     //   console.log(to)
     // },
     '$store.getters.type': function (val) {
-      this.type = val
-      this.getLeftMenuData()
-      this.breadList = this.breadData[val - 1].list
+      if (Number(val) !== 0) {
+        this.type = val
+        this.getLeftMenuData()
+        this.breadList = this.breadData[val - 1].list
+      }
     },
     '$store.getters.productType': function (val) {
-      const _this = this
-      if (Number(_this.type) === 1) {
-        let list = _this.leftUpData.menuList;
-        for (let i = 0; i < list.length; i++) {
-          let value = Number( list[i].value)
-          if (value === val) {
-            _this.upActiveIdx = i
-            break
-          }
-        }
+      if (Number(this.type) === 1) {
+        this.initMenuActive(val)
       }
     },
     '$store.getters.criterionCategory': function (val) {
-      const _this = this
-      if (Number(_this.type) === 2) {
-        let list = _this.leftUpData.menuList;
-        for (let i = 0; i < list.length; i++) {
-          let value = Number( list[i].value)
-          if (value === val) {
-            _this.upActiveIdx = i
-            break
-          }
-        }
+      if (Number(this.type) === 2) {
+        this.initMenuActive(val)
       }
     }
   },
-  mounted () {
-    this.toRouter('up', '', 0, 0)
-  },
   methods: {
+    initMenuActive (val) {
+      const _this = this
+      let list = _this.leftUpData.menuList
+      for (let i = 0; i < list.length; i++) {
+        let value = Number(list[i].value)
+        if (value === val) {
+          _this.upActiveIdx = i
+          break
+        }
+      }
+    },
     getLeftMenuData () {
       let _this = this
-      _this.leftUpData= {}
-      _this.leftDownData= {}
+      _this.leftUpData = {}
+      _this.leftDownData = {}
       const option = {
         url: '/system/getAllSystemDataTypeList/' + _this.type,
-        method: 'get'
+        method: 'get',
+        async: false
       }
-      axios.request(option).then(res => {
-        if (Number(_this.type) === 1) {
-          _this.leftUpData = {title: '抽检产品分类', menuList: res.data.data.productTypeList}
-        }
-        if (Number(_this.type) === 2) {
-          _this.leftUpData = {title: '标准一级分类', menuList: res.data.data.categoryList}
-          _this.leftDownData = {title: '标准二级分类', menuList: res.data.data.typeList}
-        }
-        if (Number(_this.type) === 3) {
-          _this.leftUpData = {title: '法律法规分类', menuList: res.data.data.typeList}
-        }
+      return new Promise(resolve => {
+        axios.request(option).then(res => {
+          if (Number(_this.type) === 1) {
+            _this.leftUpData = { title: '抽检产品分类', menuList: res.data.data.productTypeList }
+          }
+          if (Number(_this.type) === 2) {
+            _this.leftUpData = { title: '标准一级分类', menuList: res.data.data.categoryList }
+            _this.leftDownData = { title: '标准二级分类', menuList: res.data.data.typeList }
+          }
+          if (Number(_this.type) === 3) {
+            _this.leftUpData = { title: '法律法规分类', menuList: res.data.data.typeList }
+          }
+          resolve(res.data)
+        })
       })
     },
     toRouter (option, param, idx, val) {
@@ -199,7 +222,7 @@ export default {
         }
         if (val !== 0) {
           _this.upActiveIdx = idx
-          _this.breadList.push({value: _this.leftUpData.menuList[idx].value, name: _this.leftUpData.menuList[idx].label})
+          _this.breadList.push({ value: _this.leftUpData.menuList[idx].value, name: _this.leftUpData.menuList[idx].label })
           this.toList()
         }
       }
@@ -207,11 +230,10 @@ export default {
         this.$store.dispatch('CreateCriterionType', Number(val))
         if (val !== 0) {
           _this.downActiveIdx = idx
-          _this.breadList.push({value: _this.leftDownData.menuList[idx].value, name: _this.leftDownData.menuList[idx].label})
+          _this.breadList.push({ value: _this.leftDownData.menuList[idx].value, name: _this.leftDownData.menuList[idx].label })
           this.toList()
         }
       }
-
     },
     backList (path) {
       if (path === 'reload') {

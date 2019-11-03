@@ -41,7 +41,7 @@
         </tr>
         <tr>
           <td>法规内容</td>
-          <td colspan="3" class="detail-content">{{lawData.content}}</td>
+          <td colspan="3" class="detail-content" v-html="lawData.content"></td>
         </tr>
         <tr>
           <td>附件下载</td>
@@ -136,10 +136,10 @@ export default {
       publishUnitList: [],
       sourceList: [],
       statusList: [
-        {value: '1', label: '现行有效'},
-        {value: '2', label: '征求意见'},
-        {value: '3', label: '已经废止'},
-        {value: '4', label: '未知状态'}
+        { value: '1', label: '现行有效' },
+        { value: '2', label: '征求意见' },
+        { value: '3', label: '已经废止' },
+        { value: '4', label: '未知状态' }
       ],
       lawData: {},
       leftAboutData: {

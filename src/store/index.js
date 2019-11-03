@@ -90,8 +90,8 @@ export default new Vuex.Store({
     productType: state => state.product.productType,
     criterionCategory: state => state.criterion.criterionCategory,
     criterionType: state => state.criterion.criterionType,
-    lawCategory: state => state.criterion.lawCategory,
-    lawType: state => state.criterion.lawType
+    lawCategory: state => state.law.lawCategory,
+    lawType: state => state.law.lawType
   },
   modules: {
     user,

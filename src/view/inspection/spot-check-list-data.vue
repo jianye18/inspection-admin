@@ -60,7 +60,7 @@ export default {
                 click: () => {
                   _this.$router.push({
                     name: 'spotCheckDetail',
-                    query: {id: params.row.id}
+                    query: { id: params.row.id }
                   })
                 }
               }
@@ -113,6 +113,10 @@ export default {
         this.formData.productType = this.$route.params.productType
         this.formData.institution = this.$route.params.institution
         this.formData.checkResult = this.$route.params.checkResult
+      } else {
+        if (this.$route.params.productType) {
+          this.formData.productType = this.$route.params.productType
+        }
       }
     }
     this.getTablePageData()
@@ -120,6 +124,7 @@ export default {
   },
   watch: {
     '$store.getters.productType': function (val) {
+      debugger
       console.log(val)
       this.formData.productType = val
       this.getTablePageData()

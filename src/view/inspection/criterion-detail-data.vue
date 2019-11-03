@@ -66,7 +66,7 @@
             <ul>
               <li v-for="item in leftAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
+                  <a :href="'/view/criterionDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
                 </span>
                 <em>{{statusList[item.status].label}}</em>
               </li>
@@ -90,7 +90,7 @@
             <ul>
               <li v-for="item in rightAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
+                  <a :href="'/view/criterionDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
                 </span>
                 <em>{{statusList[item.status].label}}</em>
               </li>
@@ -131,9 +131,9 @@ export default {
       currentId: 0,
       publishUnitList: [],
       statusList: [
-        {value: '1', label: '现行有效'},
-        {value: '2', label: '即将实施'},
-        {value: '3', label: '已经作废'}
+        { value: '1', label: '现行有效' },
+        { value: '2', label: '即将实施' },
+        { value: '3', label: '已经作废' }
       ],
       criterionData: {},
       leftAboutData: {
@@ -179,6 +179,7 @@ export default {
           _this.criterionData = res.data.data
           _this.criterionData['statusName'] = _this.statusList[_this.criterionData.status].label
           // _this.criterionData['annexs'] = _this.criterionData.annexList ? _this.criterionData.annexList.join(' ') : ''
+          console.log(_this.criterionData)
           _this.getTablePageData(1)
           _this.getTablePageData(2)
         }

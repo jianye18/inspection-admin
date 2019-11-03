@@ -51,10 +51,10 @@ export default {
       publishUnitList: [],
       sourceList: [],
       statusList: [
-        {value: '1', label: '现行有效'},
-        {value: '2', label: '征求意见'},
-        {value: '3', label: '已经废止'},
-        {value: '4', label: '未知状态'}
+        { value: '1', label: '现行有效' },
+        { value: '2', label: '征求意见' },
+        { value: '3', label: '已经废止' },
+        { value: '4', label: '未知状态' }
       ],
       columns: [
         {
@@ -70,7 +70,7 @@ export default {
                 click: () => {
                   _this.$router.push({
                     name: 'lawDetail',
-                    query: {id: params.row.id}
+                    query: { id: params.row.id }
                   })
                 }
               }
@@ -94,7 +94,7 @@ export default {
               content = '现行有效'
             } else if (status === '2') {
               content = '征求意见'
-            }  else if (status === '3') {
+            } else if (status === '3') {
               content = '已经废止'
             } else {
               content = '未知状态'
@@ -120,11 +120,19 @@ export default {
   mounted () {
     if (JSON.stringify(this.$route.params) !== '{}') {
       if (!this.$route.params.type) {
-        this.formData.searchPhrase = this.$route.params.searchPhrase
-        this.formData.publishUnit = this.$route.params.publishUnit
-        this.formData.category = this.$route.params.category
-        this.formData.type = this.$route.params.type
-        this.formData.status = this.$route.params.status
+        this.formData.searchPhrase = this.handleVal(this.$route.params.searchPhrase)
+        this.formData.publishUnit = this.handleVal(this.$route.params.publishUnit) + ''
+        this.formData.category = this.handleVal(this.$route.params.category)
+        this.formData.type = this.handleVal(this.$route.params.type)
+        this.formData.status = this.handleVal(this.$route.params.status) + ''
+        this.formData.source = this.handleVal(this.$route.params.source) + ''
+      } else {
+        if (this.$route.params.category) {
+          this.formData.category = this.$route.params.category
+        }
+        // if (this.$route.params.source) {
+        //   this.formData.source = this.$route.params.source
+        // }
       }
     }
     this.getTablePageData()
@@ -141,6 +149,13 @@ export default {
     }
   },
   methods: {
+    handleVal (val) {
+      if (val) {
+        return val
+      } else {
+        return null
+      }
+    },
     handleUploadFile () {
       this.getTablePageData()
     },

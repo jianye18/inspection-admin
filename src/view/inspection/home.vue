@@ -86,6 +86,21 @@ export default {
       this.activeIdx = 3
     }
   },
+  watch: {
+    '$store.getters.type': function (val) {
+      if (val) {
+        if (val === 1) {
+          this.activeIdx = 1
+        }
+        if (val === 2) {
+          this.activeIdx = 2
+        }
+        if (val === 3) {
+          this.activeIdx = 3
+        }
+      }
+    }
+  },
   methods: {
     changeMenu (index) {
       this.$store.dispatch('CreateType', index)

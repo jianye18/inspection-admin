@@ -14,7 +14,6 @@
         <tables
         ref="tables"
         editable
-        searchable: false
         search-place="top" v-model="tableData.list" :columns="columns"/>
         <div style="padding-top: 15px;">
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -70,7 +69,7 @@ export default {
     Tables
   },
   data () {
-    var _ths = this
+    let _ths = this
     return {
       modelShow: false,
       formData: {
@@ -103,7 +102,7 @@ export default {
           width: 120,
           render: function render (h, params) {
             // console.log(params.row)
-            var content = ''
+            let content = ''
             let roleStatus = params.row.roleStatus + ''
             if (roleStatus === '1') {
               content = '启用'

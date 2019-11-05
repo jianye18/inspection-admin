@@ -97,6 +97,14 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/law-detail-data.vue')
+          },
+          {
+            path: 'lawView',
+            name: 'lawView',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/law-view-data.vue')
           }
         ]
       }

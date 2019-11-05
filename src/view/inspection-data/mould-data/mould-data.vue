@@ -54,7 +54,6 @@
         <tables
         ref="tables"
         editable
-        searchable: false
         search-place="top" v-model="tableData.list" :columns="columns"/>
         <div style="padding-top: 15px;">
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -120,6 +119,7 @@
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
+import Global from '@/store/global'
 export default {
   name: 'tables_page',
   components: {
@@ -153,11 +153,7 @@ export default {
       categoryList: [],
       typeList: [],
       publishUnitList: [],
-      statusList: [
-        {value: '1', label: '现行有效'},
-        {value: '2', label: '即将实施'},
-        {value: '3', label: '已经作废'}
-      ],
+      statusList: Global.criterionStatusList,
       columns: [
         {
           title: '名称',
@@ -199,16 +195,8 @@ export default {
           key: 'status',
           width: 120,
           render: function render (h, params) {
-            // console.log(params.row)
-            var content = ''
             let status = params.row.status + ''
-            if (status === '1') {
-              content = '现行有效'
-            } else if (status === '2') {
-              content = '即将实施'
-            } else {
-              content = '已经作废'
-            }
+            let content = Global.getLabelByVal(status, _ths.statusList)
             return h('span', content)
           }
         },

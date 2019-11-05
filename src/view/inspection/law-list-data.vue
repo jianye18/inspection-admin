@@ -1,3 +1,8 @@
+<style>
+  .ivu-table-cell .ivu-icon-ios-search-outline:hover{
+    cursor: pointer;
+  }
+</style>
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
@@ -19,7 +24,6 @@
     <tables
       ref="tables"
       editable
-      searchable: false
       search-place="top" v-model="tableData.list" :columns="columns" no-data-text="暂无相关内容，建议您检查输入内容是否正确"/>
     <div style="padding-top: 15px; float: right">
       <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -29,6 +33,7 @@
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
+import Global from '@/store/global'
 import './list.less'
 export default {
   name: 'Law',
@@ -50,12 +55,7 @@ export default {
       },
       publishUnitList: [],
       sourceList: [],
-      statusList: [
-        { value: '1', label: '现行有效' },
-        { value: '2', label: '征求意见' },
-        { value: '3', label: '已经废止' },
-        { value: '4', label: '未知状态' }
-      ],
+      statusList: Global.lawStatusList,
       columns: [
         {
           title: '法规名称',
@@ -88,17 +88,8 @@ export default {
           key: 'status',
           width: 120,
           render: function render (h, params) {
-            var content = ''
             let status = params.row.status + ''
-            if (status === '1') {
-              content = '现行有效'
-            } else if (status === '2') {
-              content = '征求意见'
-            } else if (status === '3') {
-              content = '已经废止'
-            } else {
-              content = '未知状态'
-            }
+            let content = Global.getLabelByVal(status, _this.statusList)
             return h('span', content)
           }
         },
@@ -107,6 +98,27 @@ export default {
           align: 'center',
           width: 140,
           key: 'implementDate'
+        },
+        {
+          title: '操作',
+          align: 'center',
+          width: 80,
+          key: 'operation',
+          render: function render (h, params) {
+            return h('div', [h('Icon', {
+              props: {
+                type: 'ios-search-outline'
+              },
+              on: {
+                click: () => {
+                  _this.$router.push({
+                    name: 'lawView',
+                    query: { id: params.row.id }
+                  })
+                }
+              }
+            }, '')])
+          }
         }
       ],
       tableData: {

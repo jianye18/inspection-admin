@@ -14,7 +14,6 @@
         <tables
         ref="tables"
         editable
-        searchable: false
         search-place="top" v-model="tableData.list" :columns="columns"/>
         <div style="padding-top: 15px;">
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -84,7 +83,7 @@ export default {
     Tables
   },
   data () {
-    var _ths = this
+    let _ths = this
     return {
       modelShow: false,
       formData: {
@@ -150,7 +149,7 @@ export default {
           key: 'parentId',
           render: function render (h, params) {
             // console.log(params.row)
-            var content = ''
+            let content = ''
             let parentId = params.row.parentId + ''
             if (parentId === '2') {
               content = '用户管理'
@@ -171,7 +170,7 @@ export default {
           width: 110,
           render: function render (h, params) {
             // console.log(params.row)
-            var content = ''
+            let content = ''
             let type = params.row.type + ''
             if (type === '1') {
               content = 'page'
@@ -196,7 +195,7 @@ export default {
           width: 100,
           render: function render (h, params) {
             // console.log(params.row)
-            var content = ''
+            let content = ''
             if (params.row.requestType === null) {
               content = '——'
             } else {
@@ -228,7 +227,7 @@ export default {
           width: 80,
           render: function render (h, params) {
             // console.log(params.row)
-            var content = ''
+            let content = ''
             let status = params.row.status + ''
             if (status === '1') {
               content = '启用'

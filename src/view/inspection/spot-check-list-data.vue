@@ -8,8 +8,7 @@
         <Option v-for="item in institutionList" :value="item.label" :key="item.value">{{ item.label }}</Option>
       </Select>
       <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
-        <Option value="1" key="1">合格</Option>
-        <Option value="0" key="0">不合格</Option>
+        <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
       <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索" class="search-input" v-model="formData.searchPhrase"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
@@ -17,7 +16,6 @@
     <tables
       ref="tables"
       editable
-      searchable: false
       search-place="top" v-model="tableData.list" :columns="columns" no-data-text="暂无相关内容，建议您检查输入内容是否正确"/>
     <div style="padding-top: 15px; float: right">
       <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -27,6 +25,7 @@
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
+import Global from '@/store/global'
 import './list.less'
 export default {
   name: 'SpotCheck',
@@ -45,6 +44,7 @@ export default {
         institution: '',
         checkResult: ''
       },
+      checkResultList: Global.spotCheckStatusList,
       institutionList: [],
       columns: [
         {
@@ -78,15 +78,11 @@ export default {
           key: 'checkResult',
           width: 80,
           render: function render (h, params) {
-            var content = ''
-            if (params.row.checkResult === 1) {
-              content = '合格'
-            } else {
-              content = '不合格'
-            }
+            let checkResult = params.row.checkResult + ''
+            let content = Global.getLabelByVal(checkResult, _this.checkResultList)
             return h('span', {
               style: {
-                color: params.row.checkResult !== 1 ? 'red' : ''
+                color: checkResult !== '1' ? 'red' : ''
               }
             }, content)
           }

@@ -17,11 +17,9 @@
           <Cascader v-model="formData.kind" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer
                     style="display: inline-block; margin-left: 5px;"></Cascader>
           <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
-            <Option value="">全部</Option>
             <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
           </Select>
           <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
-            <Option value="">全部</Option>
             <Option v-for="item in statusList" :value="item.value" >{{item.label}}</Option>
           </Select>
           <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索"
@@ -31,7 +29,6 @@
         <tables
         ref="tables"
         editable
-        searchable: false
         search-place="top" v-model="tableData.list" :columns="columns"/>
         <div style="padding-top: 15px;">
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -71,20 +68,20 @@
                       placeholder="请选择实施日期" :value="formItem.implementDate" transfer style="width:200px"></DatePicker>
         </FormItem>
         <FormItem label="来源" prop="source">
-          <Select v-model="formItem.source" style="width:200px" placeholder="请选择来源" clearable>
+          <Select v-model="formItem.source" style="width:200px" placeholder="请选择来源" clearable transfer>
             <Option v-for="item in sourceList" :value="item.value">{{item.label}}</Option>
           </Select>
         </FormItem>
-        <FormItem label="环节" prop="process">
-          <Select v-model="formItem.process" style="width:200px" placeholder="请选择环节" clearable>
-            <Option value="">全部</Option>
-          </Select>
-        </FormItem>
+        <!--<FormItem label="环节" prop="process">-->
+          <!--<Select v-model="formItem.process" style="width:200px" placeholder="请选择环节" clearable>-->
+            <!--<Option value="">全部</Option>-->
+          <!--</Select>-->
+        <!--</FormItem>-->
         <FormItem label="内容" prop="content">
           <editor ref="editor" :value="formItem.content" @on-change="handleChange"/>
         </FormItem>
         <FormItem label="附件">
-          <span v-if="annexs" v-for="item in annexs" :key="item">{{item}}&nbsp;</span>
+          <span v-if="annexs" v-for="item in annexs" :key="item">{{item}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
             <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
           </Upload>
@@ -101,6 +98,7 @@
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
 import Editor from '_c/editor'
+import Global from '@/store/global'
 export default {
   name: 'law_page',
   components: {
@@ -120,12 +118,7 @@ export default {
       cascaderData: [],
       publishUnitList: [],
       sourceList: [],
-      statusList: [
-        {value: '1', label: '现行有效'},
-        {value: '2', label: '征求意见'},
-        {value: '3', label: '已经废止'},
-        {value: '4', label: '未知状态'}
-      ],
+      statusList: Global.lawStatusList,
       processList: [],
       columns: [
         {
@@ -187,19 +180,10 @@ export default {
           title: '状态',
           align: 'center',
           key: 'status',
-          width: 80,
+          width: 100,
           render: function render (h, params) {
-            var content = ''
             let status = params.row.status + ''
-            if (status === '1') {
-              content = '现行有效'
-            } else if (status === '2') {
-              content = '征求意见'
-            }  else if (status === '3') {
-              content = '已经废止'
-            } else {
-              content = '未知状态'
-            }
+            let content = Global.getLabelByVal(status, _ths.statusList)
             return h('span', content)
           }
         },
@@ -378,6 +362,7 @@ export default {
       console.log(selectedData)
     },
     handleAddData () {
+      this.$refs.editor.setHtml('')
       this.modelShow = true
       this.$refs['formItem'].resetFields()
       this.modelTitle = '新增法规'
@@ -385,6 +370,12 @@ export default {
     },
     handleEditor (params) {
       this.formItem = params.row
+      if (this.formItem.annexList.length > 0) {
+        const _this = this
+        _this.formItem.annexList.forEach(function (item) {
+          _this.annexs.push(item.name)
+        })
+      }
       if (this.formItem.type) {
         this.formItem.kind = [this.formItem.category + '', this.formItem.type + '']
       } else {
@@ -394,13 +385,11 @@ export default {
       this.formItem.status = this.formItem.status + ''
       this.formItem.source = this.formItem.source + ''
       this.$refs.editor.setHtml(this.formItem.content)
-      console.log(this.formItem)
       this.modelShow = true
       this.modelTitle = '编辑法规'
       this.msgTitle = '修改法规数据成功'
     },
     handleDelete (params) {
-      console.log(params.row.id)
       this.msgTitle = '删除标准数据成功'
       this.$Modal.confirm({
         title: '删除',
@@ -414,6 +403,7 @@ export default {
     modelCancel () {
       this.modelShow = false
       this.$Modal.remove()
+      this.initData(false)
     },
     initData (flag) {
       if (!flag) {
@@ -425,7 +415,6 @@ export default {
     saveFormData () {
       const _this = this
       _this.$refs['formItem'].validate(function (valid) {
-        console.log(_this.formItem)
         if (valid) {
           _this.modelButtonLoading = true
           if (_this.annexs.length > 0) {

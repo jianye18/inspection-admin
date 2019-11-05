@@ -16,7 +16,6 @@
     <tables
       ref="tables"
       editable
-      searchable: false
       search-place="top" v-model="tableData.list" :columns="columns" no-data-text="暂无相关内容，建议您检查输入内容是否正确"/>
     <div style="padding-top: 15px; float: right">
       <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -26,6 +25,7 @@
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
+import Global from '@/store/global'
 import './list.less'
 export default {
   name: 'Criterion',
@@ -46,11 +46,7 @@ export default {
         status: ''
       },
       publishUnitList: [],
-      statusList: [
-        { value: '1', label: '现行有效' },
-        { value: '2', label: '即将实施' },
-        { value: '3', label: '已经作废' }
-      ],
+      statusList: Global.criterionStatusList,
       columns: [
         {
           title: '标准名称',
@@ -58,7 +54,7 @@ export default {
           width: 400,
           tooltip: true,
           render: function render (h, params) {
-            var content = params.row.name
+            let content = params.row.name
             return h('span', {
               class: 'table-span',
               on: {
@@ -83,15 +79,8 @@ export default {
           key: 'status',
           width: 120,
           render: function render (h, params) {
-            var content = ''
             let status = params.row.status + ''
-            if (status === '1') {
-              content = '现行有效'
-            } else if (status === '2') {
-              content = '即将实施'
-            } else {
-              content = '已经作废'
-            }
+            let content = Global.getLabelByVal(status, _this.statusList)
             return h('span', content)
           }
         },

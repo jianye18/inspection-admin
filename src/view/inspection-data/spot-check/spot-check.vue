@@ -18,17 +18,13 @@
               </Col>
               <Col span="22">
                 <Select v-model="formData.productType" style="width:200px" placeholder="请选择产品分类" clearable>
-                  <Option value="">全部</Option>
                   <Option v-for="item in productTypeList" :value="item.value">{{ item.label }}</Option>
                 </Select>
                 <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
-                  <Option value="">全部</Option>
                   <Option v-for="item in institutionList" :value="item.value">{{ item.label }}</Option>
                 </Select>
                 <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
-                  <Option value="">全部</Option>
-                  <Option value="1">合格</Option>
-                  <Option value="0">不合格</Option>
+                  <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
                 </Select>
                 <Input @on-change="handleClear" clearable placeholder="输入代理商或被采样单位名称搜索"
                        class="search-input" v-model="formData.searchPhrase"/>
@@ -39,7 +35,6 @@
         <tables
         ref="tables"
         editable
-        searchable: false
         search-place="top" v-model="tableData.list" :columns="columns"/>
         <div style="padding-top: 15px;">
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -50,6 +45,7 @@
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
+import Global from '@/store/global'
 export default {
   name: 'spot_check',
   components: {
@@ -67,6 +63,7 @@ export default {
         institution: '',
         checkResult: ''
       },
+      checkResultList: Global.spotCheckStatusList,
       productTypeList: [],
       institutionList: [],
       columns: [
@@ -116,16 +113,11 @@ export default {
           key: 'checkResult',
           width: 80,
           render: function render (h, params) {
-            var content = ''
             let checkResult = params.row.checkResult + ''
-            if (checkResult === '1') {
-              content = '合格'
-            } else {
-              content = '不合格'
-            }
+            let content = Global.getLabelByVal(checkResult, _ths.checkResultList)
             return h('span', {
               style: {
-                color: params.row.checkResult !== 1 ? 'red' : ''
+                color: checkResult !== '1' ? 'red' : ''
               }
             }, content)
           }
@@ -149,7 +141,7 @@ export default {
           render: function render (h, params) {
             return h('div', [h('Button', {
               props: {
-                type: 'error',
+                type: 'primary',
                 icon: 'ios-clipboard',
                 disabled: false,
                 size: 'small'

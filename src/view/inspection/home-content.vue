@@ -131,9 +131,9 @@
                 &nbsp;
                 {{item.title}}
               </span>
-              <span class="data-type-select">
-                {{item.name}}
-              </span>
+              <!--<span class="data-type-select">-->
+                <!--{{item.name}}-->
+              <!--</span>-->
             </div>
             <div class="data-list">
               <div class="data-list-div" v-for="typeData in item.typeList" :key="typeData.id">

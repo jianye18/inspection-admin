@@ -14,7 +14,6 @@
         <tables
         ref="tables"
         editable
-        searchable: false
         search-place="top" v-model="tableData.list" :columns="columns"/>
         <div style="padding-top: 15px;">
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -86,7 +85,7 @@ export default {
       if (value === '') {
         callback(new Error('手机号不能为空'))
       } else {
-        var mobileRegexp = /^1[345789]\d{9}$/
+        let mobileRegexp = /^1[345789]\d{9}$/
         // 验证手机号码的正确性
         if (!mobileRegexp.test(value)) {
           callback(new Error('手机号不正确'))
@@ -133,7 +132,7 @@ export default {
           width: 60,
           render: function render (h, params) {
             // console.log(params.row)
-            var content = ''
+            let content = ''
             let gender = params.row.gender + ''
             if (gender === '1') {
               content = '男'
@@ -171,7 +170,7 @@ export default {
           width: 60,
           render: function render (h, params) {
             // console.log(params.row)
-            var content = ''
+            let content = ''
             if (params.row.isMember === 1) {
               content = '是'
             } else {
@@ -185,7 +184,7 @@ export default {
           align: 'center',
           key: 'expireTime',
           render: function render (h, params) {
-            var content = ''
+            let content = ''
             if (params.row.expireTime == null) {
               content = '——'
             } else {
@@ -206,7 +205,7 @@ export default {
           width: 80,
           render: function render (h, params) {
             // console.log(params.row)
-            var content = ''
+            let content = ''
             if (params.row.userStatus === 1) {
               content = '正常'
             } else {

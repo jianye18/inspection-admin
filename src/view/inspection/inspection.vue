@@ -207,6 +207,7 @@ export default {
       console.log('列表左侧菜单点击参数：' + option + '***' + param + '***' + idx + '***' + val)
       const _this = this
       this.breadList = this.breadData[this.type - 1].list.concat([])
+      let params = {}
       if (option === 'up') {
         if (Number(_this.type) === 1) {
           this.$store.dispatch('CreateProductType', Number(val))
@@ -254,23 +255,26 @@ export default {
         this.toList()
       }
     },
-    toList () {
+    toList (params) {
       const _this = this
       const path = _this.$route.path
       if (path.indexOf('spotCheck') === -1 || path.indexOf('criterion') === -1 || path.indexOf('law') === -1) {
         if (Number(_this.type) === 1) {
           _this.$router.push({
-            name: 'spotCheck'
+            name: 'spotCheck',
+            params: params
           })
         }
         if (Number(_this.type) === 2) {
           _this.$router.push({
-            name: 'criterion'
+            name: 'criterion',
+            params: params
           })
         }
         if (Number(_this.type) === 3) {
           _this.$router.push({
-            name: 'law'
+            name: 'law',
+            params: params
           })
         }
       }

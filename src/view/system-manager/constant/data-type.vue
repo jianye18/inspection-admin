@@ -7,10 +7,10 @@
   <div>
       <Card>
         <div class="search-con search-con-top">
-            <Select v-model="formData.type" style="width:200px" placeholder="请选择常量类别" clearable>
+            <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增常量</Button>
+            <Select v-model="formData.type" style="width:200px; margin-left: 5px;" placeholder="请选择常量类别" clearable>
               <Option v-for="item in typeList" :value="item.value">{{item.label}}</Option>
             </Select>
-            <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增常量</Button>
             <Input @on-change="handleClear" clearable placeholder="输入常量名搜索" class="search-input" v-model="formData.searchPhrase"/>
             <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
         </div>
@@ -26,16 +26,14 @@
       <Modal
         v-model="modelShow"
         :title="modelTitle"
-        :mask-closable="false">
+        :mask-closable="false"
+        @on-visible-change="changeModalStatus">
         <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
             <FormItem label="名称" prop="name">
                 <Input placeholder="请输入名称" v-model="formItem.name"/>
             </FormItem>
-            <FormItem label="值" prop="value">
-                <Input placeholder="请输入值" v-model="formItem.value"/>
-            </FormItem>
             <FormItem label="编码" prop="code">
-                <Input placeholder="请输入编码" v-model="formItem.code"/>
+                <Input placeholder="请输入编码" v-model="formItem.code" disabled/>
             </FormItem>
             <FormItem label="参数" prop="param">
                 <Input placeholder="请输入编码" v-model="formItem.param"/>
@@ -43,6 +41,11 @@
             <FormItem label="类型" prop="type">
               <Select v-model="formItem.type">
                 <Option v-for="item in typeList" :value="item.value">{{item.label}}</Option>
+              </Select>
+            </FormItem>
+            <FormItem label="父级" prop="parentId" v-if="Number(formItem.type) === 3">
+              <Select v-model="formItem.parentId">
+                <Option v-for="item in lawCategoryList" :value="item.value">{{item.label}}</Option>
               </Select>
             </FormItem>
             <FormItem label="描述" prop="description">
@@ -79,6 +82,7 @@ export default {
         {value: '2', label:'标准'},
         {value: '3', label:'法规'}
       ],
+      lawCategoryList: [],
       columns: [
         {
           title: '名称',
@@ -163,12 +167,6 @@ export default {
       ruleValidate: {
         name: [
           { required: true, message: '名称不能为空', trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: '编码不能为空', trigger: 'blur' }
-        ],
-        value: [
-          { required: true, message: '值不能为空', trigger: 'blur' }
         ]
       },
       modelTitle: '',
@@ -179,7 +177,21 @@ export default {
   },
   mounted () {
     this.getTablePageData()
-    this.getPermissionWithPageType()
+  },
+  watch: {
+    "formItem.type": function (val) {
+      let code = ''
+      if (Number(val) === 1) {
+        code = 'spot_check'
+      }
+      if (Number(val) === 2) {
+        code = 'criterion'
+      }
+      if (Number(val) === 3) {
+        code = 'law'
+      }
+      this.formItem.code = code
+    }
   },
   methods: {
     getTablePageData () {
@@ -196,6 +208,20 @@ export default {
         this.tableData.pages = res.data.data.pages
       })
     },
+    getLawCategoryData () {
+      const option = {
+        url: '/system/getLawCategoryData',
+        data: {
+          type: 3,
+          code: 'law',
+          param: 'law_category'
+        },
+        method: 'post'
+      }
+      axios.request(option).then(res => {
+        this.lawCategoryList = res.data.data
+      })
+    },
     // 翻页钩子
     changePage (page) {
       this.formData.pageNum = page
@@ -205,6 +231,7 @@ export default {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     },
     handleAddData () {
@@ -227,6 +254,11 @@ export default {
       this.modelShow = true
       this.modelTitle = '编辑常量'
       this.msgTitle = '修改常量成功'
+    },
+    changeModalStatus (flag) {
+      if (flag) {
+        this.getLawCategoryData()
+      }
     },
     modelCancel () {
       this.modelShow = false

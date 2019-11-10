@@ -298,7 +298,7 @@ export default {
     },
     getTablePageData () {
       const option = {
-        url: '/criterion/getCriterionPageList',
+        url: '/show/getCriterionPageList',
         data: this.formData,
         method: 'post'
       }

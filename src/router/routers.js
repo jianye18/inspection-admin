@@ -105,6 +105,14 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/law-view-data.vue')
+          },
+          {
+            path: 'flightCheck',
+            name: 'flightCheck',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/flight-check-list-data.vue')
           }
         ]
       }
@@ -426,6 +434,16 @@ export default [
           notCache: true
         },
         component: () => import('@/view/inspection-data/spot-check/spot-check.vue')
+      },
+      {
+        path: 'flight-check',
+        name: 'flight-check',
+        meta: {
+          icon: 'ios-browsers',
+          title: '飞检数据',
+          notCache: true
+        },
+        component: () => import('@/view/inspection-data/flight-check/flight-check.vue')
       },
       {
         path: 'mould-data',

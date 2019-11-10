@@ -13,7 +13,7 @@
   <div>
       <Card>
         <div class="search-con search-con-top">
-          <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增法规</Button>
+          <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增飞检</Button>
           <Cascader v-model="formData.kind" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer
                     style="display: inline-block; margin-left: 5px;"></Cascader>
           <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
@@ -42,12 +42,13 @@
       width="820px"
       @on-visible-change="initData">
       <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
-        <FormItem label="名称" prop="name">
-          <Input placeholder="请输入角色名" v-model="formItem.name" style="width:200px"/>
+        <FormItem label="名称" prop="businessName">
+          <Input placeholder="请输入企业名称" v-model="formItem.businessName" style="width:200px"/>
         </FormItem>
-        <FormItem label="分类" prop="kind">
-          <Cascader v-model="formItem.kind" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" transfer
-                    style="display: inline-block; width: 200px;" @on-change="changeCategory"></Cascader>
+        <FormItem label="类型" prop="type">
+          <Select v-model="formItem.type" style="width:200px" placeholder="请选择飞检类型" clearable>
+            <Option v-for="item in typeList" :value="item.value">{{item.label}}</Option>
+          </Select>
         </FormItem>
         <FormItem label="状态" prop="status">
           <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
@@ -106,7 +107,7 @@ export default {
     Editor
   },
   data () {
-    var _ths = this
+    const _ths = this
     return {
       modelShow: false,
       formData: {
@@ -115,33 +116,25 @@ export default {
         searchPhrase: '',
         kind: []
       },
-      cascaderData: [],
       publishUnitList: [],
-      sourceList: [],
-      statusList: Global.lawStatusList,
-      processList: [],
+      typeList: ['', '国家飞检', '地方飞检'],
       columns: [
         {
-          title: '名称',
+          title: '企业名称',
           align: 'center',
-          key: 'name'
+          key: 'businessName'
         },
         {
-          title: '一级分类',
+          title: '处理措施',
           align: 'center',
-          key: 'categoryName'
+          key: 'precautionsName'
         },
         {
-          title: '二级分类',
+          title: '飞检类型',
           align: 'center',
           key: 'typeName',
           render: function render (h, params) {
-            var content = ''
-            if (params.row.typeName) {
-              content = params.row.typeName
-            } else {
-              content = '-'
-            }
+            let content = typeList[Number(params.row.id)]
             return h('span', content)
           }
         },
@@ -157,35 +150,9 @@ export default {
           width: 100
         },
         {
-          title: '实施日期',
+          title: '来源链接',
           align: 'center',
-          key: 'implementDate',
-          width: 100
-        },
-        {
-          title: '来源',
-          align: 'center',
-          key: 'sourceName',
-          render: function render (h, params) {
-            var content = ''
-            if (params.row.sourceName) {
-              content = params.row.sourceName
-            } else {
-              content = '-'
-            }
-            return h('span', content)
-          }
-        },
-        {
-          title: '状态',
-          align: 'center',
-          key: 'status',
-          width: 100,
-          render: function render (h, params) {
-            let status = params.row.status + ''
-            let content = Global.getLabelByVal(status, _ths.statusList)
-            return h('span', content)
-          }
+          key: 'sourceLink'
         },
         {
           title: '操作',
@@ -303,7 +270,7 @@ export default {
     },
     getTablePageData () {
       const option = {
-        url: '/show/getLawPageList',
+        url: '/show/getFlightCheckPageList',
         data: this.formData,
         method: 'post'
       }

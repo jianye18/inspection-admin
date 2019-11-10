@@ -152,7 +152,7 @@ export default {
               },
               on: {
                 click: () => {
-                  _ths.handleDelete(params)
+                  _ths.handleView(params)
                 }
               }
             }, '查看详情')])
@@ -217,7 +217,7 @@ export default {
     },
     getTablePageData () {
       const option = {
-        url: '/spotCheck/getSpotCheckPageList',
+        url: '/show/getSpotCheckPageList',
         data: this.formData,
         method: 'post'
       }
@@ -238,6 +238,9 @@ export default {
     },
     handleSearch () {
       this.getTablePageData()
+    },
+    handleView () {
+
     }
   }
 }

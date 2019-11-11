@@ -13,18 +13,27 @@
   <div>
       <Card>
         <div class="search-con search-con-top">
-          <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增飞检</Button>
-          <Cascader v-model="formData.kind" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer
-                    style="display: inline-block; margin-left: 5px;"></Cascader>
-          <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
-            <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
-          </Select>
-          <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
-            <Option v-for="item in statusList" :value="item.value" >{{item.label}}</Option>
-          </Select>
-          <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索"
-                 class="search-input" v-model="formData.searchPhrase"/>
-          <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
+          <Row>
+            <Col span="2">
+              <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx">
+                <Button icon="ios-cloud-upload-outline" :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
+              </Upload>
+            </Col>
+            <Col span="22">
+              <Select v-model="formData.productType" style="width:200px" placeholder="请选择产品分类" clearable>
+                <Option v-for="item in productTypeList" :value="item.value">{{ item.label }}</Option>
+              </Select>
+              <Select v-model="formData.institution" style="width:200px" placeholder="请选择发布单位" clearable>
+                <Option v-for="item in institutionList" :value="item.value">{{ item.label }}</Option>
+              </Select>
+              <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
+                <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
+              </Select>
+              <Input @on-change="handleClear" clearable placeholder="输入代理商或被采样单位名称搜索"
+                     class="search-input" v-model="formData.searchPhrase"/>
+              <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
+            </Col>
+          </Row>
         </div>
         <tables
         ref="tables"
@@ -68,30 +77,12 @@
           <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.implementDate=$event"
                       placeholder="请选择实施日期" :value="formItem.implementDate" transfer style="width:200px"></DatePicker>
         </FormItem>
-        <FormItem label="来源" prop="source">
+        <FormItem label="来源链接" prop="source">
           <Select v-model="formItem.source" style="width:200px" placeholder="请选择来源" clearable transfer>
             <Option v-for="item in sourceList" :value="item.value">{{item.label}}</Option>
           </Select>
         </FormItem>
-        <!--<FormItem label="环节" prop="process">-->
-          <!--<Select v-model="formItem.process" style="width:200px" placeholder="请选择环节" clearable>-->
-            <!--<Option value="">全部</Option>-->
-          <!--</Select>-->
-        <!--</FormItem>-->
-        <FormItem label="内容" prop="content">
-          <editor ref="editor" :value="formItem.content" @on-change="handleChange"/>
-        </FormItem>
-        <FormItem label="附件">
-          <span v-if="annexs" v-for="item in annexs" :key="item">{{item}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
-            <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
-          </Upload>
-        </FormItem>
       </Form>
-      <div slot="footer">
-        <Button type="default" size="large" @click="modelCancel">取消</Button>
-        <Button type="primary" size="large" @click="saveFormData" :loading="modelButtonLoading">確定</Button>
-      </div>
     </Modal>
   </div>
 </template>

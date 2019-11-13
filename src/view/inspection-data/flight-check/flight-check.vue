@@ -15,19 +15,20 @@
         <div class="search-con search-con-top">
           <Row>
             <Col span="2">
-              <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx">
-                <Button icon="ios-cloud-upload-outline" :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
+              <Upload multiple action="/common/uploadMediaFile" :before-upload="handleBeforeUpload" accept=".jpg, .gif, .png, .wmv, .mp4, .mkv">
+                <Button icon="ios-cloud-upload-outline" :loading="uploadLoading">上传文件</Button>
               </Upload>
             </Col>
             <Col span="22">
-              <Select v-model="formData.productType" style="width:200px" placeholder="请选择产品分类" clearable>
-                <Option v-for="item in productTypeList" :value="item.value">{{ item.label }}</Option>
+              <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增</Button>
+              <Select v-model="formData.type" style="width:200px" placeholder="请选择飞检类型" clearable>
+                <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
               </Select>
-              <Select v-model="formData.institution" style="width:200px" placeholder="请选择发布单位" clearable>
-                <Option v-for="item in institutionList" :value="item.value">{{ item.label }}</Option>
+              <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
+                <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
               </Select>
-              <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
-                <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
+              <Select v-model="formData.isDefect" style="width:200px" placeholder="是否有缺陷" clearable>
+                <Option v-for="item in defectList" :value="item.value" :key="item.value">{{item.label}}</Option>
               </Select>
               <Input @on-change="handleClear" clearable placeholder="输入代理商或被采样单位名称搜索"
                      class="search-input" v-model="formData.searchPhrase"/>
@@ -48,41 +49,44 @@
       v-model="modelShow"
       :title="modelTitle"
       :mask-closable="false"
-      width="820px"
       @on-visible-change="initData">
-      <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
-        <FormItem label="名称" prop="businessName">
-          <Input placeholder="请输入企业名称" v-model="formItem.businessName" style="width:200px"/>
+      <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="90" action="">
+        <FormItem label="企业名称" prop="businessName">
+          <Input placeholder="请输入企业名称" v-model="formItem.businessName"/>
         </FormItem>
-        <FormItem label="类型" prop="type">
-          <Select v-model="formItem.type" style="width:200px" placeholder="请选择飞检类型" clearable>
+        <FormItem label="缺陷问题" prop="problem">
+          <Input placeholder="请输入缺陷问题" v-model="formItem.problem" type="textarea" :autosize="{minRows: 3,maxRows: 5}"/>
+        </FormItem>
+        <FormItem label="处理措施" prop="precautions">
+          <Select v-model="formItem.precautions" style="width:200px" placeholder="请选择处理措施" clearable>
+            <Option v-for="item in precautionsList" :value="item.value">{{item.label}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="飞检类型" prop="type">
+          <Select v-model="formItem.type" style="width:200px" placeholder="请选择状态" clearable>
             <Option v-for="item in typeList" :value="item.value">{{item.label}}</Option>
           </Select>
         </FormItem>
-        <FormItem label="状态" prop="status">
-          <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
-            <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
-          </Select>
-        </FormItem>
         <FormItem label="发布单位" prop="publishUnit">
-          <Select v-model="formItem.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
-            <Option v-for="item in publishUnitList" :value="item.value">{{item.label}}</Option>
-          </Select>
+          <Input placeholder="请输入发布单位" v-model="formItem.publishUnit"/>
         </FormItem>
         <FormItem label="发布日期" prop="publishDate">
           <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.publishDate=$event"
                       placeholder="请选择发布日期" :value="formItem.publishDate" transfer style="width:200px"></DatePicker>
         </FormItem>
-        <FormItem label="实施日期" prop="implementDate">
-          <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.implementDate=$event"
-                      placeholder="请选择实施日期" :value="formItem.implementDate" transfer style="width:200px"></DatePicker>
-        </FormItem>
-        <FormItem label="来源链接" prop="source">
-          <Select v-model="formItem.source" style="width:200px" placeholder="请选择来源" clearable transfer>
-            <Option v-for="item in sourceList" :value="item.value">{{item.label}}</Option>
+        <FormItem label="是否有缺陷" prop="isDefect">
+          <Select v-model="formItem.isDefect" style="width:200px" placeholder="请选择来源" clearable transfer>
+            <Option v-for="item in defectList" :value="item.value">{{item.label}}</Option>
           </Select>
         </FormItem>
+        <FormItem label="来源链接" prop="sourceLink">
+          <Input placeholder="请输入来源链接" v-model="formItem.sourceLink"/>
+        </FormItem>
       </Form>
+      <div slot="footer">
+        <Button type="default" size="large" @click="modelCancel">取消</Button>
+        <Button type="primary" size="large" @click="saveFormData" :loading="modelButtonLoading">確定</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -104,11 +108,12 @@ export default {
       formData: {
         pageNum: 1, // 当前页
         pageSize: 10, // 一页展示数量
-        searchPhrase: '',
-        kind: []
+        searchPhrase: ''
       },
       publishUnitList: [],
-      typeList: ['', '国家飞检', '地方飞检'],
+      typeList: Global.flightCheckTypeList,
+      precautionsList: Global.precautionsList,
+      defectList: Global.defectList,
       columns: [
         {
           title: '企业名称',
@@ -118,21 +123,29 @@ export default {
         {
           title: '处理措施',
           align: 'center',
-          key: 'precautionsName'
+          key: 'precautions',
+          width: 100,
+          render: function render (h, params) {
+            let precautions = params.row.precautions + ''
+            let content = Global.getLabelByVal(precautions, _ths.precautionsList)
+            return h('span', content)
+          }
         },
         {
           title: '飞检类型',
           align: 'center',
           key: 'typeName',
+          width: 100,
           render: function render (h, params) {
-            let content = typeList[Number(params.row.id)]
+            let type = params.row.type + ''
+            let content = Global.getLabelByVal(type, _ths.typeList)
             return h('span', content)
           }
         },
         {
           title: '发布单位',
           align: 'center',
-          key: 'publishUnitName'
+          key: 'publishUnit'
         },
         {
           title: '发布日期',
@@ -141,9 +154,24 @@ export default {
           width: 100
         },
         {
+          title: '是否缺陷',
+          align: 'center',
+          key: 'isDefect',
+          width: 80,
+          render: function render (h, params) {
+            let isDefect = params.row.isDefect + ''
+            let content = Global.getLabelByVal(isDefect, _ths.defectList)
+            return h('span', content)
+          }
+        },
+        {
           title: '来源链接',
           align: 'center',
-          key: 'sourceLink'
+          key: 'sourceLink',
+          render: function render (h, params) {
+            let content = params.row.sourceLink ? params.row.sourceLink : '—'
+            return h('span', content)
+          }
         },
         {
           title: '操作',
@@ -196,26 +224,20 @@ export default {
       formItem: {},
       uploadLoading: false,
       ruleValidate: {
-        name: [
-          { required: true, message: '法规名称不能为空', trigger: 'blur' }
+        businessName: [
+          { required: true, message: '企业名称不能为空', trigger: 'blur' }
         ],
-        kind: [
-          { required: true, type: 'array', message: '法规分类不能为空', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '状态不能为空', trigger: 'change' }
+        type: [
+          { required: true, message: '飞检类型不能为空', trigger: 'change' }
         ],
         publishUnit: [
-          { required: true, message: '发布单位为空', trigger: 'change' }
+          { required: true, message: '发布单位为空', trigger: 'blur' }
         ],
         publishDate: [
           { required: true, message: '发布日期不能为空', trigger: 'change' }
         ],
-        implementDate: [
-          { required: true, message: '实施日期不能为空', trigger: 'change' }
-        ],
-        content: [
-          { required: true, message: '法律内容不能为空', trigger: 'change' }
+        isDefect: [
+          { required: true, message: '是否有缺陷不能为空', trigger: 'change' }
         ]
       },
       modelTitle: '',
@@ -225,7 +247,7 @@ export default {
     }
   },
   created: function () {
-    this.getAllSystemDataTypeList()
+    // this.getAllSystemDataTypeList()
   },
   mounted () {
     this.getTablePageData()
@@ -254,9 +276,7 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.cascaderData = res.data.data.categoryList
-        this.publishUnitList = res.data.data.publishUnitList
-        this.sourceList = res.data.data.sourceList
+
       })
     },
     getTablePageData () {
@@ -266,6 +286,7 @@ export default {
         method: 'post'
       }
       axios.request(option).then(res => {
+        console.log(res.data)
         this.tableData.list = res.data.data.list
         this.tableData.pageNum = res.data.data.pageNum
         this.tableData.total = res.data.data.total
@@ -273,11 +294,12 @@ export default {
       })
     },
     handleBeforeUpload (file) {
+      console.log(file.name)
       const _this = this
       let fileFormData = new FormData()
       fileFormData.append('file', file)
       const option = {
-        url: '/common/uploadSingleFile',
+        url: '/flightCheck/uploadMediaFile',
         data: fileFormData,
         method: 'post',
         headers: {
@@ -285,6 +307,7 @@ export default {
         }
       }
       axios.request(option).then(res => {
+        console.log(res.data)
         _this.uploadLoading = false
         if (res.data.code === 200) {
           _this.$Message.success('上传成功！')
@@ -299,7 +322,7 @@ export default {
       return false
     },
     handleUploadFile () {
-      this.getTablePageData()
+      // this.getTablePageData()
     },
     // 翻页钩子
     changePage (page) {
@@ -320,35 +343,23 @@ export default {
       console.log(selectedData)
     },
     handleAddData () {
-      this.$refs.editor.setHtml('')
       this.modelShow = true
       this.$refs['formItem'].resetFields()
-      this.modelTitle = '新增法规'
-      this.msgTitle = '新增法规数据成功'
+      this.modelTitle = '新增飞检'
+      this.msgTitle = '新增飞检数据成功'
     },
     handleEditor (params) {
       this.formItem = params.row
-      if (this.formItem.annexList.length > 0) {
-        const _this = this
-        _this.formItem.annexList.forEach(function (item) {
-          _this.annexs.push(item.name)
-        })
-      }
-      if (this.formItem.type) {
-        this.formItem.kind = [this.formItem.category + '', this.formItem.type + '']
-      } else {
-        this.formItem.kind = [this.formItem.category + '']
-      }
-      this.formItem.publishUnit = this.formItem.publishUnit + ''
-      this.formItem.status = this.formItem.status + ''
-      this.formItem.source = this.formItem.source + ''
-      this.$refs.editor.setHtml(this.formItem.content)
+
+      this.formItem.precautions = this.formItem.precautions + ''
+      this.formItem.type = this.formItem.type + ''
+      this.formItem.isDefect = this.formItem.isDefect + ''
       this.modelShow = true
-      this.modelTitle = '编辑法规'
-      this.msgTitle = '修改法规数据成功'
+      this.modelTitle = '编辑飞检'
+      this.msgTitle = '修改飞检数据成功'
     },
     handleDelete (params) {
-      this.msgTitle = '删除标准数据成功'
+      this.msgTitle = '删除飞检数据成功'
       this.$Modal.confirm({
         title: '删除',
         content: '你确定要删除吗?',
@@ -364,29 +375,15 @@ export default {
       this.initData(false)
     },
     initData (flag) {
-      if (!flag) {
-        this.annexs = []
-        this.formItem.kind = []
-        this.$refs.editor.setHtml('')
-      }
+
     },
     saveFormData () {
       const _this = this
       _this.$refs['formItem'].validate(function (valid) {
         if (valid) {
           _this.modelButtonLoading = true
-          if (_this.annexs.length > 0) {
-            _this.formItem.annexs = JSON.stringify(_this.annexs)
-          }
-          if (_this.formItem.kind.length === 1) {
-            _this.formItem.category = _this.formItem.kind[0]
-          }
-          if (_this.formItem.kind.length === 2) {
-            _this.formItem.category = _this.formItem.kind[0]
-            _this.formItem.type = _this.formItem.kind[1]
-          }
           axios.request({
-            url: '/law/saveLaw',
+            url: '/flightCheck/saveFlightCheck',
             data: _this.formItem,
             method: 'post'
           }).then(res => {
@@ -411,7 +408,7 @@ export default {
     deleteData (id) {
       const _this = this
       axios.request({
-        url: '/criterion/deleteCriterion/' + id,
+        url: '/flightCheck/deleteFlightCheck/' + id,
         method: 'delete'
       }).then(res => {
         _this.$Modal.remove()

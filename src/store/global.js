@@ -21,6 +21,24 @@ const lawStatusList = [
   {value: '4', label: '未知状态'}
 ]
 
+const flightCheckTypeList = [
+  {value: '1', label: '国家飞检'},
+  {value: '2', label: '地方飞检'}
+]
+
+const defectList = [
+  {value: '1', label: '有'},
+  {value: '0', label: '无'}
+]
+
+const precautionsList = [
+  {value: '1', label: '无'},
+  {value: '2', label: '未明示'},
+  {value: '3', label: '责令整改'},
+  {value: '4', label: '限期整改'},
+  {value: '5', label: '停产整改'}
+]
+
 function getLabelByVal(val, arr) {
   let l = arr.length
   let label = ''
@@ -40,5 +58,8 @@ export default {
   spotCheckStatusList,
   criterionStatusList,
   lawStatusList,
+  flightCheckTypeList,
+  defectList,
+  precautionsList,
   getLabelByVal
 }

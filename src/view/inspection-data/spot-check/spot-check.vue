@@ -5,6 +5,9 @@
   .ivu-select{
     margin-left: 2px;
   }
+  .ivu-modal-footer {
+    display: none;
+  }
 </style>
 <template>
   <div>
@@ -40,6 +43,53 @@
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
         </div>
       </Card>
+
+    <Modal
+      v-model="modelShow"
+      :title="modelTitle"
+      :mask-closable="false">
+      <Form ref="formItem" :model="formItem" :label-width="180" action="">
+        <FormItem label="标称委托企业" prop="company">
+          <Input v-model="formItem.company" readonly/>
+        </FormItem>
+        <FormItem label="标称生产企业/进口代理商名称" prop="producer">
+          <Input v-model="formItem.producer" readonly/>
+        </FormItem>
+        <FormItem label="被采样单位名称" prop="unit">
+          <Input v-model="formItem.unit" readonly/>
+        </FormItem>
+        <FormItem label="样品名称" prop="sample">
+          <Input v-model="formItem.sample" readonly/>
+        </FormItem>
+        <FormItem label="包装规格" prop="specification">
+          <Input v-model="formItem.specification" readonly/>
+        </FormItem>
+        <FormItem label="产品分类" prop="productTypeName">
+          <Input v-model="formItem.productTypeName" readonly/>
+        </FormItem>
+        <FormItem label="产地" prop="location">
+          <Input v-model="formItem.location" readonly/>
+        </FormItem>
+        <FormItem label="抽检结果" prop="checkResultName">
+          <Input v-model="formItem.checkResultName" readonly/>
+        </FormItem>
+        <FormItem label="不合格项目" prop="subject">
+          <Input v-model="formItem.subject" readonly/>
+        </FormItem>
+        <FormItem label="公布机构" prop="institution">
+          <Input v-model="formItem.institution" readonly/>
+        </FormItem>
+        <FormItem label="公布日期" prop="publishDate">
+          <Input v-model="formItem.publishDate" readonly/>
+        </FormItem>
+        <FormItem label="涉嫌假冒" prop="isFakeName">
+          <Input v-model="formItem.isFakeName" readonly/>
+        </FormItem>
+        <FormItem label="来源链接" prop="sourceLink">
+          <Input v-model="formItem.sourceLink" readonly/>
+        </FormItem>
+      </Form>
+    </Modal>
   </div>
 </template>
 <script>
@@ -52,9 +102,10 @@ export default {
     Tables
   },
   data () {
-    var _ths = this
+    const _ths = this
     return {
       modelShow: false,
+      modelTitle: '查看抽检数据',
       formData: {
         pageNum: 1, // 当前页
         pageSize: 10, // 一页展示数量
@@ -152,7 +203,7 @@ export default {
               },
               on: {
                 click: () => {
-                  _ths.handleView(params)
+                  _ths.handleView(params.row)
                 }
               }
             }, '查看详情')])
@@ -165,6 +216,7 @@ export default {
         total: 0,
         pages: 0
       },
+      formItem: {},
       uploadLoading: false
     }
   },
@@ -239,8 +291,11 @@ export default {
     handleSearch () {
       this.getTablePageData()
     },
-    handleView () {
-
+    handleView (data) {
+      this.formItem = data
+      this.formItem.isFakeName = Number(this.formItem.isFake) === 1 ? '是' : '否'
+      this.formItem.checkResultName = Number(this.formItem.checkResult) === 1 ? '合格' : '不合格'
+      this.modelShow = true
     }
   }
 }

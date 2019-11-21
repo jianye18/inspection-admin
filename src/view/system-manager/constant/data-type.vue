@@ -8,8 +8,8 @@
       <Card>
         <div class="search-con search-con-top">
             <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增常量</Button>
-            <Select v-model="formData.type" style="width:200px; margin-left: 5px;" placeholder="请选择常量类别" clearable>
-              <Option v-for="item in typeList" :value="item.value">{{item.label}}</Option>
+            <Select v-model="formData.typeCode" style="width:200px; margin-left: 5px;" placeholder="请选择常量类别" clearable>
+              <Option v-for="item in typeCodeList" :value="item.value">{{item.label}}</Option>
             </Select>
             <Input @on-change="handleClear" clearable placeholder="输入常量名搜索" class="search-input" v-model="formData.searchPhrase"/>
             <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
@@ -63,7 +63,7 @@
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
 export default {
-  name: 'tables_page',
+  name: 'DataType',
   components: {
     Tables
   },
@@ -75,61 +75,30 @@ export default {
         pageNum: 1, // 当前页
         pageSize: 10, // 一页展示数量
         searchPhrase: '',
-        type: null
+        typeCode: ''
       },
-      typeList: [
-        {value: '1', label:'抽检'},
-        {value: '2', label:'标准'},
-        {value: '3', label:'法规'}
-      ],
+      typeCodeList: [],
       lawCategoryList: [],
       columns: [
-        {
-          title: '名称',
-          align: 'center',
-          key: 'name'
-        },
-        {
-          title: '值',
-          align: 'center',
-          key: 'value'
-        },
         {
           title: '编码',
           align: 'center',
           key: 'code'
         },
         {
-          title: '参数',
+          title: '名称',
           align: 'center',
-          key: 'param'
-        },
-        {
-          title: '类型',
-          align: 'center',
-          key: 'type',
-          render: function render (h, params) {
-            var content = ''
-            let type = params.row.type + ''
-            if (type === '1') {
-              content = '抽检'
-            } else if (type === '2') {
-              content = '标准'
-            } else {
-              content = '法规'
-            }
-            return h('span', content)
-          }
-        },
-        {
-          title: '描述',
-          align: 'center',
-          key: 'description'
+          key: 'name'
         },
         {
           title: '父级',
           align: 'center',
-          key: 'parentName'
+          key: 'typeName'
+        },
+        {
+          title: '说明',
+          align: 'center',
+          key: 'remark'
         },
         {
           title: '操作',
@@ -176,6 +145,7 @@ export default {
     }
   },
   mounted () {
+    this.getAllSystemType()
     this.getTablePageData()
   },
   watch: {
@@ -196,7 +166,7 @@ export default {
   methods: {
     getTablePageData () {
       const option = {
-        url: '/system/getSystemDataTypePageList',
+        url: '/api/system/getSystemDataPageList',
         data: this.formData,
         method: 'post'
       }
@@ -208,18 +178,13 @@ export default {
         this.tableData.pages = res.data.data.pages
       })
     },
-    getLawCategoryData () {
+    getAllSystemType () {
       const option = {
-        url: '/system/getLawCategoryData',
-        data: {
-          type: 3,
-          code: 'law',
-          param: 'law_category'
-        },
-        method: 'post'
+        url: '/api/system/getAllSystemType',
+        method: 'get'
       }
       axios.request(option).then(res => {
-        this.lawCategoryList = res.data.data
+        this.typeCodeList = res.data.data
       })
     },
     // 翻页钩子
@@ -257,7 +222,7 @@ export default {
     },
     changeModalStatus (flag) {
       if (flag) {
-        this.getLawCategoryData()
+        // this.getLawCategoryData()
       }
     },
     modelCancel () {

@@ -17,7 +17,6 @@
         <tables
         ref="tables"
         editable
-        searchable: false
         search-place="top" v-model="tableData.list" :columns="columns"/>
         <div style="padding-top: 15px;">
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
@@ -32,24 +31,18 @@
             <FormItem label="名称" prop="name">
                 <Input placeholder="请输入名称" v-model="formItem.name"/>
             </FormItem>
-            <FormItem label="编码" prop="code">
-                <Input placeholder="请输入编码" v-model="formItem.code" disabled/>
-            </FormItem>
-            <FormItem label="参数" prop="param">
-                <Input placeholder="请输入编码" v-model="formItem.param"/>
-            </FormItem>
-            <FormItem label="类型" prop="type">
-              <Select v-model="formItem.type">
-                <Option v-for="item in typeList" :value="item.value">{{item.label}}</Option>
+            <FormItem label="类型" prop="typeCode">
+              <Select v-model="formItem.typeCode">
+                <Option v-for="item in typeCodeList" :value="item.value">{{item.label}}</Option>
               </Select>
             </FormItem>
-            <FormItem label="父级" prop="parentId" v-if="Number(formItem.type) === 3">
-              <Select v-model="formItem.parentId">
-                <Option v-for="item in lawCategoryList" :value="item.value">{{item.label}}</Option>
+            <FormItem label="排序" prop="sort">
+              <Select v-model="formItem.sort">
+                <Option v-for="item in 20" :value="item">{{item}}</Option>
               </Select>
             </FormItem>
-            <FormItem label="描述" prop="description">
-                <Input placeholder="请输入权限描述" v-model="formItem.description"/>
+            <FormItem label="说明" prop="remark">
+                <Input placeholder="请输入常量说明" v-model="formItem.remark"/>
             </FormItem>
         </Form>
         <div slot="footer">
@@ -89,6 +82,11 @@ export default {
           title: '名称',
           align: 'center',
           key: 'name'
+        },
+        {
+          title: '排序',
+          align: 'center',
+          key: 'sort'
         },
         {
           title: '父级',
@@ -134,8 +132,8 @@ export default {
       },
       formItem: {},
       ruleValidate: {
-        name: [
-          { required: true, message: '名称不能为空', trigger: 'blur' }
+        typeCode: [
+          { required: true, message: '类型不能为空', trigger: 'blur' }
         ]
       },
       modelTitle: '',
@@ -200,12 +198,6 @@ export default {
       this.getTablePageData()
     },
     handleAddData () {
-      this.formItem = {
-        name: '常量',
-        code: 'user_add',
-        description: '测试',
-        type: '1'
-      }
       this.modelShow = true
       this.$refs['formItem'].resetFields()
       this.modelTitle = '新增常量'
@@ -213,9 +205,6 @@ export default {
     },
     handleEditor (params) {
       this.formItem = params.row
-      this.formItem.status = this.formItem.status + ''
-      this.formItem.parentId = this.formItem.parentId + ''
-      this.formItem.type = this.formItem.type + ''
       this.modelShow = true
       this.modelTitle = '编辑常量'
       this.msgTitle = '修改常量成功'
@@ -236,7 +225,7 @@ export default {
           _this.modelButtonLoading = true
           console.log(_this.formItem)
           axios.request({
-            url: '/system/saveSystemDataType',
+            url: '/api/system/saveSystemData',
             data: _this.formItem,
             method: 'post'
           }).then(res => {

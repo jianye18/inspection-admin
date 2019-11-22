@@ -8,14 +8,39 @@
   .ivu-input-small{
     height: 32px !important;
   }
+  .close {
+    position: absolute;
+    /*right: 32px;*/
+    top: 5px;
+    width: 5px;
+    height: 5px;
+  }
+  .close:before, .close:after {
+    position: absolute;
+    left: 5px;
+    content: ' ';
+    height: 10px;
+    width: 2px;
+    background-color: #f54040;
+  }
+  .close:before {
+    transform: rotate(45deg);
+  }
+  .close:after {
+    transform: rotate(-45deg);
+  }
 </style>
 <template>
   <div>
       <Card>
         <div class="search-con search-con-top">
           <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增法规</Button>
-          <Cascader v-model="formData.kind" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" size="small" transfer
-                    style="display: inline-block; margin-left: 5px;"></Cascader>
+          <Select v-model="formData.category" style="width:200px" placeholder="请选择法规分类" clearable>
+            <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+          <Select v-if="formData.category" v-model="formData.type" style="width:200px" placeholder="请选择法规类别" clearable>
+            <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+          </Select>
           <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
             <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
           </Select>
@@ -39,15 +64,20 @@
       v-model="modelShow"
       :title="modelTitle"
       :mask-closable="false"
-      width="820px"
-      @on-visible-change="initData">
+      width="820px">
       <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
         <FormItem label="名称" prop="name">
           <Input placeholder="请输入角色名" v-model="formItem.name" style="width:200px"/>
         </FormItem>
-        <FormItem label="分类" prop="kind">
-          <Cascader v-model="formItem.kind" :data="cascaderData" trigger="hover" placeholder="请选择法规类别" transfer
-                    style="display: inline-block; width: 200px;" @on-change="changeCategory"></Cascader>
+        <FormItem label="分类" prop="category">
+          <Select v-model="formItem.category" style="width:200px" placeholder="请选择法规分类" clearable>
+            <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="类别" prop="type" v-if="formItem.category">
+          <Select v-model="formItem.type" style="width:200px" placeholder="请选择法规类别" clearable>
+            <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+          </Select>
         </FormItem>
         <FormItem label="状态" prop="status">
           <Select v-model="formItem.status" style="width:200px" placeholder="请选择状态" clearable>
@@ -81,7 +111,10 @@
           <editor ref="editor" :value="formItem.content" @on-change="handleChange"/>
         </FormItem>
         <FormItem label="附件">
-          <span v-if="annexs" v-for="item in annexs" :key="item">{{item}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span v-if="formItem.annexList" v-for="item in formItem.annexList" :key="item.name" style="margin-right: 15px;">
+            {{item.name}}
+            <a href="#" class="close" @click="deleteAnnex(item.name)"></a>
+          </span>
           <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
             <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
           </Upload>
@@ -100,7 +133,7 @@ import axios from '@/libs/api.request'
 import Editor from '_c/editor'
 import Global from '@/store/global'
 export default {
-  name: 'law_page',
+  name: 'LawData',
   components: {
     Tables,
     Editor
@@ -108,6 +141,7 @@ export default {
   data () {
     var _ths = this
     return {
+      typeCode: "FGFL,FGFBDW,FGLY,FGZT",
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -115,10 +149,11 @@ export default {
         searchPhrase: '',
         kind: []
       },
-      cascaderData: [],
+      categoryList: [],
+      typeList:[],
       publishUnitList: [],
       sourceList: [],
-      statusList: Global.lawStatusList,
+      statusList: [],
       processList: [],
       columns: [
         {
@@ -235,14 +270,16 @@ export default {
         total: 0,
         pages: 0
       },
-      formItem: {},
+      formItem: {
+        annexList: []
+      },
       uploadLoading: false,
       ruleValidate: {
         name: [
           { required: true, message: '法规名称不能为空', trigger: 'blur' }
         ],
-        kind: [
-          { required: true, type: 'array', message: '法规分类不能为空', trigger: 'change' }
+        category: [
+          { required: true, message: '法规分类不能为空', trigger: 'change' }
         ],
         status: [
           { required: true, message: '状态不能为空', trigger: 'change' }
@@ -262,8 +299,7 @@ export default {
       },
       modelTitle: '',
       msgTitle: '',
-      modelButtonLoading: false,
-      annexs: []
+      modelButtonLoading: false
     }
   },
   created: function () {
@@ -273,37 +309,43 @@ export default {
     this.getTablePageData()
   },
   watch: {
-    'formData.kind': function (val) {
+    'formData.category': function (val) {
       if (val) {
-        if (val.length === 0) {
-          this.formData.category = ''
-          this.formData.type = ''
-        }
-        if (val.length === 1) {
-          this.formData.category = val[0]
-        }
-        if (val.length === 2) {
-          this.formData.category = val[0]
-          this.formData.type = val[1]
-        }
+        this.getLawTypeListByCode(val)
+      }
+    },
+    'formItem.category': function (val) {
+      if (val) {
+        this.getLawTypeListByCode(val)
       }
     }
   },
   methods: {
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/3',
+        url: '/api/system/getSystemDataByTypeCode/' + this.typeCode,
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.cascaderData = res.data.data.categoryList
-        this.publishUnitList = res.data.data.publishUnitList
-        this.sourceList = res.data.data.sourceList
+        //console.log(res.data)
+        this.categoryList = res.data.data["FGFL"]
+        this.publishUnitList = res.data.data["FGFBDW"]
+        this.statusList = res.data.data["FGZT"]
+        this.sourceList = res.data.data["FGLY"]
+      })
+    },
+    getLawTypeListByCode (code) {
+      const option = {
+        url: '/api/law/getLawTypeListByCode/' + code,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.typeList = res.data.data
       })
     },
     getTablePageData () {
       const option = {
-        url: '/show/getLawPageList',
+        url: '/api/law/getLawPageList',
         data: this.formData,
         method: 'post'
       }
@@ -319,7 +361,7 @@ export default {
       let fileFormData = new FormData()
       fileFormData.append('file', file)
       const option = {
-        url: '/common/uploadSingleFile',
+        url: '/api/common/uploadSingleFile',
         data: fileFormData,
         method: 'post',
         headers: {
@@ -330,8 +372,13 @@ export default {
         _this.uploadLoading = false
         if (res.data.code === 200) {
           _this.$Message.success('上传成功！')
-          _this.annexs.push(res.data.data)
-          console.log(_this.annexs)
+          let annex = {name: res.data.data}
+          if (_this.formItem.annexList) {
+            _this.formItem.annexList.push(annex)
+          } else {
+            _this.formItem.annexList = [annex]
+          }
+          console.log(_this.formItem.annexList)
         } else {
           _this.$Message.error('上传失败，请稍后重试')
         }
@@ -362,28 +409,19 @@ export default {
       console.log(selectedData)
     },
     handleAddData () {
+      this.formItem = {
+        annexList: []
+      }
       this.$refs.editor.setHtml('')
       this.modelShow = true
       this.$refs['formItem'].resetFields()
       this.modelTitle = '新增法规'
       this.msgTitle = '新增法规数据成功'
+      console.log(this.formItem)
     },
     handleEditor (params) {
-      this.formItem = params.row
-      if (this.formItem.annexList.length > 0) {
-        const _this = this
-        _this.formItem.annexList.forEach(function (item) {
-          _this.annexs.push(item.name)
-        })
-      }
-      if (this.formItem.type) {
-        this.formItem.kind = [this.formItem.category + '', this.formItem.type + '']
-      } else {
-        this.formItem.kind = [this.formItem.category + '']
-      }
-      this.formItem.publishUnit = this.formItem.publishUnit + ''
-      this.formItem.status = this.formItem.status + ''
-      this.formItem.source = this.formItem.source + ''
+      this.formItem = JSON.parse(JSON.stringify(params.row))
+      this.formItem.type = this.formItem.type + ''
       this.$refs.editor.setHtml(this.formItem.content)
       this.modelShow = true
       this.modelTitle = '编辑法规'
@@ -405,30 +443,13 @@ export default {
       this.$Modal.remove()
       this.initData(false)
     },
-    initData (flag) {
-      if (!flag) {
-        this.annexs = []
-        this.formItem.kind = []
-        this.$refs.editor.setHtml('')
-      }
-    },
     saveFormData () {
       const _this = this
       _this.$refs['formItem'].validate(function (valid) {
         if (valid) {
           _this.modelButtonLoading = true
-          if (_this.annexs.length > 0) {
-            _this.formItem.annexs = JSON.stringify(_this.annexs)
-          }
-          if (_this.formItem.kind.length === 1) {
-            _this.formItem.category = _this.formItem.kind[0]
-          }
-          if (_this.formItem.kind.length === 2) {
-            _this.formItem.category = _this.formItem.kind[0]
-            _this.formItem.type = _this.formItem.kind[1]
-          }
           axios.request({
-            url: '/law/saveLaw',
+            url: '/api/law/saveLaw',
             data: _this.formItem,
             method: 'post'
           }).then(res => {
@@ -453,13 +474,31 @@ export default {
     deleteData (id) {
       const _this = this
       axios.request({
-        url: '/criterion/deleteCriterion/' + id,
+        url: '/api/law/deleteLaw/' + id,
         method: 'delete'
       }).then(res => {
         _this.$Modal.remove()
         if (res.data.code === 200) {
           _this.$Message.success(_this.msgTitle)
           _this.getTablePageData()
+        } else {
+          _this.$Message.error('网络异常，请稍后重试')
+        }
+      })
+    },
+    deleteAnnex (fileName) {
+      const _this = this
+      axios.request({
+        url: '/api/common/deleteFile/' + fileName,
+        method: 'delete'
+      }).then(res => {
+        if (res.data.code === 200) {
+          _this.formItem.annexList.forEach(function (item, index) {
+            if (fileName === item.name) {
+              _this.formItem.annexList.splice(index, 1)
+            }
+          })
+          console.log(_this.formItem.annexList)
         } else {
           _this.$Message.error('网络异常，请稍后重试')
         }

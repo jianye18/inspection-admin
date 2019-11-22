@@ -33,19 +33,15 @@
         <div class="search-con search-con-top">
           <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增标准</Button>
           <Select v-model="formData.category" style="width:200px" placeholder="请选择一级分类" clearable>
-            <Option value="">全部</Option>
             <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
           </Select>
           <Select v-model="formData.type" style="width:200px" placeholder="请选择二级分类" clearable>
-            <Option value="">全部</Option>
             <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
           </Select>
           <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
-            <Option value="">全部</Option>
             <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
           </Select>
           <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
-            <Option value="">全部</Option>
             <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
           </Select>
           <Input @on-change="handleClear" clearable placeholder="输入标准数据名称搜索" class="search-input" v-model="formData.searchPhrase"/>
@@ -62,8 +58,7 @@
       <Modal
         v-model="modelShow"
         :title="modelTitle"
-        :mask-closable="false"
-        @on-visible-change="initData">
+        :mask-closable="false">
         <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
             <FormItem label="名称" prop="name">
                 <Input placeholder="请输入标准名称" v-model="formItem.name"/>
@@ -100,9 +95,9 @@
               <Input placeholder="请输入标准摘要" v-model="formItem.summary" type="textarea" :autosize="{minRows: 3,maxRows: 5}"/>
             </FormItem>
             <FormItem label="附件">
-              <span v-if="annexs" v-for="item in annexs" :key="item" style="margin-right: 15px;">
-                {{item}}
-                <a href="#" class="close" @click="deleteAnnex(item)"></a>
+              <span v-if="formItem.annexList" v-for="item in formItem.annexList" :key="item.name" style="margin-right: 15px;">
+                {{item.name}}
+                <a href="#" class="close" @click="deleteAnnex(item.name)"></a>
               </span>
               <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
                 <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
@@ -119,9 +114,8 @@
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
-import Global from '@/store/global'
 export default {
-  name: 'tables_page',
+  name: 'MouldData',
   components: {
     Tables
   },
@@ -132,7 +126,7 @@ export default {
         callback(new Error('标准数据名称不能为空'))
       } else {
         axios.request({
-          url: '/criterion/judgeCriterionNameIsExist?name=' + value + '&criterionId=' + _ths.currentCriterionId,
+          url: '/api/criterion/judgeCriterionNameIsExist?name=' + value + '&criterionId=' + _ths.currentCriterionId,
           method: 'get'
         }).then(res => {
           if (res.data.code === 200) {
@@ -144,6 +138,7 @@ export default {
       }
     }
     return {
+      typeCode: "BZYJFL,BZEJFL,BZFBDW,BZZT",
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -153,7 +148,7 @@ export default {
       categoryList: [],
       typeList: [],
       publishUnitList: [],
-      statusList: Global.criterionStatusList,
+      statusList: [],
       columns: [
         {
           title: '名称',
@@ -192,13 +187,8 @@ export default {
         {
           title: '状态',
           align: 'center',
-          key: 'status',
-          width: 120,
-          render: function render (h, params) {
-            let status = params.row.status + ''
-            let content = Global.getLabelByVal(status, _ths.statusList)
-            return h('span', content)
-          }
+          key: 'statusName',
+          width: 120
         },
         {
           title: '操作',
@@ -248,7 +238,9 @@ export default {
         total: 0,
         pages: 0
       },
-      formItem: {},
+      formItem: {
+        annexList: []
+      },
       uploadLoading: false,
       ruleValidate: {
         name: [
@@ -276,8 +268,7 @@ export default {
       modelTitle: '',
       msgTitle: '',
       modelButtonLoading: false,
-      currentCriterionId: 0,
-      annexs: []
+      currentCriterionId: 0
     }
   },
   mounted () {
@@ -287,18 +278,19 @@ export default {
   methods: {
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/2',
+        url: '/api/system/getSystemDataByTypeCode/' + this.typeCode,
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.categoryList = res.data.data.categoryList
-        this.typeList = res.data.data.typeList
-        this.publishUnitList = res.data.data.publishUnitList
+        this.categoryList = res.data.data["BZYJFL"]
+        this.typeList = res.data.data["BZEJFL"]
+        this.publishUnitList = res.data.data["BZFBDW"]
+        this.statusList = res.data.data["BZZT"]
       })
     },
     getTablePageData () {
       const option = {
-        url: '/show/getCriterionPageList',
+        url: '/api/criterion/getCriterionPageList',
         data: this.formData,
         method: 'post'
       }
@@ -314,7 +306,7 @@ export default {
       let fileFormData = new FormData()
       fileFormData.append('file', file)
       const option = {
-        url: '/common/uploadSingleFile',
+        url: '/api/common/uploadSingleFile',
         data: fileFormData,
         method: 'post',
         headers: {
@@ -325,7 +317,12 @@ export default {
         _this.uploadLoading = false
         if (res.data.code === 200) {
           _this.$Message.success('上传成功！')
-          _this.annexs.push(res.data.data)
+          let annex = {name: res.data.data}
+          if (_this.formItem.annexList) {
+            _this.formItem.annexList.push(annex)
+          } else {
+            _this.formItem.annexList = [annex]
+          }
         } else {
           _this.$Message.error('上传失败，请稍后重试')
         }
@@ -350,44 +347,22 @@ export default {
     },
     handleAddData () {
       this.formItem = {
-        name: '标准数据',
-        category: '1',
-        type: '2',
-        status: '1',
-        publishUnit: '1',
-        publishDate: '',
-        implementDate: '',
-        summary: '摘要'
+        annexList: []
       }
+      this.currentCriterionId = 0
       this.modelShow = true
       this.$refs['formItem'].resetFields()
       this.modelTitle = '新增标准'
       this.msgTitle = '新增标准数据成功'
     },
     handleEditor (params) {
-      const _this = this
-      this.formItem = params.row
-      params.row.annexList.forEach(function (item) {
-        _this.annexs.push(item.name)
-      })
-      console.log(_this.annexs)
+      this.formItem = JSON.parse(JSON.stringify(params.row))
       this.currentCriterionId = params.row.id
-      this.formItem.category = this.formItem.category + ''
-      this.formItem.type = this.formItem.type + ''
-      this.formItem.publishUnit = this.formItem.publishUnit + ''
-      this.formItem.status = this.formItem.status + ''
       this.modelShow = true
       this.modelTitle = '编辑标准'
       this.msgTitle = '修改标准数据成功'
     },
-    initData (flag) {
-      if (!flag) {
-        this.annexs = []
-        this.currentCriterionId = 0
-      }
-    },
     handleDelete (params) {
-      console.log(params.row.id)
       this.msgTitle = '删除标准数据成功'
       this.$Modal.confirm({
         title: '删除',
@@ -407,12 +382,9 @@ export default {
       _this.$refs['formItem'].validate(function (valid) {
         if (valid) {
           _this.modelButtonLoading = true
-          if (_this.annexs.length > 0) {
-            _this.formItem.annexs = JSON.stringify(_this.annexs)
-          }
           console.log(_this.formItem)
           axios.request({
-            url: '/criterion/saveCriterion',
+            url: '/api/criterion/saveCriterion',
             data: _this.formItem,
             method: 'post'
           }).then(res => {
@@ -436,7 +408,7 @@ export default {
     deleteData (id) {
       const _this = this
       axios.request({
-        url: '/criterion/deleteCriterion/' + id,
+        url: '/api/criterion/deleteCriterion/' + id,
         method: 'delete'
       }).then(res => {
         _this.$Modal.remove()
@@ -451,16 +423,16 @@ export default {
     deleteAnnex (fileName) {
       const _this = this
       axios.request({
-        url: '/common/deleteFile/' + fileName,
+        url: '/api/common/deleteFile/' + fileName,
         method: 'delete'
       }).then(res => {
         if (res.data.code === 200) {
-          _this.annexs.forEach(function (item, index) {
-            if (fileName === item) {
-              _this.annexs.splice(index, 1)
+          _this.formItem.annexList.forEach(function (item, index) {
+            if (fileName === item.name) {
+              _this.formItem.annexList.splice(index, 1)
             }
           })
-          console.log(_this.annexs)
+          console.log(_this.formItem.annexList)
         } else {
           _this.$Message.error('网络异常，请稍后重试')
         }

@@ -97,13 +97,14 @@ import Tables from '_c/tables'
 import axios from '@/libs/api.request'
 import Global from '@/store/global'
 export default {
-  name: 'spot_check',
+  name: 'SpotCheck',
   components: {
     Tables
   },
   data () {
     const _ths = this
     return {
+      typeCode: "ZJCPLX",
       modelShow: false,
       modelTitle: '查看抽检数据',
       formData: {
@@ -223,6 +224,7 @@ export default {
   mounted () {
     this.getTablePageData()
     this.getAllSystemDataTypeList()
+    this.getAllInstitution()
   },
   methods: {
     handleBeforeUpload (file) {
@@ -232,7 +234,7 @@ export default {
         let fileFormData = new FormData()
         fileFormData.append('file', file)
         const option = {
-          url: '/spotCheck/upload',
+          url: '/api/spotCheck/upload',
           data: fileFormData,
           method: 'post',
           headers: {
@@ -259,17 +261,25 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/1',
+        url: '/api/system/getSystemDataByTypeCode/' + this.typeCode,
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.productTypeList = res.data.data.productTypeList
-        this.institutionList = res.data.data.institutionList
+        this.productTypeList = res.data.data[this.typeCode]
+      })
+    },
+    getAllInstitution () {
+      const option = {
+        url: '/api/spotCheck/getAllInstitution',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.institutionList = res.data.data
       })
     },
     getTablePageData () {
       const option = {
-        url: '/show/getSpotCheckPageList',
+        url: '/api/spotCheck/getSpotCheckPageList',
         data: this.formData,
         method: 'post'
       }

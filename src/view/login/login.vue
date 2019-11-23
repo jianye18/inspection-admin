@@ -19,6 +19,7 @@
 import LoginForm from '_c/login-form'
 import { setToken } from '@/libs/util'
 import { mapActions } from 'vuex'
+import axios from '@/libs/api.request'
 export default {
   components: {
     LoginForm
@@ -29,8 +30,10 @@ export default {
       'getUserInfo'
     ]),
     handleSubmit ({ userName, password }) {
+      const _ths = this
       this.handleLogin({ userName, password }).then(res => {
         console.log(res)
+        _ths.saveUserLoginLog()
         setToken(res.data.data)
         // this.getUserInfo().then(res => {
         this.$router.push({
@@ -39,6 +42,15 @@ export default {
         })
         // })
       }).catch(rej => {
+
+      })
+    },
+    saveUserLoginLog () {
+      const option = {
+        url: '/login/saveUserLoginLog',
+        method: 'post'
+      }
+      axios.request(option).then(res => {
 
       })
     }

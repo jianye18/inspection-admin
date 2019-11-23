@@ -464,6 +464,16 @@ export default [
           notCache: true
         },
         component: () => import('@/view/inspection-data/law-data/law-data.vue')
+      },
+      {
+        path: 'article-data',
+        name: 'article-data',
+        meta: {
+          icon: 'ios-browsers',
+          title: '文章管理',
+          notCache: true
+        },
+        component: () => import('@/view/inspection-data/article-data/article-data.vue')
       }
     ]
   },

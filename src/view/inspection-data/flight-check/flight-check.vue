@@ -48,8 +48,7 @@
     <Modal
       v-model="modelShow"
       :title="modelTitle"
-      :mask-closable="false"
-      @on-visible-change="initData">
+      :mask-closable="false">
       <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="90" action="">
         <FormItem label="企业名称" prop="businessName">
           <Input placeholder="请输入企业名称" v-model="formItem.businessName"/>
@@ -96,7 +95,7 @@ import axios from '@/libs/api.request'
 import Editor from '_c/editor'
 import Global from '@/store/global'
 export default {
-  name: 'law_page',
+  name: 'FlightCheck',
   components: {
     Tables,
     Editor
@@ -104,6 +103,7 @@ export default {
   data () {
     const _ths = this
     return {
+      typeCode: "FJLX,FJCLCS",
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -111,8 +111,8 @@ export default {
         searchPhrase: ''
       },
       publishUnitList: [],
-      typeList: Global.flightCheckTypeList,
-      precautionsList: Global.precautionsList,
+      typeList: [],
+      precautionsList: [],
       defectList: Global.defectList,
       columns: [
         {
@@ -123,24 +123,14 @@ export default {
         {
           title: '处理措施',
           align: 'center',
-          key: 'precautions',
-          width: 100,
-          render: function render (h, params) {
-            let precautions = params.row.precautions + ''
-            let content = Global.getLabelByVal(precautions, _ths.precautionsList)
-            return h('span', content)
-          }
+          key: 'precautionsName',
+          width: 100
         },
         {
           title: '飞检类型',
           align: 'center',
           key: 'typeName',
-          width: 100,
-          render: function render (h, params) {
-            let type = params.row.type + ''
-            let content = Global.getLabelByVal(type, _ths.typeList)
-            return h('span', content)
-          }
+          width: 100
         },
         {
           title: '发布单位',
@@ -221,7 +211,9 @@ export default {
         total: 0,
         pages: 0
       },
-      formItem: {},
+      formItem: {
+        annexList: []
+      },
       uploadLoading: false,
       ruleValidate: {
         businessName: [
@@ -242,46 +234,43 @@ export default {
       },
       modelTitle: '',
       msgTitle: '',
-      modelButtonLoading: false,
-      annexs: []
+      modelButtonLoading: false
     }
   },
   created: function () {
-    // this.getAllSystemDataTypeList()
+    this.getAllSystemDataTypeList()
+    this.getAllPublishUnit()
   },
   mounted () {
     this.getTablePageData()
   },
   watch: {
-    'formData.kind': function (val) {
-      if (val) {
-        if (val.length === 0) {
-          this.formData.category = ''
-          this.formData.type = ''
-        }
-        if (val.length === 1) {
-          this.formData.category = val[0]
-        }
-        if (val.length === 2) {
-          this.formData.category = val[0]
-          this.formData.type = val[1]
-        }
-      }
-    }
+
   },
   methods: {
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/3',
+        url: '/api/system/getSystemDataByTypeCode/' + this.typeCode,
         method: 'get'
       }
       axios.request(option).then(res => {
-
+        this.typeList = res.data.data["FJLX"]
+        this.precautionsList = res.data.data["FJCLCS"]
+      })
+    },
+    getAllPublishUnit () {
+      const option = {
+        url: '/api/flightCheck/getAllPublishUnit',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        console.log(res.data)
+        this.publishUnitList = res.data.data
       })
     },
     getTablePageData () {
       const option = {
-        url: '/show/getFlightCheckPageList',
+        url: '/api/flightCheck/getFlightCheckPageList',
         data: this.formData,
         method: 'post'
       }
@@ -299,7 +288,7 @@ export default {
       let fileFormData = new FormData()
       fileFormData.append('file', file)
       const option = {
-        url: '/flightCheck/uploadMediaFile',
+        url: '/api/flightCheck/uploadMediaFile',
         data: fileFormData,
         method: 'post',
         headers: {
@@ -311,8 +300,13 @@ export default {
         _this.uploadLoading = false
         if (res.data.code === 200) {
           _this.$Message.success('上传成功！')
-          _this.annexs.push(res.data.data)
-          console.log(_this.annexs)
+          let annex = {name: res.data.data}
+          if (_this.formItem.annexList) {
+            _this.formItem.annexList.push(annex)
+          } else {
+            _this.formItem.annexList = [annex]
+          }
+          console.log(_this.formItem.annexList)
         } else {
           _this.$Message.error('上传失败，请稍后重试')
         }
@@ -343,16 +337,16 @@ export default {
       console.log(selectedData)
     },
     handleAddData () {
+      this.formItem = {
+        annexList: []
+      }
       this.modelShow = true
       this.$refs['formItem'].resetFields()
       this.modelTitle = '新增飞检'
       this.msgTitle = '新增飞检数据成功'
     },
     handleEditor (params) {
-      this.formItem = params.row
-
-      this.formItem.precautions = this.formItem.precautions + ''
-      this.formItem.type = this.formItem.type + ''
+      this.formItem = JSON.parse(JSON.stringify(params.row))
       this.formItem.isDefect = this.formItem.isDefect + ''
       this.modelShow = true
       this.modelTitle = '编辑飞检'
@@ -372,10 +366,6 @@ export default {
     modelCancel () {
       this.modelShow = false
       this.$Modal.remove()
-      this.initData(false)
-    },
-    initData (flag) {
-
     },
     saveFormData () {
       const _this = this
@@ -383,7 +373,7 @@ export default {
         if (valid) {
           _this.modelButtonLoading = true
           axios.request({
-            url: '/flightCheck/saveFlightCheck',
+            url: '/api/flightCheck/saveFlightCheck',
             data: _this.formItem,
             method: 'post'
           }).then(res => {
@@ -408,7 +398,7 @@ export default {
     deleteData (id) {
       const _this = this
       axios.request({
-        url: '/flightCheck/deleteFlightCheck/' + id,
+        url: '/api/flightCheck/deleteFlightCheck/' + id,
         method: 'delete'
       }).then(res => {
         _this.$Modal.remove()

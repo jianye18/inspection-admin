@@ -343,25 +343,13 @@ export default {
       this.getTablePageData()
     },
     handleAddData () {
-      this.formItem = {
-        name: '用户新增',
-        code: 'user_add',
-        description: '测试',
-        parentId: '',
-        type: '',
-        requestUrl: '/user/saveUser',
-        requestType: '',
-        iconClass: 'md-contact',
-        sort: '1',
-        status: '1'
-      }
       this.modelShow = true
       this.$refs['formItem'].resetFields()
       this.modelTitle = '新增权限'
       this.msgTitle = '新增权限信息成功'
     },
     handleEditor (params) {
-      this.formItem = params.row
+      this.formItem = JSON.parse(JSON.stringify(params.row))
       this.formItem.status = this.formItem.status + ''
       this.formItem.parentId = this.formItem.parentId + ''
       this.formItem.type = this.formItem.type + ''

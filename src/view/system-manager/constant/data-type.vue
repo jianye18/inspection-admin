@@ -204,7 +204,7 @@ export default {
       this.msgTitle = '新增常量成功'
     },
     handleEditor (params) {
-      this.formItem = params.row
+      this.formItem = JSON.parse(JSON.stringify(params.row))
       this.modelShow = true
       this.modelTitle = '编辑常量'
       this.msgTitle = '修改常量成功'

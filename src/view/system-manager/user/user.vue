@@ -362,7 +362,7 @@ export default {
       this.currentUerId = params.row.id
       this.getAllRoleList()
       this.getUserRoleListByUserId()
-      this.formItem = params.row
+      this.formItem = JSON.parse(JSON.stringify(params.row))
       this.formItem.gender = this.formItem.gender + ''
       this.formItem.isMember = this.formItem.isMember + ''
       this.member = this.formItem.isMember + ''

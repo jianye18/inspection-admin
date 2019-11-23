@@ -441,7 +441,6 @@ export default {
     modelCancel () {
       this.modelShow = false
       this.$Modal.remove()
-      this.initData(false)
     },
     saveFormData () {
       const _this = this

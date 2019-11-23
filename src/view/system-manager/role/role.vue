@@ -237,7 +237,7 @@ export default {
       this.msgTitle = '新增角色信息成功'
     },
     handleEditor (params) {
-      this.formItem = params.row
+      this.formItem = JSON.parse(JSON.stringify(params.row))
       this.formItem.roleStatus = this.formItem.roleStatus + ''
       this.modelShow = true
       this.modelTitle = '编辑角色'

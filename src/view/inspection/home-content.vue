@@ -114,9 +114,10 @@
         <Content :style="{minHeight: '620px', marginRight: '15px'}">
           <div class="search-box">
             <Select v-model="formData.type" style="width:150px; float: left" placeholder="">
-              <Option value="1">抽检结果</Option>
-              <Option value="2">抽检标准</Option>
-              <Option value="3">抽检法规</Option>
+              <Option value="SC">抽检结果</Option>
+              <Option value="CC">抽检标准</Option>
+              <Option value="LW">抽检法规</Option>
+              <Option value="FC">飞检结果</Option>
             </Select>
             <Input v-model="formData.searchPhrase"
                    search enter-button="搜索"
@@ -136,11 +137,11 @@
               <!--</span>-->
             </div>
             <div class="data-list">
-              <div class="data-list-div" v-for="typeData in item.typeList" :key="typeData.id">
-                <span @click="toShowList(item.type, typeData.param, typeData.value)">{{typeData.name}}</span>
+              <div class="data-list-div" v-for="typeData in item.typeList" :key="typeData.value">
+                <span @click="toShowList(item.type, item.path, typeData.code, typeData.value)">{{typeData.label}}</span>
                 <span class="data-line">|</span>
               </div>
-              <span><a href="#" @click="toMoreListPage(item.type)">更多 ></a></span>
+              <span><a href="#" @click="toMoreListPage(item.type, item.path)">更多 ></a></span>
             </div>
           </div>
         </Content>
@@ -201,14 +202,14 @@
 </template>
 <script>
 import axios from '@/libs/api.request'
+import Global from '@/store/global'
 export default {
   data () {
     return {
       formData: {
-        type: '1',
+        type: 'SC',
         searchPhrase: ''
       },
-      typePath: ['', 'spotCheck', 'criterion', 'law'],
       value3: 0,
       autoplaySpeed: 2500,
       newArticle: [
@@ -238,97 +239,78 @@ export default {
       contentData: [
         {
           title: '抽检结果',
-          type: 1,
+          type: 'SC',
           name: '按产品分类',
+          path: 'spotCheck',
           typeList: []
         },
         {
           title: '具体标准',
-          type: 2,
+          type: 'CC',
           name: '按标准分类',
+          path: 'criterion',
           typeList: []
         },
         {
           title: '法律法规',
-          type: 3,
+          type: 'LW',
           name: '按法规分类',
+          path: 'law',
+          typeList: []
+        },
+        {
+          title: '飞检结果',
+          type: 'FC',
+          name: '按飞检分类',
+          path: 'flightCheck',
           typeList: []
         }
-      ]
+      ],
+      params:{mold: 1, key:'', value: ''}
     }
   },
   mounted () {
-    this.$store.dispatch('CreateType', 0)
     this.getHomePageFilterItem()
   },
   methods: {
     searchToList () {
-      this.$store.dispatch('CreateType', Number(this.formData.type))
+      this.$store.dispatch('CreateType', this.formData.type)
+      this.params.key = 'searchPhrase'
+      this.params.value = this.formData.searchPhrase
       this.$router.push({
-        name: this.typePath[Number(this.formData.type)],
-        params: {
-          searchPhrase: this.formData.searchPhrase
-        }
+        name: Global.basePath[this.formData.type],
+        params: this.params
       })
     },
-    toShowList (type, param, val) {
-      this.clearStore()
+    toShowList (type, path, param, val) {
       this.$store.dispatch('CreateType', type)
-      let formData = {}
-      if (type === 1) {
-        this.$store.dispatch('CreateProductType', val)
-        formData = { productType: val }
-      } else {
-        let str = param.split('_')[1]
-        if (str === 'category') {
-          if (type === 2) {
-            this.$store.dispatch('CreateCriterionCategory', val)
-          }
-          if (type === 3) {
-            this.$store.dispatch('CreateLawCategory', val)
-          }
-        }
-        if (str === 'type') {
-          if (type === 2) {
-            this.$store.dispatch('CreateCriterionType', val)
-          }
-          if (type === 3) {
-            this.$store.dispatch('CreateLawType', val)
-          }
-        }
-        formData[str] = val
-      }
+      this.$store.dispatch('CreateParam', {type: type, query:[{key: param.split('_')[1], value: val}]})
+      this.params.key = param.split('_')[1]
+      this.params.value = val
       this.$router.push({
-        name: this.typePath[type],
-        params: formData
+        name: path,
+        params: this.params
       })
-    },
-    clearStore () {
-      this.$store.dispatch('CreateType', null)
-      this.$store.dispatch('CreateProductType', null)
-      this.$store.dispatch('CreateCriterionCategory', null)
-      this.$store.dispatch('CreateLawCategory', null)
-      this.$store.dispatch('CreateCriterionType', null)
-      this.$store.dispatch('CreateLawType', null)
     },
     getHomePageFilterItem () {
       const _this = this
       const option = {
-        url: '/system/getHomePageFilterItem',
+        url: '/api/system/getHomeShowSystemData/SC,CC,LW,FC',
         method: 'get'
       }
       axios.request(option).then(res => {
         if (res.data.code === 200) {
-          res.data.data.forEach(function (item, index) {
-            _this.contentData[index].typeList = item.list
+          let result = res.data.data
+          _this.contentData.forEach(function (item, index) {
+            _this.contentData[index].typeList = result[_this.contentData[index].type]
           })
         }
       })
     },
-    toMoreListPage (type) {
+    toMoreListPage (type, path) {
       this.$store.dispatch('CreateType', type)
       this.$router.push({
-        name: this.typePath[type]
+        name: path
       })
     }
   }

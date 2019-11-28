@@ -40,7 +40,7 @@ export default {
         pageNum: 1, // 当前页
         pageSize: 20, // 一页展示数量
         searchPhrase: '',
-        productType: 0,
+        productType: '',
         institution: '',
         checkResult: ''
       },
@@ -71,6 +71,16 @@ export default {
           title: '样品名称',
           key: 'sample',
           tooltip: true
+        },
+        {
+          title: '产品分类',
+          align: 'center',
+          key: 'productTypeName'
+        },
+        {
+          title: '公布机构',
+          align: 'center',
+          key: 'institution'
         },
         {
           title: '抽检结果',
@@ -104,26 +114,31 @@ export default {
   },
   mounted () {
     if (JSON.stringify(this.$route.params) !== '{}') {
-      if (!this.$route.params.type) {
-        this.formData.searchPhrase = this.$route.params.searchPhrase
-        this.formData.productType = this.$route.params.productType
-        this.formData.institution = this.$route.params.institution
-        this.formData.checkResult = this.$route.params.checkResult
+      let params = this.$route.params
+      if (Number(params['mold']) === 1) {
+        this.formData[params['key']] = params['value']
       } else {
-        if (this.$route.params.productType) {
-          this.formData.productType = this.$route.params.productType
-        }
+        this.formData.searchPhrase = params['searchPhrase']
+        this.formData.productType = params['productType']
+        this.formData.institution = params['institution']
+        this.formData.checkResult = params['checkResult']
       }
     }
     this.getTablePageData()
     this.getAllSystemDataTypeList()
   },
   watch: {
-    '$store.getters.productType': function (val) {
-      debugger
-      console.log(val)
-      this.formData.productType = val
-      this.getTablePageData()
+    '$store.getters.param': function (params) {
+      const _this = this
+      if (params['type'] === 'SC') {
+        let query = params.query
+        if (query.length > 0) {
+          query.forEach(function (item) {
+            _this.formData[item['key']] = item['value']
+          })
+        }
+        _this.getTablePageData()
+      }
     }
   },
   methods: {
@@ -132,17 +147,17 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/1',
+        url: '/api/spotCheck/getAllInstitution',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.institutionList = res.data.data.institutionList
+        this.institutionList = res.data.data
       })
     },
     getTablePageData () {
       // console.log(this.formData)
       const option = {
-        url: '/show/getSpotCheckPageList',
+        url: '/api/spotCheck/getSpotCheckPageList',
         data: this.formData,
         method: 'post'
       }

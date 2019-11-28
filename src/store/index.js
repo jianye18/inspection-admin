@@ -4,22 +4,6 @@ import Vuex from 'vuex'
 import user from './module/user'
 import app from './module/app'
 
-const product = {
-  state: {
-    productType: 0
-  },
-  mutations: {
-    setProductType: (state, productType) => {
-      state.productType = productType
-    }
-  },
-  actions: {
-    CreateProductType ({ commit }, productType) {
-      commit('setProductType', productType)
-    }
-  }
-}
-
 const base = {
   state: {
     type: 0
@@ -36,48 +20,18 @@ const base = {
   }
 }
 
-const criterion = {
+const params = {
   state: {
-    criterionCategory: 0,
-    criterionType: 0
+    param: {type: '', query: [{key: '', value: ''}]}
   },
   mutations: {
-    setCriterionType: (state, criterionType) => {
-      state.criterionType = criterionType
-    },
-    setCriterionCategory: (state, criterionCategory) => {
-      state.criterionCategory = criterionCategory
+    setParam: (state, param) => {
+      state.param = param
     }
   },
   actions: {
-    CreateCriterionType ({ commit }, criterionType) {
-      commit('setCriterionType', criterionType)
-    },
-    CreateCriterionCategory ({ commit }, criterionCategory) {
-      commit('setCriterionCategory', criterionCategory)
-    }
-  }
-}
-
-const law = {
-  state: {
-    lawCategory: 0,
-    lawType: 0
-  },
-  mutations: {
-    setLawType: (state, lawType) => {
-      state.lawType = lawType
-    },
-    setLawCategory: (state, lawCategory) => {
-      state.lawCategory = lawCategory
-    }
-  },
-  actions: {
-    CreateLawType ({ commit }, lawType) {
-      commit('setLawType', lawType)
-    },
-    CreateLawCategory ({ commit }, lawCategory) {
-      commit('setLawCategory', lawCategory)
+    CreateParam ({ commit }, param) {
+      commit('setParam', param)
     }
   }
 }
@@ -87,18 +41,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   getters: {
     type: state => state.base.type,
-    productType: state => state.product.productType,
-    criterionCategory: state => state.criterion.criterionCategory,
-    criterionType: state => state.criterion.criterionType,
-    lawCategory: state => state.law.lawCategory,
-    lawType: state => state.law.lawType
+    param: state => state.params.param
   },
   modules: {
     user,
     app,
     base,
-    product,
-    criterion,
-    law
+    params
   }
 })

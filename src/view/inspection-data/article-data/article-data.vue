@@ -85,7 +85,7 @@ export default {
   data () {
     const _ths = this
     return {
-      typeCode: "WZLX",
+      typeCode: "WZ_typeCode",
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -245,7 +245,7 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.typeList = res.data.data["WZLX"]
+        this.typeList = res.data.data["WZ_typeCode"]
       })
     },
     getTablePageData () {

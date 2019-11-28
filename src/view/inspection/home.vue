@@ -50,7 +50,12 @@
         </div>
         <div class="layout-nav">
           <ul>
-            <li v-for="(item, idx) in menuList" :key="item.value" :class="idx === activeIdx ? 'active_class' : ''" @click="changeMenu(item.value)">{{item.label}}</li>
+            <li v-for="(item, idx) in menuList"
+                :key="item.value"
+                :class="idx === activeIdx ? 'active_class' : ''"
+                @click="changeMenu(item.value, item.path, idx)">
+              {{item.label}}
+            </li>
           </ul>
         </div>
       </Header>
@@ -63,10 +68,12 @@ export default {
   data () {
     return {
       menuList: [
-        { value: '0', label: '首页', path: 'main' },
-        { value: '1', label: '抽检结果', path: 'spotCheck' },
-        { value: '2', label: '具体标准', path: 'criterion' },
-        { value: '3', label: '法律法规', path: 'law' }
+        { value: 'main', label: '首页', path: 'main' },
+        { value: 'SC', label: '抽检结果', path: 'spotCheck' },
+        { value: 'CC', label: '具体标准', path: 'criterion' },
+        { value: 'LW', label: '法律法规', path: 'law' },
+        { value: 'FC', label: '飞检结果', path: 'flightCheck' },
+        { value: 'AC', label: '文章', path: 'article' }
       ],
       activeIdx: 0
     }
@@ -85,34 +92,46 @@ export default {
     if (path.indexOf('law') !== -1) {
       this.activeIdx = 3
     }
+    if (path.indexOf('flightCheck') !== -1) {
+      this.activeIdx = 4
+    }
+    if (path.indexOf('article') !== -1) {
+      this.activeIdx = 5
+    }
   },
   watch: {
     '$store.getters.type': function (val) {
       if (val) {
-        if (val === 1) {
+        if (val === 'main') {
+          this.activeIdx = 0
+        }
+        if (val === 'SC') {
           this.activeIdx = 1
         }
-        if (val === 2) {
+        if (val === 'CC') {
           this.activeIdx = 2
         }
-        if (val === 3) {
+        if (val === 'LW') {
           this.activeIdx = 3
+        }
+        if (val === 'FC') {
+          this.activeIdx = 4
+        }
+        if (val === 'AC') {
+          this.activeIdx = 5
         }
       }
     }
   },
   methods: {
-    changeMenu (index) {
-      this.$store.dispatch('CreateType', index)
+    changeMenu (val, path, idx) {
       let _this = this
-      if (_this.activeIdx !== index) {
-        _this.activeIdx = Number(index)
+      if (_this.activeIdx !== idx) {
+        this.$store.dispatch('CreateType', val)
+        _this.activeIdx = idx
         setTimeout(function () {
           _this.$router.push({
-            name: _this.menuList[index].path,
-            params: {
-              type: _this.menuList[index].value
-            }
+            name: path
           })
         }, 300)
       }

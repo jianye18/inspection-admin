@@ -138,7 +138,7 @@ export default {
       }
     }
     return {
-      typeCode: "BZYJFL,BZEJFL,BZFBDW,BZZT",
+      typeCode: "BZ_category,BZ_type,BZ_publishUnit,BZ_status",
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -282,10 +282,10 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.categoryList = res.data.data["BZYJFL"]
-        this.typeList = res.data.data["BZEJFL"]
-        this.publishUnitList = res.data.data["BZFBDW"]
-        this.statusList = res.data.data["BZZT"]
+        this.categoryList = res.data.data["BZ_category"]
+        this.typeList = res.data.data["BZ_type"]
+        this.publishUnitList = res.data.data["BZ_publishUnit"]
+        this.statusList = res.data.data["BZ_status"]
       })
     },
     getTablePageData () {

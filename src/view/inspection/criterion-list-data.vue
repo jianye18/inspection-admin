@@ -40,18 +40,17 @@ export default {
         pageNum: 1, // 当前页
         pageSize: 20, // 一页展示数量
         searchPhrase: '',
-        publishUnit: 0,
+        publishUnit: '',
         category: '',
         type: '',
         status: ''
       },
       publishUnitList: [],
-      statusList: Global.criterionStatusList,
+      statusList: [],
       columns: [
         {
           title: '标准名称',
           key: 'name',
-          width: 400,
           tooltip: true,
           render: function render (h, params) {
             let content = params.row.name
@@ -69,9 +68,22 @@ export default {
           }
         },
         {
+          title: '一级分类',
+          align: 'center',
+          key: 'categoryName',
+          width: 120
+        },
+        {
+          title: '二级分类',
+          align: 'center',
+          key: 'typeName',
+          width: 120
+        },
+        {
           title: '发布单位',
           key: 'publishUnitName',
-          tooltip: true
+          tooltip: true,
+          width: 120
         },
         {
           title: '状态',
@@ -101,29 +113,32 @@ export default {
   },
   mounted () {
     if (JSON.stringify(this.$route.params) !== '{}') {
-      this.formData.type = this.$route.params.type
-      if (!this.$route.params.type) {
-        this.formData.searchPhrase = this.$route.params.searchPhrase
-        this.formData.publishUnit = this.$route.params.publishUnit
-        this.formData.category = this.$route.params.category
-        this.formData.status = this.$route.params.status
+      let params = this.$route.params
+      if (Number(params['mold']) === 1) {
+        this.formData[params['key']] = params['value']
       } else {
-        if (this.$route.params.category) {
-          this.formData.category = this.$route.params.category
-        }
+        this.formData.searchPhrase = params['searchPhrase']
+        this.formData.publishUnit = params['publishUnit']
+        this.formData.category = params['category']
+        this.formData.type = params['type']
+        this.formData.status = params['status']
       }
     }
     this.getTablePageData()
     this.getAllSystemDataTypeList()
   },
   watch: {
-    '$store.getters.criterionCategory': function (val) {
-      this.formData.category = val
-      this.getTablePageData()
-    },
-    '$store.getters.criterionType': function (val) {
-      this.formData.type = val
-      this.getTablePageData()
+    '$store.getters.param': function (params) {
+      const _this = this
+      if (params['type'] === 'CC') {
+        let query = params.query
+        if (query.length > 0) {
+          query.forEach(function (item) {
+            _this.formData[item['key']] = item['value']
+          })
+        }
+        _this.getTablePageData()
+      }
     }
   },
   methods: {
@@ -132,17 +147,18 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/2',
+        url: '/api/system/getSystemDataByTypeCode/BZ_publishUnit,BZ_status',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.publishUnitList = res.data.data.publishUnitList
+        this.publishUnitList = res.data.data["BZ_publishUnit"]
+        this.statusList = res.data.data["BZ_status"]
       })
     },
     getTablePageData () {
       // console.log(this.formData)
       const option = {
-        url: '/show/getCriterionPageList',
+        url: '/api/criterion/getCriterionPageList',
         data: this.formData,
         method: 'post'
       }

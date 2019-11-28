@@ -85,7 +85,7 @@ export default {
       currentId: 0,
       publishUnitList: [],
       sourceList: [],
-      statusList: Global.lawStatusList,
+      statusList: [],
       lawData: {}
     }
   },
@@ -97,24 +97,24 @@ export default {
   methods: {
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/3',
+        url: '/api/system/getSystemDataByTypeCode/FG_publishUnit,FG_source,FG_status',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.publishUnitList = res.data.data.publishUnitList
-        this.sourceList = res.data.data.sourceList
+        this.publishUnitList = res.data.data['FG_publishUnit']
+        this.sourceList = res.data.data['FG_source']
+        this.statusList = res.data.data['FG_status']
       })
     },
     getLawById () {
       const _this = this
       const option = {
-        url: '/show/getLawById/' + this.currentId,
+        url: '/api/law/getLawById/' + this.currentId,
         method: 'get'
       }
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.lawData = res.data.data
-          _this.lawData['statusName'] = _this.statusList[_this.lawData.status].label
           _this.lawData.annexs = []
           if (_this.lawData.annexList.length > 0) {
             _this.lawData.annexList.forEach(function (item) {
@@ -136,7 +136,7 @@ export default {
     downloadFile () {
       const _this = this
       const option = {
-        url: "/show/downloadFile?businessId=" + this.currentId + "&baseType=3",
+        url: "/api/show/downloadFile?businessId=" + this.currentId + "&baseType=3",
         method: 'get',
         responseType: 'arraybuffer'
       }

@@ -140,10 +140,11 @@ export default {
     return {
       modelShow: false,
       formData: {
+        mold: 2,
         searchPhrase: '',
         institution: '',
         checkResult: '',
-        productType: this.$store.getters.productType
+        productType: ''
       },
       currentId: 0,
       institutionList: [],
@@ -170,17 +171,17 @@ export default {
   methods: {
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/1',
+        url: '/api/spotCheck/getAllInstitution',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.institutionList = res.data.data.institutionList
+        this.institutionList = res.data.data
       })
     },
     getSpotCheckById () {
       const _this = this
       const option = {
-        url: '/show/getSpotCheckById/' + this.currentId,
+        url: '/api/spotCheck/getSpotCheckById/' + this.currentId,
         method: 'get'
       }
       axios.request(option).then(res => {
@@ -206,11 +207,11 @@ export default {
       // console.log(this.formData)
       const _this = this
       const option = {
-        url: '/show/getSpotCheckPageList',
+        url: '/api/spotCheck/getSpotCheckPageList',
         data: {
           pageNum: 1, // 当前页
           pageSize: 5, // 一页展示数量
-          productType: param === 1 ? _this.spotCheckData.productType : 0,
+          productType: param === 1 ? _this.spotCheckData.productType : '',
           institution: param === 2 ? _this.spotCheckData.institution : '',
           currentId: _this.spotCheckData.id
         },
@@ -229,7 +230,7 @@ export default {
     },
     getMoreAboutData (param) {
       if (param === 1) {
-        this.$store.dispatch('CreateProductType',  this.spotCheckData.productType)
+        this.$store.dispatch('CreateParam', {type: 'SC', query: [{key: 'productType', value: this.spotCheckData.productType}]})
         this.formData.productType = this.spotCheckData.productType
       }
       if (param === 2) {

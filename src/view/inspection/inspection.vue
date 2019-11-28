@@ -48,7 +48,7 @@
     <Breadcrumb separator=">" :style="{margin: '10px 0'}">
       <BreadcrumbItem
         v-for="(item, index) in breadList"
-        :key="item.value"
+        :key="item.name"
         :class="index === 1 && breadList.length !== 2 ? 'bread_active_class' : ''">
         <span @click="backList(item.value)">{{item.name}}</span>
       </BreadcrumbItem>
@@ -66,7 +66,7 @@
                   @click="toRouter('up', menu.code, idx, menu.value)">{{menu.label}}</li>
             </ul>
           </div>
-          <div v-if="Number(type) === 2" style="border: 1px solid #dcdee2; margin-bottom: 15px;">
+          <div v-if="type === 'CC'" style="border: 1px solid #dcdee2; margin-bottom: 15px;">
             <div class="menu-title">
               <Icon type="md-chatbubbles" />
               {{leftDownData.title}}
@@ -87,93 +87,89 @@
 </template>
 <script>
 import axios from '@/libs/api.request'
+import Global from '@/store/global'
 export default {
   data () {
     return {
-      type: 1,
-      breadData: [
-        { list: [{ value: '', name: '抽检数据' }, { value: 'reload', name: '产品分类' }] },
-        { list: [{ value: '', name: '标准数据' }, { value: 'reload', name: '标准分类' }] },
-        { list: [{ value: '', name: '法规数据' }, { value: 'reload', name: '法规分类' }] }
-      ],
+      type: 'SC',
+      breadData: {
+        "SC": [{ value: '', name: '抽检数据' }, { value: 'productType', name: '产品分类' }],
+        "CC": [{ value: '', name: '标准数据' }, { value: 'category', name: '标准分类' }],
+        "LW": [{ value: '', name: '法规数据' }, { value: 'category', name: '法规分类' }],
+        "FC": [{ value: '', name: '飞检数据' }, { value: 'type', name: '飞检分类' }],
+        "AC": [{ value: '', name: '文章数据' }, { value: 'typeCode', name: '文章分类' }]
+      },
       breadList: [],
       leftUpData: {},
       leftDownData: {},
       upActiveIdx: null,
       downActiveIdx: null
-
     }
   },
   created () {
     const path = this.$route.path
     if (path.indexOf('spotCheck') !== -1) {
-      this.type = 1
+      this.type = 'SC'
     }
     if (path.indexOf('criterion') !== -1) {
-      this.type = 2
+      this.type = 'CC'
     }
     if (path.indexOf('law') !== -1) {
-      this.type = 3
+      this.type = 'LW'
+    }
+    if (path.indexOf('flightCheck') !== -1) {
+      this.type = 'FC'
     }
     this.getLeftMenuData().then(res => {
-      if (this.$store.getters.productType) {
-        this.initMenuActive(this.$store.getters.productType)
-      } else if (this.$store.getters.criterionCategory) {
-        this.initMenuActive(this.$store.getters.criterionCategory)
-      } else if (this.$store.getters.lawCategory) {
-        this.initMenuActive(this.$store.getters.lawCategory)
-      } else if (this.$store.getters.lawType) {
-        this.initMenuActive(this.$store.getters.lawType)
-      } else if (this.$store.getters.criterionType) {
-        const _this = this
-        let list = _this.leftUpData.menuList
-        for (let i = 0; i < list.length; i++) {
-          let value = Number(list[i].value)
-          if (value === this.$store.getters.criterionType) {
-            _this.downActiveIdx = i
-            break
+      if (JSON.stringify(this.$route.params) !== '{}') {
+        let params = this.$route.params
+        if (Number(params['mold']) === 1) {
+          if (this.type === 'CC' && params['key'] === 'type') {
+            this.initDownMenuActive(params['value'])
+          } else {
+            this.initUpMenuActive(params['value'])
           }
         }
-      } else {
-        this.toRouter('up', '', 0, 0)
       }
     })
-    this.breadList = this.breadData[this.type - 1].list
+    this.breadList = this.breadData[this.type]
   },
   mounted () {
 
   },
   watch: {
-    // '$route': function (to, from) {
-    //   console.log(from)
-    //   console.log(to)
-    // },
     '$store.getters.type': function (val) {
-      if (Number(val) !== 0) {
-        this.type = val
-        this.getLeftMenuData()
-        this.breadList = this.breadData[val - 1].list
-      }
+      this.type = val
+      this.getLeftMenuData()
+      this.breadList = this.breadData[val]
     },
-    '$store.getters.productType': function (val) {
-      if (Number(this.type) === 1) {
-        this.initMenuActive(val)
-      }
-    },
-    '$store.getters.criterionCategory': function (val) {
-      if (Number(this.type) === 2) {
-        this.initMenuActive(val)
+    '$store.getters.param': function (params) {
+      let query = params.query
+      this.initUpMenuActive(query[0].value)
+      if (query.length > 1) {
+        this.initDownMenuActive(query[1].value)
       }
     }
   },
   methods: {
-    initMenuActive (val) {
+    initUpMenuActive (val) {
       const _this = this
       let list = _this.leftUpData.menuList
       for (let i = 0; i < list.length; i++) {
-        let value = Number(list[i].value)
+        let value = list[i].value
         if (value === val) {
           _this.upActiveIdx = i
+          break
+        }
+      }
+    },
+    initDownMenuActive (val) {
+      const _this = this
+      let list = _this.leftDownData.menuList
+      for (let i = 0; i < list.length; i++) {
+        let value = list[i].value
+        if (value === val) {
+          _this.downActiveIdx = i
           break
         }
       }
@@ -183,76 +179,52 @@ export default {
       _this.leftUpData = {}
       _this.leftDownData = {}
       const option = {
-        url: '/system/getAllSystemDataTypeList/' + _this.type,
+        url: '/api/system/getSystemDataByTypeCode/' + Global.baseType[this.type],
         method: 'get',
         async: false
       }
       return new Promise(resolve => {
         axios.request(option).then(res => {
-          if (Number(_this.type) === 1) {
-            _this.leftUpData = { title: '抽检产品分类', menuList: res.data.data.productTypeList }
+          if (_this.type === 'SC') {
+            _this.leftUpData = { title: '抽检产品分类', menuList: res.data.data[Global.baseType[this.type]] }
           }
-          if (Number(_this.type) === 2) {
-            _this.leftUpData = { title: '标准一级分类', menuList: res.data.data.categoryList }
-            _this.leftDownData = { title: '标准二级分类', menuList: res.data.data.typeList }
+          if (_this.type === 'CC') {
+            let typeCodes = Global.baseType[this.type].split(',')
+            _this.leftUpData = { title: '标准一级分类', menuList: res.data.data[typeCodes[0]]}
+            _this.leftDownData = { title: '标准二级分类', menuList: res.data.data[typeCodes[1]] }
           }
-          if (Number(_this.type) === 3) {
-            _this.leftUpData = { title: '法律法规分类', menuList: res.data.data.typeList }
+          if (_this.type === 'LW') {
+            _this.leftUpData = { title: '法律法规分类', menuList: res.data.data[Global.baseType[this.type]] }
+          }
+          if (_this.type === 'FC') {
+            _this.leftUpData = { title: '飞检产品分类', menuList: res.data.data[Global.baseType[this.type]] }
+          }
+          if (_this.type === 'AC') {
+            _this.leftUpData = { title: '文章分类', menuList: res.data.data[Global.baseType[this.type]] }
           }
           resolve(res.data)
         })
       })
     },
-    toRouter (option, param, idx, val) {
-      console.log('列表左侧菜单点击参数：' + option + '***' + param + '***' + idx + '***' + val)
-      const _this = this
-      this.breadList = this.breadData[this.type - 1].list.concat([])
-      let params = {}
+    toRouter (option, typeCode, idx, val) {
+      console.log('列表左侧菜单点击参数：' + option + '***' + typeCode + '***' + idx + '***' + val)
+      this.breadList = this.breadData[this.type].concat([])
+      this.$store.dispatch('CreateParam', {type: this.type, query:[{key: typeCode.split('_')[1], value: val}]})
       if (option === 'up') {
-        if (Number(_this.type) === 1) {
-          this.$store.dispatch('CreateProductType', Number(val))
-        }
-        if (Number(_this.type) === 2) {
-          this.$store.dispatch('CreateCriterionCategory', Number(val))
-        }
-        if (Number(_this.type) === 3 && param === 'law_category') {
-          this.$store.dispatch('CreateLawCategory', Number(val))
-        }
-        if (Number(_this.type) === 3 && param === 'law_type') {
-          this.$store.dispatch('CreateLawType', Number(val))
-        }
-        if (val !== 0) {
-          _this.upActiveIdx = idx
-          _this.breadList.push({ value: _this.leftUpData.menuList[idx].value, name: _this.leftUpData.menuList[idx].label })
-          this.toList()
-        }
+        this.upActiveIdx = idx
+        this.breadList.push({ value: '', name: this.leftUpData.menuList[idx].label })
       }
-      if (Number(_this.type) === 2 && option === 'down') {
-        this.$store.dispatch('CreateCriterionType', Number(val))
-        if (val !== 0) {
-          _this.downActiveIdx = idx
-          _this.breadList.push({ value: _this.leftDownData.menuList[idx].value, name: _this.leftDownData.menuList[idx].label })
-          this.toList()
-        }
+      if (this.type === 'CC' && option === 'down') {
+        this.downActiveIdx = idx
+        this.breadList.push({ value: '', name: this.leftUpData.menuList[idx].label })
       }
     },
-    backList (path) {
-      if (path === 'reload') {
-        this.breadList = this.breadData[this.type - 1].list.concat([])
+    backList (key) {
+      if (key) {
+        this.breadList = this.breadData[this.type]
         this.upActiveIdx = null
         this.downActiveIdx = null
-        if (Number(this.type) === 1) {
-          this.$store.dispatch('CreateProductType', '')
-        }
-        if (Number(this.type) === 2) {
-          this.$store.dispatch('CreateCriterionCategory', '')
-          this.$store.dispatch('CreateCriterionType', '')
-        }
-        if (Number(this.type) === 3) {
-          this.$store.dispatch('CreateLawCategory', '')
-          this.$store.dispatch('CreateLawType', '')
-        }
-        this.toList()
+        this.$store.dispatch('CreateParam', {type: this.type, query:[{key: key, value: ''}]})
       }
     },
     toList (params) {

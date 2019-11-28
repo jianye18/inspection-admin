@@ -104,7 +104,7 @@ export default {
   data () {
     const _ths = this
     return {
-      typeCode: "ZJCPLX",
+      typeCode: "ZJ_productType",
       modelShow: false,
       modelTitle: '查看抽检数据',
       formData: {

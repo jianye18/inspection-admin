@@ -141,7 +141,7 @@ export default {
   data () {
     var _ths = this
     return {
-      typeCode: "FGFL,FGFBDW,FGLY,FGZT",
+      typeCode: "FG_category,FG_publishUnit,FG_source,FG_status",
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -328,10 +328,10 @@ export default {
       }
       axios.request(option).then(res => {
         //console.log(res.data)
-        this.categoryList = res.data.data["FGFL"]
-        this.publishUnitList = res.data.data["FGFBDW"]
-        this.statusList = res.data.data["FGZT"]
-        this.sourceList = res.data.data["FGLY"]
+        this.categoryList = res.data.data["FG_category"]
+        this.publishUnitList = res.data.data["FG_publishUnit"]
+        this.statusList = res.data.data["FG_status"]
+        this.sourceList = res.data.data["FG_source"]
       })
     },
     getLawTypeListByCode (code) {

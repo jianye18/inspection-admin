@@ -103,7 +103,7 @@ export default {
   data () {
     const _ths = this
     return {
-      typeCode: "FJLX,FJCLCS",
+      typeCode: "FJ_type,FJ_precautions",
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -254,8 +254,8 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.typeList = res.data.data["FJLX"]
-        this.precautionsList = res.data.data["FJCLCS"]
+        this.typeList = res.data.data["FJ_type"]
+        this.precautionsList = res.data.data["FJ_precautions"]
       })
     },
     getAllPublishUnit () {

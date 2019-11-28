@@ -2,59 +2,51 @@
   <div>
     <div class="detail-data detail-title">
       <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-        搜索法规结果
+        搜索飞检结果
       </div>
       <div class="search-con search-con-top">
         <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
           <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
-        <Select v-model="formData.source" style="width:200px" placeholder="请选择法规来源" clearable>
-          <Option v-for="item in sourceList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Select v-model="formData.precautions" style="width:200px" placeholder="请选择处理措施" clearable>
+          <Option v-for="item in precautionsList" :value="item.value">{{item.label}}</Option>
         </Select>
-        <Select v-model="formData.status" style="width:200px; margin-left: 2px;" placeholder="请选择状态" clearable>
-          <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
+        <Select v-model="formData.isDefect" style="width:200px" placeholder="是否有缺陷" clearable>
+          <Option v-for="item in defectList" :value="item.value" :key="item.value">{{item.label}}</Option>
         </Select>
-        <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+        <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase"/>
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
       </div>
     </div>
     <div class="detail-data detail-con">
       <div>
-        {{lawData.name}}
+        {{flightCheckData.businessName}}
       </div>
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
-          <td>法规名称</td>
-          <td colspan="3" class="detail-content">{{lawData.name}}</td>
+          <td>企业名称</td>
+          <td colspan="3">{{flightCheckData.businessName}}</td>
         </tr>
         <tr>
           <td>发布单位</td>
-          <td class="detail-content">{{lawData.publishUnitName}}</td>
-          <td>文号</td>
-          <td class="detail-content">{{lawData.codeNumber}}</td>
+          <td>{{flightCheckData.publishUnit}}</td>
+          <td>发布时间</td>
+          <td>{{flightCheckData.publishDate}}</td>
         </tr>
         <tr>
-          <td>发布日期</td>
-          <td class="detail-content">{{lawData.publishDate}}</td>
-          <td>实施日期</td>
-          <td class="detail-content">{{lawData.implementDate}}</td>
+          <td>飞检类型</td>
+          <td>{{flightCheckData.typeName}}</td>
+          <td>是否有缺陷</td>
+          <td>{{flightCheckData.defectName}}</td>
         </tr>
         <tr>
-          <td>法规内容</td>
-          <td colspan="3" class="detail-content" v-html="lawData.content"></td>
+          <td>问题内容</td>
+          <td colspan="3" class="detail-content" v-html="flightCheckData.problem"></td>
         </tr>
         <tr>
-          <td>附件下载</td>
-          <td colspan="3" class="detail-content">
-            {{lawData.annexs}}
-            <Button size="large" type="primary" icon="ios-book-outline" style="float: right; margin-right: 10px;">浏览文件</Button>
-            <Button size="large" type="success" icon="ios-download-outline" style="float: right; margin-right: 10px;">下载文件</Button>
-          </td>
+          <td>来源链接</td>
+          <td colspan="3"><a :href="flightCheckData.sourceLink" target="view_window">{{flightCheckData.sourceLink}}</a></td>
         </tr>
-        <!--<tr>-->
-          <!--<td>一键分享</td>-->
-          <!--<td colspan="3">{{lawData.annexs}}</td>-->
-        <!--</tr>-->
       </table>
       <div>
         <div class="data-detail-about">
@@ -69,9 +61,9 @@
             <ul>
               <li v-for="item in leftAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
+                  <a :href="'/view/flightCheckDetail?id=' + item.id" :title="item.businessName">{{item.businessName}}</a>
                 </span>
-                <em>{{item.statusName}}</em>
+                <em>{{item.checkResult === 1 ? '合格' : '不合格'}}</em>
               </li>
               <li v-if="leftAboutData.list.length === 0">
                 <span>
@@ -93,9 +85,9 @@
             <ul>
               <li v-for="item in rightAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
+                  <a :href="'/view/flightCheckDetail?id=' + item.id" :title="item.businessName">{{item.businessName}}</a>
                 </span>
-                <em>{{item.statusName}}</em>
+                <em>{{item.checkResult === 1 ? '合格' : '不合格'}}</em>
               </li>
               <li v-if="rightAboutData.list.length === 0">
                 <span>
@@ -119,109 +111,121 @@
 </template>
 <script>
 import axios from '@/libs/api.request'
+import Global from '@/store/global'
 import './search.less'
 import './detail.less'
 export default {
-  name: 'CriterionDetail',
+  name: 'SpotCheckDetail',
   data () {
     return {
       modelShow: false,
       formData: {
+        mold: 2,
         searchPhrase: '',
         publishUnit: '',
-        status: '',
-        source: ''
+        precautions: '',
+        isDefect: ''
       },
       currentId: 0,
       publishUnitList: [],
-      sourceList: [],
-      statusList: [],
-      lawData: {},
+      precautionsList: [],
+      defectList: Global.defectList,
+      flightCheckData: {},
       leftAboutData: {
-        title: '相关发布单位法规',
-        type: 'publish_unit',
-        code: '',
+        title: '相关分类抽检结果',
+        type: 'product_type',
+        code: '皮肤用化妆品',
         list: []
       },
       rightAboutData: {
-        title: '最新法规',
-        type: 'new',
-        code: '',
+        title: '相关机构抽检结果',
+        type: 'institution',
+        code: '皮肤用化妆品',
         list: []
       }
     }
   },
   mounted () {
-    this.getAllSystemDataTypeList()
     this.currentId = this.$route.query.id
-    this.getLawById()
+    this.getFlightCheckById()
+    this.getAllSystemDataTypeList()
+    this.getAllPublishUnit()
   },
   methods: {
-    handleUploadFile () {
-      this.getTablePageData()
-    },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/api/system/getSystemDataByTypeCode/FG_publishUnit,FG_source,FG_status',
+        url: '/api/system/getSystemDataByTypeCode/FJ_precautions',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.publishUnitList = res.data.data['FG_publishUnit']
-        this.sourceList = res.data.data['FG_source']
-        this.statusList = res.data.data['FG_status']
+        this.precautionsList = res.data.data["FJ_precautions"]
       })
     },
-    getLawById () {
+    getAllPublishUnit () {
+      const option = {
+        url: '/api/flightCheck/getAllPublishUnit',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.publishUnitList = res.data.data
+      })
+    },
+    getFlightCheckById () {
       const _this = this
       const option = {
-        url: '/api/law/getLawById/' + this.currentId,
+        url: '/api/flightCheck/getFlightCheckById/' + this.currentId,
         method: 'get'
       }
       axios.request(option).then(res => {
         if (res.data.code === 200) {
-          _this.lawData = res.data.data
-          // _this.lawData['annexs'] = _this.lawData.annexList ? _this.lawData.annexList.join(' ') : ''
+          _this.flightCheckData = res.data.data
+          _this.flightCheckData['defectName'] = Global.getLabelByVal(_this.flightCheckData.isDefect, _this.defectList)
           _this.getTablePageData(1)
           _this.getTablePageData(2)
         }
       })
     },
-    handleClear (e) {
-
-    },
     handleSearch () {
       this.$router.push({
-        name: 'law',
+        name: 'flightCheck',
         params: this.formData
       })
+    },
+    handleClear (e) {
+
     },
     getTablePageData (param) {
       // console.log(this.formData)
       const _this = this
       const option = {
-        url: '/api/law/getLawPageList',
+        url: '/api/flightCheck/getFlightCheckPageList',
         data: {
           pageNum: 1, // 当前页
           pageSize: 5, // 一页展示数量
-          publishUnit: param === 1 ? _this.lawData.publishUnit : '',
-          currentId: _this.lawData.id
+          publishUnit: param === 1 ? _this.flightCheckData.publishUnit : '',
+          type: param === 2 ? _this.flightCheckData.type : '',
+          currentId: _this.flightCheckData.id
         },
         method: 'post'
       }
       axios.request(option).then(res => {
         if (param === 1) {
-          _this.leftAboutData.code = _this.lawData.publishUnitName
+          _this.leftAboutData.code = _this.flightCheckData.typeName
           _this.leftAboutData.list = res.data.data.list
         }
         if (param === 2) {
-          _this.rightAboutData.code = _this.lawData.codeNumber
+          _this.rightAboutData.code = _this.flightCheckData.publishUnitName
           _this.rightAboutData.list = res.data.data.list
         }
       })
     },
     getMoreAboutData (param) {
       if (param === 1) {
-        this.formData.publishUnit = this.lawData.publishUnit
+        this.$store.dispatch('CreateParam', {type: 'FC', query: [{key: 'type', value: this.flightCheckData.type}]})
+        this.formData.type = this.flightCheckData.type
+      }
+      if (param === 2) {
+        this.formData.publishUnit = this.flightCheckData.publishUnit
       }
       this.handleSearch()
     }

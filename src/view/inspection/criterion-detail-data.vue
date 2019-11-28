@@ -68,7 +68,7 @@
                 <span>
                   <a :href="'/view/criterionDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
                 </span>
-                <em>{{statusList[item.status].label}}</em>
+                <em>{{item.statusName}}</em>
               </li>
               <li v-if="leftAboutData.list.length === 0">
                 <span>
@@ -92,7 +92,7 @@
                 <span>
                   <a :href="'/view/criterionDetail?id=' + item.id" :title="item.name">{{item.name}}</a>
                 </span>
-                <em>{{statusList[item.status].label}}</em>
+                <em>{{item.statusName}}</em>
               </li>
               <li v-if="rightAboutData.list.length === 0">
                 <span>
@@ -130,22 +130,18 @@ export default {
       },
       currentId: 0,
       publishUnitList: [],
-      statusList: [
-        { value: '1', label: '现行有效' },
-        { value: '2', label: '即将实施' },
-        { value: '3', label: '已经作废' }
-      ],
+      statusList: [],
       criterionData: {},
       leftAboutData: {
-        title: '相关机构标准',
+        title: '相关单位标准',
         type: 'publish_unit',
-        code: '皮肤用化妆品',
+        code: 'publish_unit',
         list: []
       },
       rightAboutData: {
         title: '相关分类标准',
         type: 'category',
-        code: '皮肤用化妆品',
+        code: 'category',
         list: []
       }
     }
@@ -161,25 +157,24 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/2',
+        url: '/api/system/getSystemDataByTypeCode/BZ_publishUnit,BZ_status',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.publishUnitList = res.data.data.publishUnitList
+        this.publishUnitList = res.data.data["BZ_publishUnit"]
+        this.statusList = res.data.data["BZ_status"]
       })
     },
     getCriterionById () {
       const _this = this
       const option = {
-        url: '/show/getCriterionById/' + this.currentId,
+        url: '/api/criterion/getCriterionById/' + this.currentId,
         method: 'get'
       }
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.criterionData = res.data.data
-          _this.criterionData['statusName'] = _this.statusList[_this.criterionData.status].label
           // _this.criterionData['annexs'] = _this.criterionData.annexList ? _this.criterionData.annexList.join(' ') : ''
-          console.log(_this.criterionData)
           _this.getTablePageData(1)
           _this.getTablePageData(2)
         }
@@ -198,12 +193,12 @@ export default {
       // console.log(this.formData)
       const _this = this
       const option = {
-        url: '/show/getCriterionPageList',
+        url: '/api/criterion/getCriterionPageList',
         data: {
           pageNum: 1, // 当前页
           pageSize: 5, // 一页展示数量
-          publishUnit: param === 1 ? _this.criterionData.publishUnit : 0,
-          category: param === 2 ? _this.criterionData.category : 0,
+          publishUnit: param === 1 ? _this.criterionData.publishUnit : '',
+          category: param === 2 ? _this.criterionData.category : '',
           currentId: _this.criterionData.id
         },
         method: 'post'
@@ -224,7 +219,7 @@ export default {
         this.formData.publishUnit = this.criterionData.publishUnit
       }
       if (param === 2) {
-        this.$store.dispatch('CreateCriterionCategory', this.criterionData.category)
+        this.$store.dispatch('CreateParam', {type: 'SC', query: [{key: 'category', value: this.criterionData.category}]})
         this.formData.category = this.criterionData.category
       }
       this.handleSearch()

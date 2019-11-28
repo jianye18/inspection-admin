@@ -9,6 +9,9 @@
       搜索法规结果
     </div>
     <div class="search-con search-con-top">
+      <Select v-model="formData.type" style="width:200px" placeholder="请选择法规二级分类" clearable>
+        <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+      </Select>
       <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
         <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
@@ -16,7 +19,7 @@
         <Option v-for="item in sourceList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
       <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
-        <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
+        <Option v-for="item in statusList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
       <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
@@ -33,7 +36,6 @@
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
-import Global from '@/store/global'
 import './list.less'
 export default {
   name: 'Law',
@@ -48,14 +50,15 @@ export default {
         pageNum: 1, // 当前页
         pageSize: 20, // 一页展示数量
         searchPhrase: '',
-        publishUnit: 0,
+        publishUnit: '',
         category: '',
         type: '',
         status: ''
       },
       publishUnitList: [],
       sourceList: [],
-      statusList: Global.lawStatusList,
+      statusList: [],
+      typeList: [],
       columns: [
         {
           title: '法规名称',
@@ -78,20 +81,34 @@ export default {
           }
         },
         {
+          title: '一级分类',
+          align: 'center',
+          key: 'categoryName'
+        },
+        {
+          title: '二级分类',
+          align: 'center',
+          key: 'typeName',
+          render: function render (h, params) {
+            let typeName = params.row.typeName
+            let content = '-'
+            if (typeName) {
+              content = typeName
+            }
+            return h('span', content)
+          }
+        },
+        {
           title: '发布单位',
           key: 'publishUnitName',
-          tooltip: true
+          tooltip: true,
+          width: 120
         },
         {
           title: '状态',
           align: 'center',
-          key: 'status',
-          width: 120,
-          render: function render (h, params) {
-            let status = params.row.status + ''
-            let content = Global.getLabelByVal(status, _this.statusList)
-            return h('span', content)
-          }
+          key: 'statusName',
+          width: 120
         },
         {
           title: '实施日期',
@@ -126,65 +143,60 @@ export default {
         pageNum: 1,
         total: 0,
         pages: 0
-      }
+      },
+      code: ''
     }
   },
   mounted () {
     if (JSON.stringify(this.$route.params) !== '{}') {
-      if (!this.$route.params.type) {
-        this.formData.searchPhrase = this.handleVal(this.$route.params.searchPhrase)
-        this.formData.publishUnit = this.handleVal(this.$route.params.publishUnit) + ''
-        this.formData.category = this.handleVal(this.$route.params.category)
-        this.formData.type = this.handleVal(this.$route.params.type)
-        this.formData.status = this.handleVal(this.$route.params.status) + ''
-        this.formData.source = this.handleVal(this.$route.params.source) + ''
+      let params = this.$route.params
+      if (Number(params['mold']) === 1) {
+        this.formData[params['key']] = params['value']
       } else {
-        if (this.$route.params.category) {
-          this.formData.category = this.$route.params.category
-        }
-        // if (this.$route.params.source) {
-        //   this.formData.source = this.$route.params.source
-        // }
+        this.formData.searchPhrase = params['searchPhrase']
+        this.formData.publishUnit = params['publishUnit']
+        this.formData.category = params['category']
+        this.formData.type = params['type']
+        this.formData.status = params['status']
       }
     }
     this.getTablePageData()
     this.getAllSystemDataTypeList()
+    this.getLawTypeList(this.code)
   },
   watch: {
-    '$store.getters.lawCategory': function (val) {
-      this.formData.category = val
-      this.getTablePageData()
-    },
-    '$store.getters.lawType': function (val) {
-      this.formData.type = val
-      this.getTablePageData()
+    '$store.getters.param': function (params) {
+      const _this = this
+      if (params['type'] === 'LW') {
+        let query = params.query
+        if (query.length > 0) {
+          query.forEach(function (item) {
+            _this.formData[item['key']] = item['value']
+          })
+        }
+        _this.getTablePageData()
+      }
     }
   },
   methods: {
-    handleVal (val) {
-      if (val) {
-        return val
-      } else {
-        return null
-      }
-    },
     handleUploadFile () {
       this.getTablePageData()
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/3',
+        url: '/api/system/getSystemDataByTypeCode/FG_publishUnit,FG_source,FG_status',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.publishUnitList = res.data.data.publishUnitList
-        this.sourceList = res.data.data.sourceList
+        this.publishUnitList = res.data.data['FG_publishUnit']
+        this.sourceList = res.data.data['FG_source']
+        this.statusList = res.data.data['FG_status']
       })
     },
     getTablePageData () {
       // console.log(this.formData)
       const option = {
-        url: '/show/getLawPageList',
+        url: '/api/law/getLawPageList',
         data: this.formData,
         method: 'post'
       }
@@ -193,6 +205,21 @@ export default {
         this.tableData.pageNum = res.data.data.pageNum
         this.tableData.total = res.data.data.total
         this.tableData.pages = res.data.data.pages
+      })
+    },
+    getLawTypeList (code) {
+      let url = ''
+      if (code) {
+        url = '/api/law/getLawTypeListByCode/' + code
+      } else {
+        url = '/api/law/getAllLawType/'
+      }
+      const option = {
+        url: url,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.typeList = res.data.data
       })
     },
     // 翻页钩子

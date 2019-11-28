@@ -113,6 +113,14 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/flight-check-list-data.vue')
+          },
+          {
+            path: 'flightCheckDetail',
+            name: 'flightCheckDetail',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/flight-check-detail-data.vue')
           }
         ]
       }

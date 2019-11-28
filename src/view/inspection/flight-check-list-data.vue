@@ -12,13 +12,13 @@
       <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
         <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
-      <Select v-model="formData.source" style="width:200px" placeholder="请选择法规来源" clearable>
-        <Option v-for="item in sourceList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+      <Select v-model="formData.precautions" style="width:200px" placeholder="请选择处理措施" clearable>
+        <Option v-for="item in precautionsList" :value="item.value">{{item.label}}</Option>
       </Select>
-      <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
-        <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
+      <Select v-model="formData.isDefect" style="width:200px" placeholder="是否有缺陷" clearable>
+        <Option v-for="item in defectList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
-      <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+      <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
     </div>
     <tables
@@ -48,28 +48,27 @@ export default {
         pageNum: 1, // 当前页
         pageSize: 20, // 一页展示数量
         searchPhrase: '',
-        publishUnit: 0,
-        category: '',
+        publishUnit: '',
+        precautions: '',
         type: '',
-        status: ''
+        isDefect: ''
       },
       publishUnitList: [],
-      sourceList: [],
-      statusList: Global.lawStatusList,
+      precautionsList: [],
+      defectList: Global.defectList,
       columns: [
         {
-          title: '法规名称',
-          key: 'name',
-          width: 400,
+          title: '企业名称',
+          key: 'businessName',
           tooltip: true,
           render: function render (h, params) {
-            var content = params.row.name
+            var content = params.row.businessName
             return h('span', {
               class: 'table-span',
               on: {
                 click: () => {
                   _this.$router.push({
-                    name: 'lawDetail',
+                    name: 'flightCheckDetail',
                     query: { id: params.row.id }
                   })
                 }
@@ -78,26 +77,40 @@ export default {
           }
         },
         {
-          title: '发布单位',
-          key: 'publishUnitName',
-          tooltip: true
+          title: '飞检类型',
+          align: 'center',
+          key: 'typeName',
+          width: 100
         },
         {
-          title: '状态',
+          title: '处理措施',
+          align: 'center',
+          key: 'precautionsName',
+          width: 100
+        },
+        {
+          title: '发布单位',
+          align: 'center',
+          key: 'publishUnit',
+          tooltip: true,
+          width: 140
+        },
+        {
+          title: '发布日期',
+          align: 'center',
+          width: 120,
+          key: 'publishDate'
+        },
+        {
+          title: '是否有问题',
           align: 'center',
           key: 'status',
           width: 120,
           render: function render (h, params) {
-            let status = params.row.status + ''
-            let content = Global.getLabelByVal(status, _this.statusList)
+            let isDefect = params.row.isDefect + ''
+            let content = Global.getLabelByVal(isDefect, _this.defectList)
             return h('span', content)
           }
-        },
-        {
-          title: '实施日期',
-          align: 'center',
-          width: 140,
-          key: 'implementDate'
         },
         {
           title: '操作',
@@ -131,60 +144,60 @@ export default {
   },
   mounted () {
     if (JSON.stringify(this.$route.params) !== '{}') {
-      if (!this.$route.params.type) {
-        this.formData.searchPhrase = this.handleVal(this.$route.params.searchPhrase)
-        this.formData.publishUnit = this.handleVal(this.$route.params.publishUnit) + ''
-        this.formData.category = this.handleVal(this.$route.params.category)
-        this.formData.type = this.handleVal(this.$route.params.type)
-        this.formData.status = this.handleVal(this.$route.params.status) + ''
-        this.formData.source = this.handleVal(this.$route.params.source) + ''
+      let params = this.$route.params
+      if (Number(params['mold']) === 1) {
+        this.formData[params['key']] = params['value']
       } else {
-        if (this.$route.params.category) {
-          this.formData.category = this.$route.params.category
-        }
-        // if (this.$route.params.source) {
-        //   this.formData.source = this.$route.params.source
-        // }
+        this.formData.searchPhrase = params['searchPhrase']
+        this.formData.publishUnit = params['publishUnit']
+        this.formData.type = params['type']
+        this.formData.isDefect = params['isDefect']
       }
     }
     this.getTablePageData()
     this.getAllSystemDataTypeList()
+    this.getAllPublishUnit()
   },
   watch: {
-    '$store.getters.lawCategory': function (val) {
-      this.formData.category = val
-      this.getTablePageData()
-    },
-    '$store.getters.lawType': function (val) {
-      this.formData.type = val
-      this.getTablePageData()
+    '$store.getters.param': function (params) {
+      const _this = this
+      if (params['type'] === 'FC') {
+        let query = params.query
+        if (query.length > 0) {
+          query.forEach(function (item) {
+            _this.formData[item['key']] = item['value']
+          })
+        }
+        _this.getTablePageData()
+      }
     }
   },
   methods: {
-    handleVal (val) {
-      if (val) {
-        return val
-      } else {
-        return null
-      }
-    },
     handleUploadFile () {
       this.getTablePageData()
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/system/getAllSystemDataTypeList/3',
+        url: '/api/system/getSystemDataByTypeCode/FJ_precautions',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.publishUnitList = res.data.data.publishUnitList
-        this.sourceList = res.data.data.sourceList
+        this.precautionsList = res.data.data["FJ_precautions"]
+      })
+    },
+    getAllPublishUnit () {
+      const option = {
+        url: '/api/flightCheck/getAllPublishUnit',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.publishUnitList = res.data.data
       })
     },
     getTablePageData () {
       // console.log(this.formData)
       const option = {
-        url: '/show/getFlightCheckPageList',
+        url: '/api/flightCheck/getFlightCheckPageList',
         data: this.formData,
         method: 'post'
       }

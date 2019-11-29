@@ -91,7 +91,7 @@ import Global from '@/store/global'
 export default {
   data () {
     return {
-      type: 'SC',
+      type: '',
       breadData: {
         "SC": [{ value: '', name: '抽检数据' }, { value: 'productType', name: '产品分类' }],
         "CC": [{ value: '', name: '标准数据' }, { value: 'category', name: '标准分类' }],
@@ -218,6 +218,7 @@ export default {
         this.downActiveIdx = idx
         this.breadList.push({ value: '', name: this.leftUpData.menuList[idx].label })
       }
+      this.toList({mold: 1, key:typeCode.split('_')[1], value: val})
     },
     backList (key) {
       if (key) {
@@ -225,30 +226,17 @@ export default {
         this.upActiveIdx = null
         this.downActiveIdx = null
         this.$store.dispatch('CreateParam', {type: this.type, query:[{key: key, value: ''}]})
+        this.toList(null)
       }
     },
     toList (params) {
       const _this = this
       const path = _this.$route.path
-      if (path.indexOf('spotCheck') === -1 || path.indexOf('criterion') === -1 || path.indexOf('law') === -1) {
-        if (Number(_this.type) === 1) {
-          _this.$router.push({
-            name: 'spotCheck',
-            params: params
-          })
-        }
-        if (Number(_this.type) === 2) {
-          _this.$router.push({
-            name: 'criterion',
-            params: params
-          })
-        }
-        if (Number(_this.type) === 3) {
-          _this.$router.push({
-            name: 'law',
-            params: params
-          })
-        }
+      if (path.indexOf('Detail') !== -1) {
+        _this.$router.push({
+          name: Global.basePath[_this.type],
+          params: params
+        })
       }
     }
   }

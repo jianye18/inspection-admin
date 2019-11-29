@@ -111,27 +111,6 @@ export default {
             let content = Global.getLabelByVal(isDefect, _this.defectList)
             return h('span', content)
           }
-        },
-        {
-          title: '操作',
-          align: 'center',
-          width: 80,
-          key: 'operation',
-          render: function render (h, params) {
-            return h('div', [h('Icon', {
-              props: {
-                type: 'ios-search-outline'
-              },
-              on: {
-                click: () => {
-                  _this.$router.push({
-                    name: 'lawView',
-                    query: { id: params.row.id }
-                  })
-                }
-              }
-            }, '')])
-          }
         }
       ],
       tableData: {

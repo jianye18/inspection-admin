@@ -148,7 +148,7 @@ export default [
       }
     ]
   },
-  {
+  /*{
     path: '',
     name: 'doc',
     meta: {
@@ -423,7 +423,7 @@ export default [
         component: () => import('@/view/argu-page/query.vue')
       }
     ]
-  },
+  },*/
   {
     path: '/data',
     name: 'data',
@@ -523,6 +523,16 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/permission/permission.vue')
+      },
+      {
+        path: 'banner',
+        name: 'banner',
+        meta: {
+          icon: 'md-flower',
+          title: '轮播图管理',
+          notCache: true
+        },
+        component: () => import('@/view/system-manager/banner/banner.vue')
       },
       {
         path: 'data-type',

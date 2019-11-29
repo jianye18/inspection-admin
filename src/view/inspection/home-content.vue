@@ -178,7 +178,7 @@
             <Tabs value="newArticle">
               <TabPane label="最新文章" name="newArticle">
                 <ul>
-                  <li v-for="item in newArticle" :title="item.title">{{item.title}}</li>
+                  <li v-for="item in newArticleList" :title="item.title">{{item.title}}</li>
                 </ul>
                 <div class="article_more">
                   查看更多
@@ -186,7 +186,7 @@
               </TabPane>
               <TabPane label="热门文章" name="hotArticle">
                 <ul>
-                  <li v-for="item in hotArticle" :title="item.title">{{item.title}}</li>
+                  <li v-for="item in hotArticleList" :title="item.title">{{item.title}}</li>
                 </ul>
                 <div class="article_more">
                   查看更多
@@ -212,7 +212,7 @@ export default {
       },
       value3: 0,
       autoplaySpeed: 2500,
-      newArticle: [
+      newArticleList: [
         { title: '最新文章1' },
         { title: '最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1' },
         { title: '最新文章1' },
@@ -224,7 +224,7 @@ export default {
         { title: '最新文章1' },
         { title: '最新文章1' }
       ],
-      hotArticle: [
+      hotArticleList: [
         { title: '热门文章1' },
         { title: '热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1' },
         { title: '热门文章1' },

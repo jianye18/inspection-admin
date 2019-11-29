@@ -132,15 +132,15 @@ export default {
       defectList: Global.defectList,
       flightCheckData: {},
       leftAboutData: {
-        title: '相关分类抽检结果',
-        type: 'product_type',
-        code: '皮肤用化妆品',
+        title: '相关分类飞检结果',
+        type: 'typeCode',
+        code: 'typeCode',
         list: []
       },
       rightAboutData: {
-        title: '相关机构抽检结果',
-        type: 'institution',
-        code: '皮肤用化妆品',
+        title: '相关单位飞检结果',
+        type: 'publishUnit',
+        code: 'publishUnit',
         list: []
       }
     }
@@ -202,8 +202,8 @@ export default {
         data: {
           pageNum: 1, // 当前页
           pageSize: 5, // 一页展示数量
-          publishUnit: param === 1 ? _this.flightCheckData.publishUnit : '',
-          type: param === 2 ? _this.flightCheckData.type : '',
+          type: param === 1 ? _this.flightCheckData.type : '',
+          publishUnit: param === 2 ? _this.flightCheckData.publishUnit : '',
           currentId: _this.flightCheckData.id
         },
         method: 'post'

@@ -120,6 +120,9 @@ export default {
     if (path.indexOf('flightCheck') !== -1) {
       this.type = 'FC'
     }
+    if (path.indexOf('article') !== -1) {
+      this.type = 'AC'
+    }
     this.getLeftMenuData().then(res => {
       if (JSON.stringify(this.$route.params) !== '{}') {
         let params = this.$route.params

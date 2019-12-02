@@ -163,18 +163,18 @@
             </Carousel>
           </div>
           <div class="article_class">
-            <Tabs value="newArticle">
-              <TabPane label="最新文章" name="newArticle">
+            <Tabs v-model="orderName">
+              <TabPane label="最新文章" name="create_time">
                 <ul>
-                  <li v-for="item in newArticleList" :title="item.title">{{item.title}}</li>
+                  <li v-for="item in newArticleList" :title="item.title" @click="toViewArticle(item.id)">{{item.title}}</li>
                 </ul>
                 <div class="article_more">
                   查看更多
                 </div>
               </TabPane>
-              <TabPane label="热门文章" name="hotArticle">
+              <TabPane label="热门文章" name="read_count">
                 <ul>
-                  <li v-for="item in hotArticleList" :title="item.title">{{item.title}}</li>
+                  <li v-for="item in hotArticleList" :title="item.title" @click="toViewArticle(item.id)">{{item.title}}</li>
                 </ul>
                 <div class="article_more">
                   查看更多
@@ -200,30 +200,9 @@ export default {
       },
       value3: 0,
       autoplaySpeed: 2500,
-      newArticleList: [
-        { title: '最新文章1' },
-        { title: '最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1最新文章1' },
-        { title: '最新文章1' },
-        { title: '最新文章1' },
-        { title: '最新文章1' },
-        { title: '最新文章1' },
-        { title: '最新文章1' },
-        { title: '最新文章1' },
-        { title: '最新文章1' },
-        { title: '最新文章1' }
-      ],
-      hotArticleList: [
-        { title: '热门文章1' },
-        { title: '热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1热门文章1' },
-        { title: '热门文章1' },
-        { title: '热门文章1' },
-        { title: '热门文章1' },
-        { title: '热门文章1' },
-        { title: '热门文章1' },
-        { title: '热门文章1' },
-        { title: '热门文章1' },
-        { title: '热门文章1' }
-      ],
+      orderName: 'create_time',
+      newArticleList: [],
+      hotArticleList: [],
       contentData: [
         {
           title: '抽检结果',
@@ -260,7 +239,14 @@ export default {
   },
   mounted () {
     this.getHomePageFilterItem()
+    this.getHomeArticleList()
     this.getViewBannerList()
+  },
+  watch: {
+    'orderName': function (val) {
+      console.log(val)
+      this.getHomeArticleList()
+    }
   },
   methods: {
     searchToList () {
@@ -280,6 +266,23 @@ export default {
       this.$router.push({
         name: path,
         params: this.params
+      })
+    },
+    getHomeArticleList () {
+      const _this = this
+      const option = {
+        url: '/api/show/getHomeArticleList/?limit=10&orderName=' + _this.orderName,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        if (res.data.code === 200) {
+          if (_this.orderName === 'create_time') {
+            _this.newArticleList = res.data.data
+          }
+          if (_this.orderName === 'read_count') {
+            _this.hotArticleList = res.data.data
+          }
+        }
       })
     },
     getViewBannerList () {
@@ -310,6 +313,13 @@ export default {
             _this.contentData[index].typeList = result[_this.contentData[index].type]
           })
         }
+      })
+    },
+    toViewArticle (articleId) {
+      this.$store.dispatch('CreateType', 'AC')
+      this.$router.push({
+        name: 'articleDetail',
+        query: { id: articleId }
       })
     },
     toMoreListPage (type, path) {

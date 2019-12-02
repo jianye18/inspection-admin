@@ -90,7 +90,18 @@ export default {
         {
           title: '备注',
           align: 'center',
-          key: 'remark'
+          key: 'remark',
+          render: function render (h, params) {
+            // console.log(params.row)
+            let content = ''
+            let remark = params.row.remark
+            if (remark) {
+              content = remark
+            } else {
+              content = '-'
+            }
+            return h('span', content)
+          }
         },
         {
           title: '状态',

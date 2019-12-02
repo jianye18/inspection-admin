@@ -72,7 +72,7 @@ import axios from '@/libs/api.request'
 import Global from '@/store/global'
 import './search.less'
 export default {
-  name: 'CriterioView',
+  name: 'LawView',
   data () {
     return {
       modelShow: false,

@@ -121,6 +121,22 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/flight-check-detail-data.vue')
+          },
+          {
+            path: 'article',
+            name: 'article',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/article-list-data.vue')
+          },
+          {
+            path: 'articleDetail',
+            name: 'articleDetail',
+            meta: {
+              notCache: true
+            },
+            component: () => import('@/view/inspection/article-detail-data.vue')
           }
         ]
       }
@@ -543,6 +559,16 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/constant/data-type.vue')
+      },
+      {
+        path: 'user-log',
+        name: 'user-log',
+        meta: {
+          icon: 'md-flower',
+          title: '日志管理',
+          notCache: true
+        },
+        component: () => import('@/view/system-manager/userLog/userLog.vue')
       }/*,
       {
         path: 'menu',

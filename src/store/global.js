@@ -1,3 +1,5 @@
+const resourcesBasePath = '/api/images/'
+
 const basePath = {
   "SC": 'spotCheck',
   "CC": 'criterion',
@@ -45,6 +47,7 @@ function getLabelByVal(val, arr) {
 }
 
 export default {
+  resourcesBasePath,
   basePath,
   baseType,
   statusList,

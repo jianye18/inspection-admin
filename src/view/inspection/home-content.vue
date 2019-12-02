@@ -155,22 +155,10 @@
               radius-dot
               trigger="hover"
               arrow="hover">
-              <CarouselItem>
+              <CarouselItem v-for="item in viewBannerList">
                 <div class="demo-carousel">
-                  <img src="../../assets/images/home/1.png"/>
+                  <img :src="item"/>
                 </div>
-              </CarouselItem>
-              <CarouselItem>
-                <div class="demo-carousel">
-                  <img src="../../assets/images/home/2.png"/></div>
-              </CarouselItem>
-              <CarouselItem>
-                <div class="demo-carousel">
-                  <img src="../../assets/images/home/3.png"/></div>
-              </CarouselItem>
-              <CarouselItem>
-                <div class="demo-carousel">
-                  <img src="../../assets/images/home/4.png"/></div>
               </CarouselItem>
             </Carousel>
           </div>
@@ -266,11 +254,13 @@ export default {
           typeList: []
         }
       ],
-      params:{mold: 1, key:'', value: ''}
+      params:{mold: 1, key:'', value: ''},
+      viewBannerList: []
     }
   },
   mounted () {
     this.getHomePageFilterItem()
+    this.getViewBannerList()
   },
   methods: {
     searchToList () {
@@ -290,6 +280,21 @@ export default {
       this.$router.push({
         name: path,
         params: this.params
+      })
+    },
+    getViewBannerList () {
+      const _this = this
+      const option = {
+        url: '/api/show/getViewBannerList',
+        method: 'post',
+        data: {isView: 1, limit: 4}
+      }
+      axios.request(option).then(res => {
+        if (res.data.code === 200) {
+          res.data.data.forEach(function (item) {
+            _this.viewBannerList.push(Global.resourcesBasePath + item.path + item.name)
+          })
+        }
       })
     },
     getHomePageFilterItem () {

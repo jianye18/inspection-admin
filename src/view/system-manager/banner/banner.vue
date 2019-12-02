@@ -2,6 +2,12 @@
   .ivu-table-cell{
     padding:  0px;
   }
+  .ivu-modal-footer {
+    display: none;
+  }
+  .ivu-modal-body {
+    text-align: center
+  }
 </style>
 <template>
   <div>
@@ -28,11 +34,20 @@
             <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
         </div>
       </Card>
+
+    <Modal
+      v-model="modelShow"
+      :title="modelTitle"
+      :mask-closable="false">
+      <img :src="viewUrl">
+
+    </Modal>
   </div>
 </template>
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
+import Global from '@/store/global'
 export default {
   name: 'Banner',
   components: {
@@ -98,8 +113,9 @@ export default {
           title: '操作',
           align: 'center',
           key: 'operation',
-          width: 160,
+          width: 220,
           render: function render (h, params) {
+            let isView = params.row.isView
             return h('div', [h('Button', {
               props: {
                 type: 'error',
@@ -109,7 +125,8 @@ export default {
               },
               style: {
                 marginLeft: '10px',
-                marginBottom: '5px'
+                marginBottom: '5px',
+                display: isView === 1 ? 'none' : ''
               },
               on: {
                 click: () => {
@@ -117,6 +134,22 @@ export default {
                 }
               }
             }, '删除'), h('Button', {
+              props: {
+                type: 'primary',
+                icon: isView === 1 ? 'ios-arrow-dropdown' : 'ios-arrow-dropup',
+                disabled: false,
+                size: 'small'
+              },
+              style: {
+                marginLeft: '10px',
+                marginBottom: '5px'
+              },
+              on: {
+                click: () => {
+                  _ths.handleIsView(params.row.id, isView === 1 ? 0 : 1)
+                }
+              }
+            }, isView === 1 ? '隐藏' : '展示'), h('Button', {
               props: {
                 type: 'primary',
                 icon: 'ios-create-outline',
@@ -129,10 +162,11 @@ export default {
               },
               on: {
                 click: () => {
-                  _ths.handleEditor(params)
+                  _ths.handleView(params.row.path, params.row.name)
+                  // window.open(params.row.viewUrl)
                 }
               }
-            }, '编辑')])
+            }, '查看')])
           }
         }
       ],
@@ -143,13 +177,15 @@ export default {
         pages: 0
       },
       formItem: {},
+      modelShow: false,
+      modelTitle: '',
       msgTitle: '',
+      viewUrl: '',
       uploadLoading: false
     }
   },
   mounted () {
     this.getTablePageData()
-    this.getPermissionWithPageType()
   },
   methods: {
     handleBeforeUpload (file) {
@@ -159,7 +195,7 @@ export default {
         let fileFormData = new FormData()
         fileFormData.append('file', file)
         const option = {
-          url: '/api/banner/upload',
+          url: '/banner/uploadBanner',
           data: fileFormData,
           method: 'post',
           headers: {
@@ -186,7 +222,7 @@ export default {
     },
     getTablePageData () {
       const option = {
-        url: '/permission/getPermissionPageList',
+        url: '/banner/getBannerPageList',
         data: this.formData,
         method: 'post'
       }
@@ -209,23 +245,24 @@ export default {
     handleSearch () {
       this.getTablePageData()
     },
-    handleAddData () {
-      this.modelShow = true
-      this.$refs['formItem'].resetFields()
-      this.modelTitle = '新增权限'
-      this.msgTitle = '新增权限信息成功'
+    handleIsView (bannerId, isView) {
+
+      this.msgTitle = isView === 1 ? '展示轮播图成功' : '隐藏轮播图成功'
+      this.$Modal.confirm({
+        title: isView === 1 ? '展示' : '隐藏',
+        content: isView === 1 ? '你确定要展示吗?' : '你确定要隐藏吗?',
+        loading: true,
+        onOk: () => {
+          this.viewData(bannerId, isView)
+        }
+      })
     },
-    handleEditor (params) {
-      this.formItem = JSON.parse(JSON.stringify(params.row))
-      this.formItem.status = this.formItem.status + ''
-      this.formItem.parentId = this.formItem.parentId + ''
-      this.formItem.type = this.formItem.type + ''
+    handleView (path, name) {
       this.modelShow = true
-      this.modelTitle = '编辑权限'
-      this.msgTitle = '修改权限信息成功'
+      this.modelTitle = '查看轮播图'
+      this.viewUrl = Global.resourcesBasePath + path + name
     },
     handleDelete (params) {
-      console.log(params.row.id)
       this.msgTitle = '删除权限信息成功'
       this.$Modal.confirm({
         title: '删除',
@@ -240,41 +277,27 @@ export default {
       this.modelShow = false
       this.$Modal.remove()
     },
-    saveFormData () {
+    viewData (bannerId, isView) {
       const _this = this
-      _this.$refs['formItem'].validate(function (valid) {
-        if (valid) {
-          _this.modelButtonLoading = true
-          console.log(_this.formItem)
-          axios.request({
-            url: '/permission/savePermission',
-            data: _this.formItem,
-            method: 'post'
-          }).then(res => {
-            // console.log(res)
-            setTimeout(function () {
-              _this.modelButtonLoading = false
-              if (res.data.code === 200) {
-                _this.$Message.success(_this.msgTitle)
-                _this.modelShow = false
-                // _this.$Modal.remove();
-                _this.getTablePageData()
-              } else if (res.data.code === 1002) {
-                _this.$Message.error(res.data.msg)
-              } else {
-                _this.$Message.error('网络异常，请稍后重试')
-              }
-            }, 1500)
-          }).catch(res => {
-            _this.modelButtonLoading = false
-          })
+      axios.request({
+        url: '/banner/viewBanner?bannerId=' + bannerId + '&isView=' + isView,
+        method: 'get'
+      }).then(res => {
+        _this.$Modal.remove()
+        if (res.data.code === 200) {
+          _this.$Message.success(_this.msgTitle)
+          _this.getTablePageData()
+        } else if (res.data.code === 302) {
+          _this.$Message.error(res.data.msg)
+        } else {
+          _this.$Message.error('网络异常，请稍后重试')
         }
       })
     },
     deleteData (id) {
       const _this = this
       axios.request({
-        url: '/permission/deletePermission/' + id,
+        url: '/banner/deleteBanner/' + id,
         method: 'delete'
       }).then(res => {
         _this.$Modal.remove()

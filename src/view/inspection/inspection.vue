@@ -37,14 +37,9 @@
     color: #0b81bf;
     cursor: pointer;
   }
-  .layout-footer-center{
-    text-align: center;
-    height: 100px;
-    margin-bottom: 50px;
-  }
 </style>
 <template>
-  <Layout style="padding: 0 180px 0;min-height: calc(100vh); max-height: calc(100vh); overflow-y: auto">
+  <Layout style="padding: 0 180px 0; height: auto; min-height:calc(75vh) ">
     <Breadcrumb separator=">" :style="{margin: '10px 0'}">
       <BreadcrumbItem
         v-for="(item, index) in breadList"
@@ -82,7 +77,6 @@
         </Content>
       </Layout>
     </Content>
-    <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer>
   </Layout>
 </template>
 <script>

@@ -5,6 +5,8 @@
     position: relative;
     /*border-radius: 4px;*/
     overflow: hidden;
+    max-height: calc(100vh);
+    overflow-y: auto
   }
   .layout-logo{
     width: 300px;
@@ -40,6 +42,15 @@
   .layout-nav ul li.active_class{
     background-color: #0b81bf;
   }
+  .layout-footer-center{
+    margin-top: 20px;
+    background: #fff;
+    text-align: center;
+    height: 110px;
+    /*margin-bottom: 50px;*/
+    border-top: 1px solid #f2f2f2;
+    padding: 15px 180px;
+  }
 </style>
 <template>
   <div class="layout">
@@ -59,7 +70,18 @@
           </ul>
         </div>
       </Header>
-      <router-view></router-view>
+      <Content>
+        <router-view></router-view>
+      </Content>
+      <Footer class="layout-footer-center">
+        <div style="font-size: 18px; height: 50px; line-height: 50px;">
+          <span style="padding-right: 10px;">关于我们</span>
+          <span style="padding-left: 10px; border-left: 1px dashed #c0c0c0;">联系我们</span>
+        </div>
+        <div style="font-size: 12px; color: #e5e5e5; height: 30px; line-height: 30px;">
+          版权所有  2002-2019  ICP证: 苏A2-20090288-1   苏公网安备 33010602000113号
+        </div>
+      </Footer>
     </Layout>
   </div>
 </template>

@@ -1,7 +1,4 @@
 <style>
-  .layout-footer-center{
-    text-align: center;
-  }
   .search-box{
     height: 200px;
     /*background-color: #67647D;*/
@@ -108,7 +105,7 @@
   }
 </style>
 <template>
-  <Layout style="padding: 10px 180px 100px; max-top: 15px; max-height: calc(100vh); overflow-y: auto">
+  <Layout style="padding: 10px 180px 0px; max-top: 15px;">
     <Content>
       <Layout>
         <Content :style="{minHeight: '620px', marginRight: '15px'}">
@@ -133,7 +130,7 @@
                 {{item.title}}
               </span>
               <!--<span class="data-type-select">-->
-                <!--{{item.name}}-->
+              <!--{{item.name}}-->
               <!--</span>-->
             </div>
             <div class="data-list">
@@ -185,7 +182,6 @@
         </Sider>
       </Layout>
     </Content>
-    <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer>
   </Layout>
 </template>
 <script>

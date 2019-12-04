@@ -6,7 +6,7 @@ import app from './module/app'
 
 const base = {
   state: {
-    type: 0
+    type: 'SC'
   },
   mutations: {
     setType: (state, type) => {

@@ -23,7 +23,7 @@ export default [
     component: () => import('@/view/login/login.vue')
   },
   {
-    path: '/inspection',
+    path: '/',
     name: 'inspection',
     meta: {
       title: '展示页',
@@ -42,7 +42,7 @@ export default [
         component: () => import('@/view/inspection/home-content.vue')
       },
       {
-        path: '/view',
+        path: '/',
         name: 'view',
         meta: {
           title: '数据展示页',
@@ -502,7 +502,7 @@ export default [
     ]
   },
   {
-    path: '/system',
+    path: '/',
     name: 'system',
     meta: {
       icon: 'md-flower',

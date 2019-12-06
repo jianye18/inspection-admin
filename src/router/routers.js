@@ -441,7 +441,7 @@ export default [
     ]
   },*/
   {
-    path: '/data',
+    path: '/',
     name: 'data',
     meta: {
       icon: 'md-menu',

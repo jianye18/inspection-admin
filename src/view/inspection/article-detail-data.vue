@@ -33,12 +33,12 @@
         <Col span="20" offset="2" class="detail-data-title">{{articleData.title}}</Col>
       </Row>
       <Row>
-        <Col span="4" offset="2">文章类型：{{articleData.typeName}}</Col>
-        <Col span="4" offset="6">阅读量：{{articleData.readCount}}</Col>
+        <Col span="6" offset="2">文章类型：{{articleData.typeName}}</Col>
+        <Col span="6" offset="2">阅读量：{{articleData.readCount}}</Col>
       </Row>
       <Row>
-        <Col span="4" offset="2">作者：{{articleData.author}}</Col>
-        <Col span="4" offset="6">发布时间：{{articleData.publishTime}}</Col>
+        <Col span="6" offset="2">来源：{{articleData.author}}</Col>
+        <Col span="6" offset="2">发布时间：{{articleData.publishTime}}</Col>
       </Row>
       <Row>
         <Col span="20" offset="2" class="detail-data-content" v-html="articleData.content"></Col>

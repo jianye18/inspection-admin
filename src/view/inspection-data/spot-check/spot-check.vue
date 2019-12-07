@@ -5,9 +5,6 @@
   .ivu-select{
     margin-left: 2px;
   }
-  .ivu-modal-footer {
-    display: none;
-  }
 </style>
 <template>
   <div>
@@ -47,48 +44,61 @@
     <Modal
       v-model="modelShow"
       :title="modelTitle"
-      :mask-closable="false">
+      :mask-closable="false"
+      width="680px">
       <Form ref="formItem" :model="formItem" :label-width="180" action="">
         <FormItem label="标称委托企业" prop="company">
-          <Input v-model="formItem.company" readonly/>
+          <Input v-model="formItem.company" placeholder="请输入标称委托企业"/>
         </FormItem>
         <FormItem label="标称生产企业/进口代理商名称" prop="producer">
-          <Input v-model="formItem.producer" readonly/>
+          <Input v-model="formItem.producer" placeholder="请输入标称生产企业/进口代理商名称"/>
         </FormItem>
         <FormItem label="被采样单位名称" prop="unit">
-          <Input v-model="formItem.unit" readonly/>
+          <Input v-model="formItem.unit" placeholder="请输入被采样单位名称"/>
         </FormItem>
         <FormItem label="样品名称" prop="sample">
-          <Input v-model="formItem.sample" readonly/>
+          <Input v-model="formItem.sample" placeholder="请输入样品名称"/>
         </FormItem>
         <FormItem label="包装规格" prop="specification">
-          <Input v-model="formItem.specification" readonly/>
+          <Input v-model="formItem.specification" placeholder="请输入包装规格"/>
         </FormItem>
-        <FormItem label="产品分类" prop="productTypeName">
-          <Input v-model="formItem.productTypeName" readonly/>
+        <FormItem label="产品分类" prop="productType">
+          <Select v-model="formItem.productType" style="width:200px" placeholder="请选择产品分类" clearable>
+            <Option v-for="item in productTypeList" :value="item.value">{{ item.label }}</Option>
+          </Select>
         </FormItem>
         <FormItem label="产地" prop="location">
-          <Input v-model="formItem.location" readonly/>
+          <Input v-model="formItem.location" placeholder="请输入产地"/>
         </FormItem>
-        <FormItem label="抽检结果" prop="checkResultName">
-          <Input v-model="formItem.checkResultName" readonly/>
+        <FormItem label="抽检结果" prop="checkResult">
+          <Select v-model="formItem.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
+            <Option v-for="item in checkResultList" :value="item.value">{{ item.label }}</Option>
+          </Select>
         </FormItem>
         <FormItem label="不合格项目" prop="subject">
-          <Input v-model="formItem.subject" readonly/>
+          <Input v-model="formItem.subject" placeholder="请输入不合格项目"/>
         </FormItem>
         <FormItem label="公布机构" prop="institution">
-          <Input v-model="formItem.institution" readonly/>
+          <Input v-model="formItem.institution" placeholder="请输入公布机构"/>
         </FormItem>
         <FormItem label="公布日期" prop="publishDate">
-          <Input v-model="formItem.publishDate" readonly/>
+          <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.publishDate=$event"
+                      placeholder="请选择发布日期" :value="formItem.publishDate" style="width:200px"></DatePicker>
         </FormItem>
-        <FormItem label="涉嫌假冒" prop="isFakeName">
-          <Input v-model="formItem.isFakeName" readonly/>
+        <FormItem label="涉嫌假冒" prop="isFake">
+          <Select v-model="formItem.isFake" style="width:200px" placeholder="请选择是否涉嫌假冒" clearable>
+            <Option value="0">否</Option>
+            <Option value="1">是</Option>
+          </Select>
         </FormItem>
         <FormItem label="来源链接" prop="sourceLink">
-          <Input v-model="formItem.sourceLink" readonly/>
+          <Input v-model="formItem.sourceLink" placeholder="请输入来源链接"/>
         </FormItem>
       </Form>
+      <div slot="footer">
+        <Button type="default" size="large" @click="modelCancel">取消</Button>
+        <Button type="primary" size="large" @click="saveFormData" :loading="modelButtonLoading">確定</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -104,7 +114,7 @@ export default {
   data () {
     const _ths = this
     return {
-      typeCode: "ZJ_productType",
+      typeCode: 'ZJ_productType',
       modelShow: false,
       modelTitle: '查看抽检数据',
       formData: {
@@ -189,12 +199,12 @@ export default {
           title: '操作',
           align: 'center',
           key: 'operation',
-          width: 120,
+          width: 160,
           render: function render (h, params) {
             return h('div', [h('Button', {
               props: {
-                type: 'primary',
-                icon: 'ios-clipboard',
+                type: 'error',
+                icon: 'ios-trash-outline',
                 disabled: false,
                 size: 'small'
               },
@@ -204,10 +214,26 @@ export default {
               },
               on: {
                 click: () => {
-                  _ths.handleView(params.row)
+                  _ths.handleDelete(params)
                 }
               }
-            }, '查看详情')])
+            }, '删除'), h('Button', {
+              props: {
+                type: 'primary',
+                icon: 'ios-create-outline',
+                disabled: false,
+                size: 'small'
+              },
+              style: {
+                marginLeft: '10px',
+                marginBottom: '5px'
+              },
+              on: {
+                click: () => {
+                  _ths.handleEditor(params)
+                }
+              }
+            }, '编辑')])
           }
         }
       ],
@@ -217,8 +243,10 @@ export default {
         total: 0,
         pages: 0
       },
+      msgTitle: '',
       formItem: {},
-      uploadLoading: false
+      uploadLoading: false,
+      modelButtonLoading: false
     }
   },
   mounted () {
@@ -242,7 +270,7 @@ export default {
           }
         }
         axios.request(option).then(res => {
-          console.log(res)
+          _this.$Message.success('导入抽检数据成功')
           _this.getTablePageData()
         }).catch(res => {
           _this.uploadLoading = false
@@ -301,11 +329,72 @@ export default {
     handleSearch () {
       this.getTablePageData()
     },
-    handleView (data) {
-      this.formItem = data
-      this.formItem.isFakeName = Number(this.formItem.isFake) === 1 ? '是' : '否'
-      this.formItem.checkResultName = Number(this.formItem.checkResult) === 1 ? '合格' : '不合格'
+    modelCancel () {
+      this.modelShow = false
+      this.$Modal.remove()
+    },
+    saveFormData () {
+      const _this = this
+      _this.$refs['formItem'].validate(function (valid) {
+        if (valid) {
+          _this.modelButtonLoading = true
+          console.log(_this.formItem)
+          axios.request({
+            url: '/api/spotCheck/saveSpotCheck',
+            data: _this.formItem,
+            method: 'post'
+          }).then(res => {
+            // console.log(res)
+            setTimeout(function () {
+              _this.modelButtonLoading = false
+              if (res.data.code === 200) {
+                _this.$Message.success(_this.msgTitle)
+                _this.modelShow = false
+                _this.getTablePageData()
+              } else {
+                _this.$Message.error('网络异常，请稍后重试')
+              }
+            }, 1500)
+          }).catch(res => {
+            _this.modelButtonLoading = false
+          })
+        }
+      })
+    },
+    handleEditor (params) {
+      this.formItem = JSON.parse(JSON.stringify(params.row))
+      this.formItem.isFake = this.formItem.isFake + ''
+      this.formItem.checkResult = this.formItem.checkResult + ''
       this.modelShow = true
+      this.modelTitle = '编辑抽检'
+      this.msgTitle = '修改抽检数据成功'
+    },
+    handleDelete (params) {
+      this.msgTitle = '删除抽检数据成功'
+      this.$Modal.confirm({
+        title: '删除',
+        content: '你确定要删除吗?',
+        loading: true,
+        onOk: () => {
+          this.deleteData(params.row.id)
+        }
+      })
+    },
+    deleteData (id) {
+      const _this = this
+      const option = {
+        url: '/api/spotCheck/deleteSpotCheck/' + id,
+        method: 'delete'
+      }
+      axios.request(option).then(res => {
+        _this.$Modal.remove()
+        if (res.data.code === 200) {
+          _this.$Message.success(_this.msgTitle)
+          _this.getTablePageData()
+        } else {
+          _this.$Message.error('网络异常，请稍后重试')
+        }
+      })
     }
   }
 }

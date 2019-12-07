@@ -24,16 +24,13 @@
         搜索法规结果
       </div>
       <div class="search-con search-con-top">
-        <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
+        <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+        <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
           <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
-        <Select v-model="formData.source" style="width:200px" placeholder="请选择法规来源" clearable>
-          <Option v-for="item in sourceList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
-        <Select v-model="formData.status" style="width:200px; margin-left: 2px;" placeholder="请选择状态" clearable>
+        <Select v-model="formData.status" style="width:120px; margin-left: 2px;" placeholder="请选择状态" clearable>
           <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
         </Select>
-        <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
       </div>
     </div>
@@ -84,7 +81,6 @@ export default {
       },
       currentId: 0,
       publishUnitList: [],
-      sourceList: [],
       statusList: [],
       lawData: {}
     }
@@ -97,12 +93,11 @@ export default {
   methods: {
     getAllSystemDataTypeList () {
       const option = {
-        url: '/api/system/getSystemDataByTypeCode/FG_publishUnit,FG_source,FG_status',
+        url: '/api/system/getSystemDataByTypeCode/FG_publishUnit,FG_status',
         method: 'get'
       }
       axios.request(option).then(res => {
         this.publishUnitList = res.data.data['FG_publishUnit']
-        this.sourceList = res.data.data['FG_source']
         this.statusList = res.data.data['FG_status']
       })
     },
@@ -136,7 +131,7 @@ export default {
     downloadFile () {
       const _this = this
       const option = {
-        url: "/api/show/downloadFile?businessId=" + this.currentId + "&baseType=3",
+        url: '/api/show/downloadFile?businessId=' + this.currentId + '&baseType=3',
         method: 'get',
         responseType: 'arraybuffer'
       }

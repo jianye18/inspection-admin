@@ -5,15 +5,16 @@
         搜索抽检结果
       </div>
       <div class="search-con search-con-top">
-        <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
+        <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索"
+               class="search-input" v-model="formData.searchPhrase"/>
+        <Select v-model="formData.institution" style="width:120px" placeholder="请选择公布机构" clearable>
           <Option value="" key="">全部</Option>
           <Option v-for="item in institutionList" :value="item.label" :key="item.value">{{ item.label }}</Option>
         </Select>
-        <Select v-model="formData.checkResult" style="width:200px; margin-left: 2px;" placeholder="请选择抽检结果" clearable>
+        <Select v-model="formData.checkResult" style="width:120px; margin-left: 2px;" placeholder="请选择抽检结果" clearable>
           <Option value="1" key="1">合格</Option>
           <Option value="0" key="0">不合格</Option>
         </Select>
-        <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索" class="search-input" v-model="formData.searchPhrase"/>
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
       </div>
     </div>
@@ -24,49 +25,49 @@
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
           <td>标称生产企业/进口代理商名称</td>
-          <td colspan="3">{{spotCheckData.producer}}</td>
+          <td colspan="3" class="detail-content">{{spotCheckData.producer}}</td>
         </tr>
         <tr>
           <td>委托企业名称</td>
-          <td colspan="3">{{spotCheckData.company}}</td>
+          <td colspan="3" class="detail-content">{{spotCheckData.company}}</td>
         </tr>
         <tr>
           <td>被采样单位名称</td>
-          <td colspan="3">{{spotCheckData.unit}}</td>
+          <td colspan="3" class="detail-content">{{spotCheckData.unit}}</td>
         </tr>
         <tr>
           <td>样品名称</td>
-          <td>{{spotCheckData.sample}}</td>
+          <td class="detail-content">{{spotCheckData.sample}}</td>
           <td>包装规格</td>
-          <td>{{spotCheckData.specification}}</td>
+          <td class="detail-content">{{spotCheckData.specification}}</td>
         </tr>
         <tr>
           <td>抽检结果</td>
-          <td>{{spotCheckData.resultName}}</td>
+          <td class="detail-content">{{spotCheckData.resultName}}</td>
           <td>不合格项目</td>
-          <td>{{spotCheckData.subject}}</td>
+          <td class="detail-content">{{spotCheckData.subject}}</td>
         </tr>
         <tr>
           <td>保质期</td>
-          <td>{{spotCheckData.expireTime}}</td>
+          <td class="detail-content">{{spotCheckData.expireTime}}</td>
           <td>产品分类</td>
-          <td>{{spotCheckData.productTypeName}}</td>
+          <td class="detail-content">{{spotCheckData.productTypeName}}</td>
         </tr>
         <tr>
           <td>产地</td>
-          <td>{{spotCheckData.location}}</td>
+          <td class="detail-content">{{spotCheckData.location}}</td>
           <td>公布日期</td>
-          <td>{{spotCheckData.publishDate}}</td>
+          <td class="detail-content">{{spotCheckData.publishDate}}</td>
         </tr>
         <tr>
           <td>涉嫌假冒</td>
-          <td>{{spotCheckData.fakeName}}</td>
+          <td class="detail-content">{{spotCheckData.fakeName}}</td>
           <td>公布机构</td>
-          <td>{{spotCheckData.institution}}</td>
+          <td class="detail-content">{{spotCheckData.institution}}</td>
         </tr>
         <tr>
           <td>来源链接</td>
-          <td colspan="3"><a :href="spotCheckData.sourceLink" target="view_window">{{spotCheckData.sourceLink}}</a></td>
+          <td colspan="3" class="detail-content"><a :href="spotCheckData.sourceLink" target="view_window">{{spotCheckData.sourceLink}}</a></td>
         </tr>
       </table>
       <div>

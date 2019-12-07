@@ -4,13 +4,14 @@
       搜索抽检结果
     </div>
     <div class="search-con search-con-top">
-      <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
+      <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索"
+             class="search-input" v-model="formData.searchPhrase"/>
+      <Select v-model="formData.institution" style="width:120px" placeholder="请选择公布机构" clearable>
         <Option v-for="item in institutionList" :value="item.label" :key="item.value">{{ item.label }}</Option>
       </Select>
-      <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
+      <Select v-model="formData.checkResult" style="width:120px" placeholder="请选择抽检结果" clearable>
         <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
-      <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索" class="search-input" v-model="formData.searchPhrase"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
     </div>
     <tables
@@ -50,12 +51,17 @@ export default {
         {
           title: '标称生产企业/进口代理商名称',
           key: 'producer',
-          width: 400,
-          tooltip: true,
           render: function render (h, params) {
-            var content = params.row.producer
+            let content = params.row.producer
             return h('span', {
               class: 'table-span',
+              style: {
+                width: '100%',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              },
+              domProps: {title: content},
               on: {
                 click: () => {
                   _this.$router.push({
@@ -70,23 +76,28 @@ export default {
         {
           title: '样品名称',
           key: 'sample',
+          width: 160,
           tooltip: true
         },
         {
           title: '产品分类',
           align: 'center',
-          key: 'productTypeName'
+          width: 80,
+          key: 'productTypeName',
+          tooltip: true
         },
         {
           title: '公布机构',
           align: 'center',
-          key: 'institution'
+          width: 100,
+          key: 'institution',
+          tooltip: true
         },
         {
           title: '抽检结果',
           align: 'center',
           key: 'checkResult',
-          width: 80,
+          width: 60,
           render: function render (h, params) {
             let checkResult = params.row.checkResult + ''
             let content = Global.getLabelByVal(checkResult, _this.checkResultList)
@@ -100,7 +111,7 @@ export default {
         {
           title: '公布日期',
           align: 'center',
-          width: 120,
+          width: 100,
           key: 'publishDate'
         }
       ],

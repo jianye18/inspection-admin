@@ -31,7 +31,7 @@
     text-align: center;
     color: #ffffff;
     font-size: 14px;
-    width: 120px;
+    width: 105px;
     line-height: 70px;
     float: left;
   }

@@ -9,16 +9,16 @@
       搜索飞检结果
     </div>
     <div class="search-con search-con-top">
-      <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
+      <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+      <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
         <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
-      <Select v-model="formData.precautions" style="width:200px" placeholder="请选择处理措施" clearable>
+      <Select v-model="formData.precautions" style="width:120px" placeholder="请选择处理措施" clearable>
         <Option v-for="item in precautionsList" :value="item.value">{{item.label}}</Option>
       </Select>
-      <Select v-model="formData.isDefect" style="width:200px" placeholder="是否有缺陷" clearable>
+      <Select v-model="formData.isDefect" style="width:120px" placeholder="是否有缺陷" clearable>
         <Option v-for="item in defectList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
-      <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
     </div>
     <tables
@@ -161,7 +161,7 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.precautionsList = res.data.data["FJ_precautions"]
+        this.precautionsList = res.data.data['FJ_precautions']
       })
     },
     getAllPublishUnit () {

@@ -5,16 +5,16 @@
         搜索飞检结果
       </div>
       <div class="search-con search-con-top">
-        <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
+        <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+        <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
           <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
-        <Select v-model="formData.precautions" style="width:200px" placeholder="请选择处理措施" clearable>
+        <Select v-model="formData.precautions" style="width:120px" placeholder="请选择处理措施" clearable>
           <Option v-for="item in precautionsList" :value="item.value">{{item.label}}</Option>
         </Select>
-        <Select v-model="formData.isDefect" style="width:200px" placeholder="是否有缺陷" clearable>
+        <Select v-model="formData.isDefect" style="width:120px" placeholder="是否有缺陷" clearable>
           <Option v-for="item in defectList" :value="item.value" :key="item.value">{{item.label}}</Option>
         </Select>
-        <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase"/>
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
       </div>
     </div>
@@ -25,19 +25,19 @@
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
           <td>企业名称</td>
-          <td colspan="3">{{flightCheckData.businessName}}</td>
+          <td colspan="3" class="detail-content">{{flightCheckData.businessName}}</td>
         </tr>
         <tr>
           <td>发布单位</td>
-          <td>{{flightCheckData.publishUnit}}</td>
+          <td class="detail-content">{{flightCheckData.publishUnit}}</td>
           <td>发布时间</td>
-          <td>{{flightCheckData.publishDate}}</td>
+          <td class="detail-content">{{flightCheckData.publishDate}}</td>
         </tr>
         <tr>
           <td>飞检类型</td>
-          <td>{{flightCheckData.typeName}}</td>
+          <td class="detail-content">{{flightCheckData.typeName}}</td>
           <td>是否有缺陷</td>
-          <td>{{flightCheckData.defectName}}</td>
+          <td class="detail-content">{{flightCheckData.defectName}}</td>
         </tr>
         <tr>
           <td>问题内容</td>
@@ -45,7 +45,7 @@
         </tr>
         <tr>
           <td>来源链接</td>
-          <td colspan="3"><a :href="flightCheckData.sourceLink" target="view_window">{{flightCheckData.sourceLink}}</a></td>
+          <td colspan="3" class="detail-content"><a :href="flightCheckData.sourceLink" target="view_window">{{flightCheckData.sourceLink}}</a></td>
         </tr>
       </table>
       <div>
@@ -158,7 +158,7 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.precautionsList = res.data.data["FJ_precautions"]
+        this.precautionsList = res.data.data['FJ_precautions']
       })
     },
     getAllPublishUnit () {
@@ -179,7 +179,8 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.flightCheckData = res.data.data
-          _this.flightCheckData['defectName'] = Global.getLabelByVal(_this.flightCheckData.isDefect, _this.defectList)
+          _this.flightCheckData['defectName'] = Global.getLabelByVal(_this.flightCheckData.isDefect + '', _this.defectList)
+          console.log(_this.flightCheckData)
           _this.getTablePageData(1)
           _this.getTablePageData(2)
         }

@@ -3,7 +3,7 @@
     height: 200px;
     /*background-color: #67647D;*/
     margin: 0;
-    padding: 70px 0 0 150px;
+    padding: 70px 0 0 80px;
     background-image: url('../../assets/images/search-box-back.jpg');
   }
   .data-con{
@@ -110,7 +110,7 @@
       <Layout>
         <Content :style="{minHeight: '620px', marginRight: '15px'}">
           <div class="search-box">
-            <Select v-model="formData.type" style="width:150px; float: left" placeholder="">
+            <Select v-model="formData.type" style="width:120px; float: left" placeholder="">
               <Option value="SC">抽检结果</Option>
               <Option value="CC">抽检标准</Option>
               <Option value="LW">抽检法规</Option>
@@ -119,7 +119,7 @@
             <Input v-model="formData.searchPhrase"
                    search enter-button="搜索"
                    placeholder="请输入您想要查询的关键词"
-                   style="width: 400px"
+                   style="width: 70%"
                    @on-search="searchToList" />
           </div>
           <div class="data-con" v-for="item in contentData" :key="item.type">
@@ -229,7 +229,7 @@ export default {
           typeList: []
         }
       ],
-      params:{mold: 1, key:'', value: ''},
+      params: {mold: 1, key: '', value: ''},
       viewBannerList: []
     }
   },
@@ -256,7 +256,7 @@ export default {
     },
     toShowList (type, path, param, val) {
       this.$store.dispatch('CreateType', type)
-      this.$store.dispatch('CreateParam', {type: type, query:[{key: param.split('_')[1], value: val}]})
+      this.$store.dispatch('CreateParam', {type: type, query: [{key: param.split('_')[1], value: val}]})
       this.params.key = param.split('_')[1]
       this.params.value = val
       this.$router.push({

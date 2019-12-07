@@ -6,7 +6,32 @@
     margin-right: 10px;
   }
   .form_span{
+    display: inline-block;
+    max-width: 120px;
     padding-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .close {
+    position: absolute;
+    top: 37px;
+    width: 5px;
+    height: 5px;
+  }
+  .close:before, .close:after {
+    position: absolute;
+    left: 5px;
+    content: ' ';
+    height: 10px;
+    width: 2px;
+    background-color: #f54040;
+  }
+  .close:before {
+    transform: rotate(45deg);
+  }
+  .close:after {
+    transform: rotate(-45deg);
   }
 </style>
 <template>
@@ -40,8 +65,8 @@
             <FormItem label="标题" prop="title">
                 <Input placeholder="请输入文章标题" v-model="formItem.title"/>
             </FormItem>
-            <FormItem label="作者" prop="author">
-              <Input placeholder="请输入文章作者" v-model="formItem.author"/>
+            <FormItem label="来源" prop="author">
+              <Input placeholder="请输入文章来源" v-model="formItem.author"/>
             </FormItem>
             <FormItem label="类型" prop="typeCode">
               <Select v-model="formItem.typeCode" style="width:200px" placeholder="请选择文章分类" clearable>
@@ -50,7 +75,10 @@
             </FormItem>
             <FormItem label="关键词" prop="subject" style="word-wrap: break-word">
               <Input placeholder="请输入文章关键词" v-model="subject" @on-enter="changeSubject"/>
-              <span v-if="formItem.subject" v-for="item in formItem.subject" class="form_span">{{item}}</span>
+              <span v-if="formItem.subject" v-for="item in formItem.subject" class="form_span" :title="item" style="margin-left: 5px;">
+                {{item}}
+                <a href="#" class="close" @click="deleteArticleSubject(item)"></a>
+              </span>
             </FormItem>
             <FormItem label="发布时间" prop="publishTime">
               <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss" @on-change="formItem.publishTime=$event"
@@ -61,7 +89,10 @@
             </FormItem>
             <FormItem label="相关链接" prop="link" style="word-wrap: break-word">
               <Input placeholder="请输入文章相关链接" v-model="link" @on-enter="changeLinks"/>
-              <span v-if="formItem.links" v-for="item in formItem.links" class="form_span">{{item}}</span>
+              <span v-if="formItem.links" v-for="item in formItem.links" class="form_span" :title="item" style="max-width: 600px;">
+                {{item}}
+                <a href="#" class="close" @click="deleteArticleLinks(item)" style="left: 600px;"></a>
+              </span>
             </FormItem>
         </Form>
         <div slot="footer">
@@ -85,7 +116,7 @@ export default {
   data () {
     const _ths = this
     return {
-      typeCode: "WZ_typeCode",
+      typeCode: 'WZ_typeCode',
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -207,8 +238,8 @@ export default {
         total: 0,
         pages: 0
       },
-      subject:'',
-      link:'',
+      subject: '',
+      link: '',
       formItem: {
         subject: [],
         links: []
@@ -245,7 +276,7 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.typeList = res.data.data["WZ_typeCode"]
+        this.typeList = res.data.data['WZ_typeCode']
       })
     },
     getTablePageData () {
@@ -273,7 +304,6 @@ export default {
       this.getTablePageData()
     },
     handleChange (html, text) {
-      console.log(html)
       this.formItem.content = html
     },
     changeSubject () {
@@ -307,6 +337,7 @@ export default {
       this.formItem = JSON.parse(JSON.stringify(params.row))
       this.formItem.subject = JSON.parse(this.formItem.subject)
       this.formItem.links = JSON.parse(this.formItem.links)
+      this.$refs.editor.setHtml(this.formItem.content)
       this.modelShow = true
       this.modelTitle = '编辑文章'
       this.msgTitle = '修改文章成功'
@@ -345,11 +376,9 @@ export default {
       _this.$refs['formItem'].validate(function (valid) {
         if (valid) {
           _this.modelButtonLoading = true
-          console.log(_this.formItem)
           let postForm = JSON.parse(JSON.stringify(_this.formItem))
           postForm.subject = JSON.stringify(postForm.subject)
           postForm.links = JSON.stringify(postForm.links)
-          console.log(postForm)
           axios.request({
             url: '/api/article/saveArticle',
             data: postForm,
@@ -403,6 +432,22 @@ export default {
           _this.getTablePageData()
         } else {
           _this.$Message.error('网络异常，请稍后重试')
+        }
+      })
+    },
+    deleteArticleSubject (subject) {
+      const _this = this
+      _this.formItem.subject.forEach(function (item, index) {
+        if (item === subject) {
+          _this.formItem.subject.splice(index, 1)
+        }
+      })
+    },
+    deleteArticleLinks (link) {
+      const _this = this
+      _this.formItem.links.forEach(function (item, index) {
+        if (item === link) {
+          _this.formItem.links.splice(index, 1)
         }
       })
     }

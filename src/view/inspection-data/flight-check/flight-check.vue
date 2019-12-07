@@ -15,7 +15,7 @@
         <div class="search-con search-con-top">
           <Row>
             <Col span="2">
-              <Upload multiple action="/common/uploadMediaFile" :before-upload="handleBeforeUpload" accept=".jpg, .gif, .png, .wmv, .mp4, .mkv">
+              <Upload multiple action="/api/flightCheck/uploadFlightCheck" :before-upload="handleBeforeUpload" accept=".xls, .xlsx">
                 <Button icon="ios-cloud-upload-outline" :loading="uploadLoading">上传文件</Button>
               </Upload>
             </Col>
@@ -103,7 +103,7 @@ export default {
   data () {
     const _ths = this
     return {
-      typeCode: "FJ_type,FJ_precautions",
+      typeCode: 'FJ_type,FJ_precautions',
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -254,8 +254,8 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.typeList = res.data.data["FJ_type"]
-        this.precautionsList = res.data.data["FJ_precautions"]
+        this.typeList = res.data.data['FJ_type']
+        this.precautionsList = res.data.data['FJ_precautions']
       })
     },
     getAllPublishUnit () {
@@ -283,12 +283,11 @@ export default {
       })
     },
     handleBeforeUpload (file) {
-      console.log(file.name)
       const _this = this
       let fileFormData = new FormData()
       fileFormData.append('file', file)
       const option = {
-        url: '/api/flightCheck/uploadMediaFile',
+        url: '/api/flightCheck/uploadFlightCheck',
         data: fileFormData,
         method: 'post',
         headers: {
@@ -296,20 +295,8 @@ export default {
         }
       }
       axios.request(option).then(res => {
-        console.log(res.data)
-        _this.uploadLoading = false
-        if (res.data.code === 200) {
-          _this.$Message.success('上传成功！')
-          let annex = {name: res.data.data}
-          if (_this.formItem.annexList) {
-            _this.formItem.annexList.push(annex)
-          } else {
-            _this.formItem.annexList = [annex]
-          }
-          console.log(_this.formItem.annexList)
-        } else {
-          _this.$Message.error('上传失败，请稍后重试')
-        }
+        _this.$Message.success('导入飞检数据成功')
+        _this.getTablePageData()
       }).catch(res => {
         _this.uploadLoading = false
       })

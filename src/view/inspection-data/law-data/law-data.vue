@@ -69,6 +69,9 @@
         <FormItem label="名称" prop="name">
           <Input placeholder="请输入角色名" v-model="formItem.name" style="width:200px"/>
         </FormItem>
+        <FormItem label="文号" prop="codeNumber">
+          <Input placeholder="请输入文号" v-model="formItem.codeNumber" style="width:200px"/>
+        </FormItem>
         <FormItem label="分类" prop="category">
           <Select v-model="formItem.category" style="width:200px" placeholder="请选择法规分类" clearable>
             <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
@@ -141,7 +144,7 @@ export default {
   data () {
     var _ths = this
     return {
-      typeCode: "FG_category,FG_publishUnit,FG_source,FG_status",
+      typeCode: 'FG_category,FG_publishUnit,FG_source,FG_status',
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -150,7 +153,7 @@ export default {
         kind: []
       },
       categoryList: [],
-      typeList:[],
+      typeList: [],
       publishUnitList: [],
       sourceList: [],
       statusList: [],
@@ -327,11 +330,11 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        //console.log(res.data)
-        this.categoryList = res.data.data["FG_category"]
-        this.publishUnitList = res.data.data["FG_publishUnit"]
-        this.statusList = res.data.data["FG_status"]
-        this.sourceList = res.data.data["FG_source"]
+        // console.log(res.data)
+        this.categoryList = res.data.data['FG_category']
+        this.publishUnitList = res.data.data['FG_publishUnit']
+        this.statusList = res.data.data['FG_status']
+        this.sourceList = res.data.data['FG_source']
       })
     },
     getLawTypeListByCode (code) {

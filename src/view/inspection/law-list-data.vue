@@ -9,19 +9,13 @@
       搜索法规结果
     </div>
     <div class="search-con search-con-top">
-      <Select v-model="formData.type" style="width:200px" placeholder="请选择法规二级分类" clearable>
-        <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
-      </Select>
-      <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布机构" clearable>
+      <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+      <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
         <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
-      <Select v-model="formData.source" style="width:200px" placeholder="请选择法规来源" clearable>
-        <Option v-for="item in sourceList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-      </Select>
-      <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
+      <Select v-model="formData.status" style="width:120px" placeholder="请选择状态" clearable>
         <Option v-for="item in statusList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
-      <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
     </div>
     <tables
@@ -56,19 +50,23 @@ export default {
         status: ''
       },
       publishUnitList: [],
-      sourceList: [],
       statusList: [],
       typeList: [],
       columns: [
         {
           title: '法规名称',
           key: 'name',
-          width: 400,
-          tooltip: true,
           render: function render (h, params) {
-            var content = params.row.name
+            let content = params.row.name
             return h('span', {
               class: 'table-span',
+              style: {
+                width: '100%',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              },
+              domProps: {title: content},
               on: {
                 click: () => {
                   _this.$router.push({
@@ -83,12 +81,14 @@ export default {
         {
           title: '一级分类',
           align: 'center',
+          width: 120,
           key: 'categoryName'
         },
         {
           title: '二级分类',
           align: 'center',
           key: 'typeName',
+          width: 120,
           render: function render (h, params) {
             let typeName = params.row.typeName
             let content = '-'
@@ -108,14 +108,14 @@ export default {
           title: '状态',
           align: 'center',
           key: 'statusName',
-          width: 120
+          width: 100
         },
         {
           title: '实施日期',
           align: 'center',
-          width: 140,
+          width: 100,
           key: 'implementDate'
-        },
+        }/*,
         {
           title: '操作',
           align: 'center',
@@ -136,7 +136,7 @@ export default {
               }
             }, '')])
           }
-        }
+        } */
       ],
       tableData: {
         list: [],
@@ -184,12 +184,11 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/api/system/getSystemDataByTypeCode/FG_publishUnit,FG_source,FG_status',
+        url: '/api/system/getSystemDataByTypeCode/FG_publishUnit,FG_status',
         method: 'get'
       }
       axios.request(option).then(res => {
         this.publishUnitList = res.data.data['FG_publishUnit']
-        this.sourceList = res.data.data['FG_source']
         this.statusList = res.data.data['FG_status']
       })
     },

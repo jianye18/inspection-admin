@@ -10,6 +10,9 @@
     </div>
     <div class="search-con search-con-top">
       <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+      <Select v-model="formData.type" style="width:120px" placeholder="请选择二级分类" clearable>
+        <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+      </Select>
       <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
         <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
@@ -71,7 +74,7 @@ export default {
                 click: () => {
                   _this.$router.push({
                     name: 'lawDetail',
-                    query: { id: params.row.id }
+                    query: { id: params.row.id, category: _this.formData.category }
                   })
                 }
               }
@@ -143,8 +146,7 @@ export default {
         pageNum: 1,
         total: 0,
         pages: 0
-      },
-      code: ''
+      }
     }
   },
   mounted () {
@@ -162,7 +164,7 @@ export default {
     }
     this.getTablePageData()
     this.getAllSystemDataTypeList()
-    this.getLawTypeList(this.code)
+    this.getLawTypeList(this.formData.category)
   },
   watch: {
     '$store.getters.param': function (params) {
@@ -171,6 +173,9 @@ export default {
         let query = params.query
         if (query.length > 0) {
           query.forEach(function (item) {
+            if (item['key'] === 'category') {
+              _this.getLawTypeList(item['value'])
+            }
             _this.formData[item['key']] = item['value']
           })
         }

@@ -6,6 +6,9 @@
       </div>
       <div class="search-con search-con-top">
         <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+        <Select v-model="formData.type" style="width:120px" placeholder="请选择二级分类" clearable>
+          <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+        </Select>
         <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
           <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
@@ -128,12 +131,14 @@ export default {
       modelShow: false,
       formData: {
         searchPhrase: '',
+        category: '',
         publishUnit: '',
         status: '',
         source: ''
       },
       currentId: 0,
       publishUnitList: [],
+      typeList: [],
       statusList: [],
       lawData: {},
       leftAboutData: {
@@ -154,6 +159,7 @@ export default {
     this.getAllSystemDataTypeList()
     this.currentId = this.$route.query.id
     this.getLawById()
+    this.getLawTypeList(this.$route.query.category)
   },
   methods: {
     handleUploadFile () {
@@ -182,6 +188,21 @@ export default {
           _this.getTablePageData(1)
           _this.getTablePageData(2)
         }
+      })
+    },
+    getLawTypeList (code) {
+      let url = ''
+      if (code) {
+        url = '/api/law/getLawTypeListByCode/' + code
+      } else {
+        url = '/api/law/getAllLawType/'
+      }
+      const option = {
+        url: url,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.typeList = res.data.data
       })
     },
     handleClear (e) {

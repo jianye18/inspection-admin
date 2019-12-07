@@ -60,11 +60,18 @@ export default {
         {
           title: '企业名称',
           key: 'businessName',
-          tooltip: true,
+          width: 180,
           render: function render (h, params) {
-            var content = params.row.businessName
+            let content = params.row.businessName
             return h('span', {
               class: 'table-span',
+              style: {
+                width: '100%',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              },
+              domProps: {title: content},
               on: {
                 click: () => {
                   _this.$router.push({
@@ -75,6 +82,11 @@ export default {
               }
             }, content)
           }
+        },
+        {
+          title: '缺陷问题',
+          align: 'center',
+          key: 'problem'
         },
         {
           title: '飞检类型',

@@ -87,8 +87,8 @@
         </FormItem>
         <FormItem label="涉嫌假冒" prop="isFake">
           <Select v-model="formItem.isFake" style="width:200px" placeholder="请选择是否涉嫌假冒" clearable>
-            <Option value="0">否</Option>
-            <Option value="1">是</Option>
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
           </Select>
         </FormItem>
         <FormItem label="来源链接" prop="sourceLink">
@@ -161,7 +161,7 @@ export default {
         {
           title: '产品分类',
           align: 'center',
-          key: 'productTypeName',
+          key: 'productType',
           width: 80
         },
         {
@@ -175,11 +175,10 @@ export default {
           key: 'checkResult',
           width: 80,
           render: function render (h, params) {
-            let checkResult = params.row.checkResult + ''
-            let content = Global.getLabelByVal(checkResult, _ths.checkResultList)
+            let content = params.row.checkResult
             return h('span', {
               style: {
-                color: checkResult !== '1' ? 'red' : ''
+                color: content === '不合格' ? 'red' : ''
               }
             }, content)
           }
@@ -251,7 +250,7 @@ export default {
   },
   mounted () {
     this.getTablePageData()
-    this.getAllSystemDataTypeList()
+    this.getAllProductType()
     this.getAllInstitution()
   },
   methods: {
@@ -287,13 +286,13 @@ export default {
     handleUploadFile () {
       this.getTablePageData()
     },
-    getAllSystemDataTypeList () {
+    getAllProductType () {
       const option = {
-        url: '/api/system/getSystemDataByTypeCode/' + this.typeCode,
+        url: '/api/spotCheck/getAllProductType',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.productTypeList = res.data.data[this.typeCode]
+        this.productTypeList = res.data.data
       })
     },
     getAllInstitution () {
@@ -363,8 +362,6 @@ export default {
     },
     handleEditor (params) {
       this.formItem = JSON.parse(JSON.stringify(params.row))
-      this.formItem.isFake = this.formItem.isFake + ''
-      this.formItem.checkResult = this.formItem.checkResult + ''
       this.modelShow = true
       this.modelTitle = '编辑抽检'
       this.msgTitle = '修改抽检数据成功'

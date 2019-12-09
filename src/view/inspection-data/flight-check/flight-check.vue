@@ -123,13 +123,13 @@ export default {
         {
           title: '处理措施',
           align: 'center',
-          key: 'precautionsName',
+          key: 'precautions',
           width: 100
         },
         {
           title: '飞检类型',
           align: 'center',
-          key: 'typeName',
+          key: 'type',
           width: 100
         },
         {
@@ -147,12 +147,7 @@ export default {
           title: '是否缺陷',
           align: 'center',
           key: 'isDefect',
-          width: 80,
-          render: function render (h, params) {
-            let isDefect = params.row.isDefect + ''
-            let content = Global.getLabelByVal(isDefect, _ths.defectList)
-            return h('span', content)
-          }
+          width: 80
         },
         {
           title: '来源链接',
@@ -238,7 +233,8 @@ export default {
     }
   },
   created: function () {
-    this.getAllSystemDataTypeList()
+    this.getTypeList()
+    this.getPrecautionsList()
     this.getAllPublishUnit()
   },
   mounted () {
@@ -248,14 +244,22 @@ export default {
 
   },
   methods: {
-    getAllSystemDataTypeList () {
+    getTypeList () {
       const option = {
-        url: '/api/system/getSystemDataByTypeCode/' + this.typeCode,
+        url: '/api/flightCheck/getTypeList',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.typeList = res.data.data['FJ_type']
-        this.precautionsList = res.data.data['FJ_precautions']
+        this.typeList = res.data.data
+      })
+    },
+    getPrecautionsList () {
+      const option = {
+        url: '/api/flightCheck/getPrecautionsList',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.precautionsList = res.data.data
       })
     },
     getAllPublishUnit () {

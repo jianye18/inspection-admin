@@ -45,11 +45,47 @@
   .layout-footer-center{
     margin-top: 20px;
     background: #fff;
-    text-align: center;
-    height: 110px;
+    /*text-align: center;*/
+    height: 200px;
     /*margin-bottom: 50px;*/
     border-top: 1px solid #f2f2f2;
-    padding: 15px 180px;
+    padding: 15px 180px 0 180px;
+  }
+  .footer-link{
+    height: 40px;
+    line-height: 40px;
+    background-color: #f2f2f2;
+  }
+  .footer-link-title{
+    margin-left: 10px;
+    font-weight: bold;
+  }
+  .footer-link-content{
+    margin-left: 20px;
+    color: #4a4a4a;
+  }
+  .footer-link-content:hover{
+    color: #2d8cf0;
+  }
+  .web-about{
+    width: 100%;
+    display: inline-block;
+    height: 145px;
+    padding: 0;
+  }
+  .web-about-content{
+    display: inline-block;
+    padding: 15px 0 0 30px;
+  }
+  .web-about-content span{
+    margin-right: 15px;
+  }
+  .ba-content{
+    height: 30px;
+    font-size: 12px;
+    color: #b3b3b3;
+    line-height: 30px;
+    padding-left: 30px;
   }
 </style>
 <template>
@@ -74,18 +110,34 @@
         <router-view></router-view>
       </Content>
       <Footer class="layout-footer-center">
-        <div style="font-size: 18px; height: 50px; line-height: 50px;">
-          <span style="padding-right: 10px;">关于我们</span>
-          <span style="padding-left: 10px; border-left: 1px dashed #c0c0c0;">联系我们</span>
+        <div class="footer-link">
+          <span class="footer-link-title">友情链接：</span>
+          <a class="footer-link-content" v-for="item in linkList" :key="item.id" :href="item.path" >{{item.name}}</a>
         </div>
-        <div style="font-size: 12px; color: #b3b3b3; height: 30px; line-height: 30px;">
-          版权所有  2002-2019  ICP证: 苏A2-20090288-1   苏公网安备 33010602000113号
+        <div class="web-about">
+          <div style="width: 75%; border-left: 2px groove #e5e5e5; border-right: 2px groove #e5e5e5; display: inline-block;">
+            <div style="height: 70px;">
+              <p style="margin-left: 30px; margin-top: 15px;">站点相关</p>
+              <div class="web-about-content">
+                <span>博主简介</span>
+                <span>网站声明</span>
+              </div>
+            </div>
+            <div class="ba-content">
+              Copyright叶竹洪博客︱苏ICP备17037083号︱您您是本站第************位访客
+            </div>
+          </div>
+          <div style="width: 20%; display: inline-block;">
+            <p style="margin-left: 30px; margin-top: 15px;">欢迎关注我们</p>
+            <img src="../../assets/images/gongzhonghao.jpg" style="margin-left: 25px; width: 102px; height: 102px;" />
+          </div>
         </div>
       </Footer>
     </Layout>
   </div>
 </template>
 <script>
+import axios from '@/libs/api.request'
 export default {
   data () {
     return {
@@ -97,10 +149,12 @@ export default {
         { value: 'FC', label: '飞检结果', path: 'flightCheck' },
         { value: 'AC', label: '文章', path: 'article' }
       ],
-      activeIdx: 0
+      activeIdx: 0,
+      linkList: []
     }
   },
   created () {
+    this.getLinkViewList()
     const path = this.$route.path
     if (path.indexOf('main') !== -1) {
       this.activeIdx = 0
@@ -157,6 +211,16 @@ export default {
           name: path
         })
       }, 300)
+    },
+    getLinkViewList () {
+      let _this = this
+      const option = {
+        url: '/api/show/getLinkViewList',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        _this.linkList = res.data.data
+      })
     }
   }
 }

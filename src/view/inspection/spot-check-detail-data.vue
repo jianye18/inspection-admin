@@ -43,7 +43,7 @@
         </tr>
         <tr>
           <td>抽检结果</td>
-          <td class="detail-content">{{spotCheckData.resultName}}</td>
+          <td class="detail-content">{{spotCheckData.checkResult}}</td>
           <td>不合格项目</td>
           <td class="detail-content">{{spotCheckData.subject}}</td>
         </tr>
@@ -51,7 +51,7 @@
           <td>保质期</td>
           <td class="detail-content">{{spotCheckData.expireTime}}</td>
           <td>产品分类</td>
-          <td class="detail-content">{{spotCheckData.productTypeName}}</td>
+          <td class="detail-content">{{spotCheckData.productType}}</td>
         </tr>
         <tr>
           <td>产地</td>
@@ -61,7 +61,7 @@
         </tr>
         <tr>
           <td>涉嫌假冒</td>
-          <td class="detail-content">{{spotCheckData.fakeName}}</td>
+          <td class="detail-content">{{spotCheckData.isFake}}</td>
           <td>公布机构</td>
           <td class="detail-content">{{spotCheckData.institution}}</td>
         </tr>
@@ -83,9 +83,9 @@
             <ul>
               <li v-for="item in leftAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.sample">{{item.sample}}</a>
+                  <a :href="'/spotCheckDetail?id=' + item.id" :title="item.sample">{{item.sample}}</a>
                 </span>
-                <em>{{item.checkResult === 1 ? '合格' : '不合格'}}</em>
+                <em>{{item.checkResult}}</em>
               </li>
               <li v-if="leftAboutData.list.length === 0">
                 <span>
@@ -107,9 +107,9 @@
             <ul>
               <li v-for="item in rightAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/spotCheckDetail?id=' + item.id" :title="item.sample">{{item.sample}}</a>
+                  <a :href="'/spotCheckDetail?id=' + item.id" :title="item.sample">{{item.sample}}</a>
                 </span>
-                <em>{{item.checkResult === 1 ? '合格' : '不合格'}}</em>
+                <em>{{item.checkResult}}</em>
               </li>
               <li v-if="rightAboutData.list.length === 0">
                 <span>
@@ -188,8 +188,6 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.spotCheckData = res.data.data
-          _this.spotCheckData['resultName'] = _this.spotCheckData.checkResult === 1 ? '合格' : '不合格'
-          _this.spotCheckData['fakeName'] = _this.spotCheckData.isFake === 1 ? '是' : '否'
           _this.getTablePageData(1)
           _this.getTablePageData(2)
         }

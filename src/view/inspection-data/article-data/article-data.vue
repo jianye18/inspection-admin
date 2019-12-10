@@ -39,7 +39,7 @@
       <Card>
         <div class="search-con search-con-top">
           <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增文章</Button>
-          <Select v-model="formData.type" style="width:200px" placeholder="请选择文章类型" clearable>
+          <Select v-model="formData.typeCode" style="width:200px" placeholder="请选择文章类型" clearable>
             <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
           </Select>
           <Select v-model="formData.isPublish" style="width:200px" placeholder="请选择状态" clearable>
@@ -294,13 +294,14 @@ export default {
     },
     // 翻页钩子
     changePage (page) {
-      this.formData.current = page
+      this.formData.pageNum = page
       this.getTablePageData()
     },
     handleClear (e) {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     },
     handleChange (html, text) {

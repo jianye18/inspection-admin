@@ -78,7 +78,7 @@
           <span style="padding-right: 10px;">关于我们</span>
           <span style="padding-left: 10px; border-left: 1px dashed #c0c0c0;">联系我们</span>
         </div>
-        <div style="font-size: 12px; color: #e5e5e5; height: 30px; line-height: 30px;">
+        <div style="font-size: 12px; color: #b3b3b3; height: 30px; line-height: 30px;">
           版权所有  2002-2019  ICP证: 苏A2-20090288-1   苏公网安备 33010602000113号
         </div>
       </Footer>
@@ -151,12 +151,12 @@ export default {
       if (_this.activeIdx !== idx) {
         this.$store.dispatch('CreateType', val)
         _this.activeIdx = idx
-        setTimeout(function () {
-          _this.$router.push({
-            name: path
-          })
-        }, 300)
       }
+      setTimeout(function () {
+        _this.$router.push({
+          name: path
+        })
+      }, 300)
     }
   }
 }

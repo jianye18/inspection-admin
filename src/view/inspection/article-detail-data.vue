@@ -11,7 +11,6 @@
   .detail-data-title{
     font-size: 16px;
     font-weight: bold;
-    text-align: center;
   }
   .detail-data .ivu-col{
     padding: 5px 0;
@@ -29,19 +28,19 @@
       </div>
     </div>
     <div class="detail-data detail-con">
-      <Row>
-        <Col span="20" offset="2" class="detail-data-title">{{articleData.title}}</Col>
+      <Row style="border-bottom: 1px solid #e5e5e5;">
+        <Col span="20" offset="1" class="detail-data-title">{{articleData.title}}</Col>
       </Row>
       <Row>
-        <Col span="6" offset="2">文章类型：{{articleData.typeName}}</Col>
-        <Col span="6" offset="2">阅读量：{{articleData.readCount}}</Col>
+        <Col span="6" offset="1">文章类型：{{articleData.typeName}}</Col>
+        <Col span="6" offset="1">阅读量：{{articleData.readCount}}</Col>
+      </Row>
+      <Row style="border-bottom: 1px solid #e5e5e5;">
+        <Col span="6" offset="1">来源：{{articleData.author}}</Col>
+        <Col span="6" offset="1">发布时间：{{articleData.publishTime}}</Col>
       </Row>
       <Row>
-        <Col span="6" offset="2">来源：{{articleData.author}}</Col>
-        <Col span="6" offset="2">发布时间：{{articleData.publishTime}}</Col>
-      </Row>
-      <Row>
-        <Col span="20" offset="2" class="detail-data-content" v-html="articleData.content"></Col>
+        <Col span="20" offset="1" class="detail-data-content" v-html="articleData.content"></Col>
       </Row>
     </div>
   </div>

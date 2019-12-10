@@ -545,10 +545,30 @@ export default [
         name: 'banner',
         meta: {
           icon: 'md-flower',
-          title: '轮播图管理',
+          title: '轮播图',
           notCache: true
         },
         component: () => import('@/view/system-manager/banner/banner.vue')
+      },
+      {
+        path: 'link',
+        name: 'link',
+        meta: {
+          icon: 'md-flower',
+          title: '友情链接',
+          notCache: true
+        },
+        component: () => import('@/view/system-manager/links/link.vue')
+      },
+      {
+        path: 'statement',
+        name: 'statement',
+        meta: {
+          icon: 'md-flower',
+          title: '负责声明',
+          notCache: true
+        },
+        component: () => import('@/view/system-manager/statement/statement.vue')
       },
       {
         path: 'data-type',

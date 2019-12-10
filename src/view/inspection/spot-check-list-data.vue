@@ -79,13 +79,13 @@ export default {
           width: 160,
           tooltip: true
         },
-        {
+        /*{
           title: '产品分类',
           align: 'center',
           width: 80,
-          key: 'productTypeName',
+          key: 'productType',
           tooltip: true
-        },
+        },*/
         {
           title: '公布机构',
           align: 'center',
@@ -99,11 +99,10 @@ export default {
           key: 'checkResult',
           width: 60,
           render: function render (h, params) {
-            let checkResult = params.row.checkResult + ''
-            let content = Global.getLabelByVal(checkResult, _this.checkResultList)
+            let checkResult = params.row.checkResult
             return h('span', {
               style: {
-                color: checkResult !== '1' ? 'red' : ''
+                color: checkResult === '否' ? 'red' : ''
               }
             }, content)
           }
@@ -188,6 +187,7 @@ export default {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     }
   }

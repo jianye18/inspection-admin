@@ -60,7 +60,6 @@ export default {
         {
           title: '企业名称',
           key: 'businessName',
-          width: 180,
           render: function render (h, params) {
             let content = params.row.businessName
             return h('span', {
@@ -83,7 +82,7 @@ export default {
             }, content)
           }
         },
-        {
+        /*{
           title: '缺陷问题',
           align: 'center',
           key: 'problem'
@@ -93,7 +92,7 @@ export default {
           align: 'center',
           key: 'typeName',
           width: 100
-        },
+        },*/
         {
           title: '处理措施',
           align: 'center',
@@ -208,6 +207,7 @@ export default {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     }
   }

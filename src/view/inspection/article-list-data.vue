@@ -51,6 +51,13 @@ export default {
             let content = params.row.title
             return h('span', {
               class: 'table-span',
+              style: {
+                width: '100%',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              },
+              domProps: {title: content},
               on: {
                 click: () => {
                   _this.$router.push({
@@ -63,12 +70,12 @@ export default {
           }
         },
         {
-          title: '分类',
+          title: '来源',
           align: 'center',
-          key: 'typeName',
-          width: 120
+          key: 'author',
+          width: 200
         },
-        {
+        /*{
           title: '关键词',
           align: 'center',
           key: 'subject',
@@ -77,7 +84,7 @@ export default {
             let subject = JSON.parse(params.row.subject)
             return h('span', subject.join(' '))
           }
-        },
+        },*/
         {
           title: '发布时间',
           align: 'center',
@@ -107,7 +114,7 @@ export default {
   watch: {
     '$store.getters.param': function (params) {
       const _this = this
-      if (params['type'] === 'FC') {
+      if (params['type'] === 'AC') {
         let query = params.query
         if (query.length > 0) {
           query.forEach(function (item) {
@@ -141,6 +148,7 @@ export default {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     }
   }

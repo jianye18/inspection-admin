@@ -73,7 +73,7 @@ export default {
             }, content)
           }
         },
-        {
+        /*{
           title: '一级分类',
           align: 'center',
           key: 'categoryName',
@@ -84,7 +84,7 @@ export default {
           align: 'center',
           key: 'typeName',
           width: 120
-        },
+        },*/
         {
           title: '发布单位',
           key: 'publishUnitName',
@@ -184,6 +184,7 @@ export default {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     }
   }

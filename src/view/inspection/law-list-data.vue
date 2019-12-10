@@ -81,7 +81,7 @@ export default {
             }, content)
           }
         },
-        {
+        /*{
           title: '一级分类',
           align: 'center',
           width: 120,
@@ -100,7 +100,7 @@ export default {
             }
             return h('span', content)
           }
-        },
+        },*/
         {
           title: '发布单位',
           key: 'publishUnitName',
@@ -235,6 +235,7 @@ export default {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     }
   }

@@ -200,7 +200,7 @@ export default {
           pageNum: 1, // 当前页
           pageSize: 5, // 一页展示数量
           publishUnit: param === 1 ? _this.criterionData.publishUnit : '',
-          category: param === 2 ? _this.criterionData.category : '',
+          type: param === 2 ? _this.criterionData.type : '',
           currentId: _this.criterionData.id
         },
         method: 'post'

@@ -311,7 +311,7 @@ export default {
     },
     // 翻页钩子
     changePage (page) {
-      this.formData.current = page
+      this.formData.pageNum = page
       this.getTablePageData()
     },
     handleClear (e) {

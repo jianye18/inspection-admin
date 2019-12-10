@@ -43,9 +43,8 @@
     <Breadcrumb separator=">" :style="{margin: '10px 0'}">
       <BreadcrumbItem
         v-for="(item, index) in breadList"
-        :key="item.name"
-        :class="index === 1 ? 'bread_active_class' : ''"> <!--&& breadList.length !== 2-->
-        <span @click="backList(item.value)">{{item.name}}</span>
+        :key="item.name"> <!--&& breadList.length !== 2-->
+        <span>{{item.name}}</span>
       </BreadcrumbItem>
     </Breadcrumb>
     <Content>
@@ -216,15 +215,6 @@ export default {
         this.breadList.push({ value: '', name: this.leftUpData.menuList[idx].label })
       }
       this.toList({mold: 1, key: typeCode.split('_')[1], value: val})
-    },
-    backList (key) {
-      if (key) {
-        this.breadList = this.breadData[this.type]
-        this.upActiveIdx = null
-        this.downActiveIdx = null
-        this.$store.dispatch('CreateParam', {type: this.type, query: [{key: key, value: ''}]})
-        this.toList(null)
-      }
     },
     toList (params) {
       const _this = this

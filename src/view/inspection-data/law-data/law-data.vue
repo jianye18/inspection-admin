@@ -100,11 +100,11 @@
           <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.implementDate=$event"
                       placeholder="请选择实施日期" :value="formItem.implementDate" transfer style="width:200px"></DatePicker>
         </FormItem>
-        <FormItem label="来源" prop="source">
+        <!--<FormItem label="来源" prop="source">
           <Select v-model="formItem.source" style="width:200px" placeholder="请选择来源" clearable transfer>
             <Option v-for="item in sourceList" :value="item.value">{{item.label}}</Option>
           </Select>
-        </FormItem>
+        </FormItem>-->
         <!--<FormItem label="环节" prop="process">-->
           <!--<Select v-model="formItem.process" style="width:200px" placeholder="请选择环节" clearable>-->
             <!--<Option value="">全部</Option>-->
@@ -144,7 +144,7 @@ export default {
   data () {
     var _ths = this
     return {
-      typeCode: 'FG_category,FG_publishUnit,FG_source,FG_status',
+      typeCode: 'FG_category,FG_publishUnit,FG_status', // ,FG_source
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -155,7 +155,7 @@ export default {
       categoryList: [],
       typeList: [],
       publishUnitList: [],
-      sourceList: [],
+      // sourceList: [],
       statusList: [],
       processList: [],
       columns: [
@@ -200,7 +200,7 @@ export default {
           key: 'implementDate',
           width: 100
         },
-        {
+        /*{
           title: '来源',
           align: 'center',
           key: 'sourceName',
@@ -213,7 +213,7 @@ export default {
             }
             return h('span', content)
           }
-        },
+        },*/
         {
           title: '状态',
           align: 'center',
@@ -334,7 +334,7 @@ export default {
         this.categoryList = res.data.data['FG_category']
         this.publishUnitList = res.data.data['FG_publishUnit']
         this.statusList = res.data.data['FG_status']
-        this.sourceList = res.data.data['FG_source']
+        // this.sourceList = res.data.data['FG_source']
       })
     },
     getLawTypeListByCode (code) {
@@ -395,7 +395,7 @@ export default {
     },
     // 翻页钩子
     changePage (page) {
-      this.formData.current = page
+      this.formData.pageNum = page
       this.getTablePageData()
     },
     handleClear (e) {

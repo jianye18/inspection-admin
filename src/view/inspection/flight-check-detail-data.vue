@@ -35,9 +35,9 @@
         </tr>
         <tr>
           <td>飞检类型</td>
-          <td class="detail-content">{{flightCheckData.typeName}}</td>
+          <td class="detail-content">{{flightCheckData.type}}</td>
           <td>是否有缺陷</td>
-          <td class="detail-content">{{flightCheckData.defectName}}</td>
+          <td class="detail-content">{{flightCheckData.isDefect}}</td>
         </tr>
         <tr>
           <td>问题内容</td>
@@ -61,9 +61,9 @@
             <ul>
               <li v-for="item in leftAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/flightCheckDetail?id=' + item.id" :title="item.businessName">{{item.businessName}}</a>
+                  <a :href="'/flightCheckDetail?id=' + item.id" :title="item.businessName">{{item.businessName}}</a>
                 </span>
-                <em>{{item.checkResult === 1 ? '合格' : '不合格'}}</em>
+                <em>{{item.isDefect}}</em>
               </li>
               <li v-if="leftAboutData.list.length === 0">
                 <span>
@@ -85,9 +85,9 @@
             <ul>
               <li v-for="item in rightAboutData.list" :key="item.id">
                 <span>
-                  <a :href="'/view/flightCheckDetail?id=' + item.id" :title="item.businessName">{{item.businessName}}</a>
+                  <a :href="'/flightCheckDetail?id=' + item.id" :title="item.businessName">{{item.businessName}}</a>
                 </span>
-                <em>{{item.checkResult === 1 ? '合格' : '不合格'}}</em>
+                <em>{{item.isDefect}}</em>
               </li>
               <li v-if="rightAboutData.list.length === 0">
                 <span>
@@ -179,7 +179,6 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.flightCheckData = res.data.data
-          _this.flightCheckData['defectName'] = Global.getLabelByVal(_this.flightCheckData.isDefect + '', _this.defectList)
           console.log(_this.flightCheckData)
           _this.getTablePageData(1)
           _this.getTablePageData(2)

@@ -2,29 +2,14 @@
   .ivu-table-cell{
     padding:  0px;
   }
-  .ivu-modal-footer {
-    display: none;
-  }
-  .banner_view .ivu-modal-body {
-    text-align: center
-  }
 </style>
 <template>
   <div>
       <Card>
         <div class="search-con search-con-top">
-          <Row>
-            <Col span="2">
-              <Upload action="" :before-upload="handleBeforeUpload" accept=".jpg, .png, .gif">
-                <Button icon="ios-cloud-upload-outline" :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
-              </Upload>
-            </Col>
-            <Col span="22">
-              <Input @on-change="handleClear" clearable placeholder="输入名称搜索" class="search-input" v-model="formData.searchPhrase"/>
-              <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
-            </Col>
-          </Row>
-
+          <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增友情链接</Button>
+          <Input @on-change="handleClear" clearable placeholder="输入常量名搜索" class="search-input" v-model="formData.searchPhrase"/>
+          <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
         </div>
         <tables
         ref="tables"
@@ -38,16 +23,39 @@
     <Modal
       v-model="modelShow"
       :title="modelTitle"
-      :mask-closable="false" class="banner_view">
-      <img :src="viewUrl">
-
+      :mask-closable="false">
+      <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" action="">
+        <FormItem label="名称" prop="name">
+          <Input placeholder="请输入名称" v-model="formItem.name"/>
+        </FormItem>
+        <FormItem label="路径" prop="path">
+          <Input placeholder="请输入名称" v-model="formItem.path"/>
+        </FormItem>
+        <FormItem label="排序" prop="sort">
+          <Select v-model="formItem.sort">
+            <Option v-for="item in 10" :value="item">{{item}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="展示" prop="isView">
+          <RadioGroup v-model="formItem.isView">
+            <Radio label="1">是</Radio>
+            <Radio label="0">否</Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="备注" prop="remark">
+          <Input placeholder="请输入常量说明" v-model="formItem.remark"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="default" size="large" @click="modelCancel">取消</Button>
+        <Button type="primary" size="large" @click="saveFormData" :loading="modelButtonLoading">確定</Button>
+      </div>
     </Modal>
   </div>
 </template>
 <script>
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
-import Global from '@/store/global'
 export default {
   name: 'Banner',
   components: {
@@ -71,21 +79,6 @@ export default {
           title: '地址',
           align: 'center',
           key: 'path'
-        },
-        {
-          title: '类型',
-          align: 'center',
-          key: 'type'
-        },
-        {
-          title: '大小',
-          align: 'center',
-          key: 'size',
-          render: function render (h, params) {
-            // console.log(params.row)
-            let content = params.row.size + ' KB'
-            return h('span', content)
-          }
         },
         {
           title: '备注',
@@ -126,7 +119,6 @@ export default {
           key: 'operation',
           width: 220,
           render: function render (h, params) {
-            let isView = params.row.isView
             return h('div', [h('Button', {
               props: {
                 type: 'error',
@@ -136,31 +128,14 @@ export default {
               },
               style: {
                 marginLeft: '10px',
-                marginBottom: '5px',
-                display: isView === 1 ? 'none' : ''
-              },
-              on: {
-                click: () => {
-                  _ths.handleDelete(params)
-                }
-              }
-            }, '删除'), h('Button', {
-              props: {
-                type: 'primary',
-                icon: isView === 1 ? 'ios-arrow-dropdown' : 'ios-arrow-dropup',
-                disabled: false,
-                size: 'small'
-              },
-              style: {
-                marginLeft: '10px',
                 marginBottom: '5px'
               },
               on: {
                 click: () => {
-                  _ths.handleIsView(params.row.id, isView === 1 ? 0 : 1)
+                  _ths.handleDelete(params.row.id)
                 }
               }
-            }, isView === 1 ? '隐藏' : '展示'), h('Button', {
+            }, '删除'), h('Button', {
               props: {
                 type: 'primary',
                 icon: 'ios-create-outline',
@@ -173,67 +148,43 @@ export default {
               },
               on: {
                 click: () => {
-                  _ths.handleView(params.row.path, params.row.name)
-                  // window.open(params.row.viewUrl)
+                  _ths.handleEditor(params.row)
                 }
               }
-            }, '查看')])
+            }, '编辑')])
           }
         }
       ],
+      ruleValidate: {
+        name: [
+          { required: true, message: '名称不能为空', trigger: 'blur' }
+        ],
+        path: [
+          { required: true, message: '链接不能为空', trigger: 'blur' }
+        ]
+      },
       tableData: {
         list: [],
         pageNum: 1,
         total: 0,
         pages: 0
       },
-      formItem: {},
+      formItem: {
+        isView: '1'
+      },
       modelShow: false,
       modelTitle: '',
       msgTitle: '',
-      viewUrl: '',
-      uploadLoading: false
+      modelButtonLoading: false
     }
   },
   mounted () {
     this.getTablePageData()
   },
   methods: {
-    handleBeforeUpload (file) {
-      const _this = this
-      const fileExt = file.name.split('.').pop().toLocaleLowerCase()
-      if (fileExt === 'jpg' || fileExt === 'png' || fileExt === 'gif') {
-        let fileFormData = new FormData()
-        fileFormData.append('file', file)
-        const option = {
-          url: '/banner/uploadBanner',
-          data: fileFormData,
-          method: 'post',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-        axios.request(option).then(res => {
-          console.log(res)
-          _this.getTablePageData()
-        }).catch(res => {
-          _this.uploadLoading = false
-        })
-      } else {
-        _this.uploadLoading = false
-        this.$Notice.warning({
-          title: '文件类型错误',
-          desc: '文件：' + file.name + '不是图片。'
-        })
-      }
-      return false
-    },
-    handleUploadFile () {
-      this.getTablePageData()
-    },
     getTablePageData () {
       const option = {
-        url: '/banner/getBannerPageList',
+        url: '/link/getLinkPageList',
         data: this.formData,
         method: 'post'
       }
@@ -257,31 +208,54 @@ export default {
       this.formData.pageNum = 1
       this.getTablePageData()
     },
-    handleIsView (bannerId, isView) {
-
-      this.msgTitle = isView === 1 ? '展示轮播图成功' : '隐藏轮播图成功'
-      this.$Modal.confirm({
-        title: isView === 1 ? '展示' : '隐藏',
-        content: isView === 1 ? '你确定要展示吗?' : '你确定要隐藏吗?',
-        loading: true,
-        onOk: () => {
-          this.viewData(bannerId, isView)
-        }
-      })
-    },
-    handleView (path, name) {
+    handleAddData () {
       this.modelShow = true
-      this.modelTitle = '查看轮播图'
-      this.viewUrl = Global.resourcesBasePath + path + name
+      this.$refs['formItem'].resetFields()
+      this.modelTitle = '新增友情链接'
+      this.msgTitle = '新增友情链接成功'
     },
-    handleDelete (params) {
-      this.msgTitle = '删除轮播图成功'
+    handleEditor (row) {
+      this.modelShow = true
+      this.modelTitle = '编辑友情链接'
+      this.formItem = JSON.parse(JSON.stringify(row))
+      this.formItem.isView = this.formItem.isView + ''
+    },
+    handleDelete (id) {
+      this.msgTitle = '删除友情链接成功'
       this.$Modal.confirm({
         title: '删除',
         content: '你确定要删除吗?',
         loading: true,
         onOk: () => {
-          this.deleteData(params.row.id)
+          this.deleteData(id)
+        }
+      })
+    },
+    saveFormData () {
+      const _this = this
+      _this.$refs['formItem'].validate(function (valid) {
+        if (valid) {
+          _this.modelButtonLoading = true
+          console.log(_this.formItem)
+          axios.request({
+            url: '/link/saveLink',
+            data: _this.formItem,
+            method: 'post'
+          }).then(res => {
+            // console.log(res)
+            setTimeout(function () {
+              _this.modelButtonLoading = false
+              if (res.data.code === 200) {
+                _this.$Message.success(_this.msgTitle)
+                _this.modelShow = false
+                _this.getTablePageData()
+              } else {
+                _this.$Message.error('网络异常，请稍后重试')
+              }
+            }, 1500)
+          }).catch(res => {
+            _this.modelButtonLoading = false
+          })
         }
       })
     },
@@ -289,27 +263,10 @@ export default {
       this.modelShow = false
       this.$Modal.remove()
     },
-    viewData (bannerId, isView) {
-      const _this = this
-      axios.request({
-        url: '/banner/viewBanner?bannerId=' + bannerId + '&isView=' + isView,
-        method: 'get'
-      }).then(res => {
-        _this.$Modal.remove()
-        if (res.data.code === 200) {
-          _this.$Message.success(_this.msgTitle)
-          _this.getTablePageData()
-        } else if (res.data.code === 302) {
-          _this.$Message.error(res.data.msg)
-        } else {
-          _this.$Message.error('网络异常，请稍后重试')
-        }
-      })
-    },
     deleteData (id) {
       const _this = this
       axios.request({
-        url: '/banner/deleteBanner/' + id,
+        url: '/link/deleteLink/' + id,
         method: 'delete'
       }).then(res => {
         _this.$Modal.remove()

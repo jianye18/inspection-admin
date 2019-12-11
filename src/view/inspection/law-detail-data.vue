@@ -109,23 +109,20 @@
           </div>
         </div>
       </div>
-      <div class="statement-con">
-        <span class="statement-con-title">负责声明：</span>
-        <div>
-          <p>本网站所有标准资料，都来自于网络和食品同行，内容仅供食品行业技术交流学习使用，请勿作他用，正式场合使用请购买正版。若网站内容与纸质文件相关内容不一致时，以纸质文件为准，否则由此产生的一切后果自行承担。</p>
-          <p>本网站对此不承担任何技术及版权问题；如本站有相关内容侵权，请告知。</p>
-          <p>未经食品商务网（www.21food.cn）许可，任何网站不得非法抄袭本网站的资料、资源。</p>
-        </div>
-      </div>
+      <statement></statement>
     </div>
   </div>
 </template>
 <script>
 import axios from '@/libs/api.request'
+import statement from '@/view/inspection/components/statement/'
 import './search.less'
 import './detail.less'
 export default {
   name: 'CriterionDetail',
+  components: {
+    statement
+  },
   data () {
     return {
       modelShow: false,

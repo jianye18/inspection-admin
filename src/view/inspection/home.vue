@@ -49,7 +49,7 @@
     height: 200px;
     /*margin-bottom: 50px;*/
     border-top: 1px solid #f2f2f2;
-    padding: 15px 180px 0 180px;
+    padding: 15px 180px 0px 180px;
   }
   .footer-link{
     height: 40px;
@@ -69,12 +69,9 @@
   }
   .web-about{
     width: 100%;
-    display: inline-block;
-    height: 145px;
-    padding: 0;
+    height: 140px;
   }
   .web-about-content{
-    display: inline-block;
     padding: 15px 0 0 30px;
   }
   .web-about-content span{
@@ -111,26 +108,28 @@
       </Content>
       <Footer class="layout-footer-center">
         <div class="footer-link">
-          <span class="footer-link-title">友情链接：</span>
-          <a class="footer-link-content" v-for="item in linkList" :key="item.id" :href="item.path" >{{item.name}}</a>
+          <span class="footer-link-title"><Icon type="ios-link" />友情链接：</span>
+          <a class="footer-link-content" target="view_window" v-for="item in linkList" :key="item.id" :href="item.path" >{{item.name}}</a>
         </div>
         <div class="web-about">
-          <div style="width: 75%; border-left: 2px groove #e5e5e5; border-right: 2px groove #e5e5e5; display: inline-block;">
-            <div style="height: 70px;">
-              <p style="margin-left: 30px; margin-top: 15px;">站点相关</p>
-              <div class="web-about-content">
-                <span>博主简介</span>
-                <span>网站声明</span>
+          <Row>
+            <Col span="18" style="border-left: 1px ridge #e5e5e5; border-right: 1px ridge #e5e5e5;">
+              <div style="height: 114px;">
+                <p style="margin-left: 30px;padding-top: 15px;"><Icon type="ios-keypad" />站点相关</p>
+                <div class="web-about-content">
+                  <span><Icon type="md-radio-button-off" />博主简介</span>
+                  <span><Icon type="md-radio-button-off" />网站声明</span>
+                </div>
               </div>
-            </div>
-            <div class="ba-content">
-              Copyright叶竹洪博客︱苏ICP备17037083号︱您您是本站第************位访客
-            </div>
-          </div>
-          <div style="width: 20%; display: inline-block;">
-            <p style="margin-left: 30px; margin-top: 15px;">欢迎关注我们</p>
-            <img src="../../assets/images/gongzhonghao.jpg" style="margin-left: 25px; width: 102px; height: 102px;" />
-          </div>
+              <div class="ba-content">
+                Copyright叶竹洪博客︱苏ICP备17037083号︱您您是本站第************位访客
+              </div>
+            </Col>
+            <Col span="6" style="border-right: 1px ridge #e5e5e5;">
+              <p style="margin-left: 30px; margin-top: 15px;">欢迎关注我们</p>
+              <img src="../../assets/images/gongzhonghao.jpg" style="margin-left: 25px; width: 102px; height: 102px;" />
+            </Col>
+          </Row>
         </div>
       </Footer>
     </Layout>

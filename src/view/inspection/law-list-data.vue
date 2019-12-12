@@ -6,7 +6,7 @@
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-      搜索法规结果
+      搜索法规
     </div>
     <div class="search-con search-con-top">
       <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase"/>
@@ -44,6 +44,8 @@ export default {
     return {
       modelShow: false,
       formData: {
+        orderName: 'implement_date',
+        orderType: 'desc',
         pageNum: 1, // 当前页
         pageSize: 20, // 一页展示数量
         searchPhrase: '',
@@ -69,7 +71,7 @@ export default {
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
               },
-              domProps: {title: content},
+              domProps: { title: content },
               on: {
                 click: () => {
                   _this.$router.push({
@@ -81,26 +83,6 @@ export default {
             }, content)
           }
         },
-        /*{
-          title: '一级分类',
-          align: 'center',
-          width: 120,
-          key: 'categoryName'
-        },
-        {
-          title: '二级分类',
-          align: 'center',
-          key: 'typeName',
-          width: 120,
-          render: function render (h, params) {
-            let typeName = params.row.typeName
-            let content = '-'
-            if (typeName) {
-              content = typeName
-            }
-            return h('span', content)
-          }
-        },*/
         {
           title: '发布单位',
           key: 'publishUnitName',

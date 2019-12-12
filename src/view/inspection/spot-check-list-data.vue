@@ -1,7 +1,7 @@
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-      搜索抽检结果
+      搜索抽检数据
     </div>
     <div class="search-con search-con-top">
       <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索"
@@ -79,13 +79,6 @@ export default {
           width: 200,
           tooltip: true
         },
-        /*{
-          title: '产品分类',
-          align: 'center',
-          width: 80,
-          key: 'productType',
-          tooltip: true
-        },*/
         {
           title: '公布机构',
           align: 'center',

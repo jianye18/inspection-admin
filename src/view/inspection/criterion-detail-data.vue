@@ -2,13 +2,13 @@
   <div>
     <div class="detail-data detail-title">
       <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-        搜索标准结果
+        搜索标准
       </div>
       <div class="search-con search-con-top">
         <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
-        <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
+        <!--<Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
           <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+        </Select>-->
         <Select v-model="formData.status" style="width:120px; margin-left: 2px;" placeholder="请选择状态" clearable>
           <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
         </Select>
@@ -157,11 +157,11 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/api/system/getSystemDataByTypeCode/BZ_publishUnit,BZ_status',
+        url: '/api/system/getSystemDataByTypeCode/BZ_status', // BZ_publishUnit,
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.publishUnitList = res.data.data['BZ_publishUnit']
+        // this.publishUnitList = res.data.data['BZ_publishUnit']
         this.statusList = res.data.data['BZ_status']
       })
     },

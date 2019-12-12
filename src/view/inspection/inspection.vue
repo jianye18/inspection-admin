@@ -43,9 +43,8 @@
     <Breadcrumb separator=">" :style="{margin: '10px 0'}">
       <BreadcrumbItem
         v-for="(item, index) in breadList"
-        :key="item.name"
-        :class="index === 1 ? 'bread_active_class' : ''">
-        <span @click="backList(item.value)">{{item.name}}</span>
+        :key="item.name">  <!--:class="index === 1 ? 'bread_active_class' : ''"  @click="backList(item.value)" -->
+        <span>{{item.name}}</span>
       </BreadcrumbItem>
     </Breadcrumb>
     <Content>
@@ -187,7 +186,7 @@ export default {
           }
           if (_this.type === 'CC') {
             let typeCodes = Global.baseType[this.type].split(',')
-            _this.leftUpData = { title: '标准一级分类', menuList: res.data.data[typeCodes[0]]}
+            _this.leftUpData = { title: '标准一级分类', menuList: res.data.data[typeCodes[0]] }
             _this.leftDownData = { title: '标准二级分类', menuList: res.data.data[typeCodes[1]] }
           }
           if (_this.type === 'LW') {
@@ -206,16 +205,22 @@ export default {
     toRouter (option, typeCode, idx, val) {
       console.log('列表左侧菜单点击参数：' + option + '***' + typeCode + '***' + idx + '***' + val)
       this.breadList = this.breadData[this.type].concat([])
-      this.$store.dispatch('CreateParam', {type: this.type, query: [{key: typeCode.split('_')[1], value: val}]})
+      this.$store.dispatch('CreateParam', { type: this.type, query: [{ key: typeCode.split('_')[1], value: val }] })
       if (option === 'up') {
+        if (this.type === 'CC') {
+          this.$store.dispatch('CreateParam', { type: this.type, query: [{ key: 'type', value: '' }, { key: typeCode.split('_')[1], value: val }] })
+        }
         this.upActiveIdx = idx
+        this.downActiveIdx = null
         this.breadList.push({ value: '', name: this.leftUpData.menuList[idx].label })
       }
       if (this.type === 'CC' && option === 'down') {
+        this.$store.dispatch('CreateParam', { type: this.type, query: [{ key: 'category', value: '' }, { key: typeCode.split('_')[1], value: val }] })
+        this.upActiveIdx = null
         this.downActiveIdx = idx
         this.breadList.push({ value: '', name: this.leftUpData.menuList[idx].label })
       }
-      this.toList({mold: 1, key: typeCode.split('_')[1], value: val})
+      this.toList({ mold: 1, key: typeCode.split('_')[1], value: val })
     },
     backList (key) {
       if (key) {

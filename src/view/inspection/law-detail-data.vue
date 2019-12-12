@@ -2,7 +2,7 @@
   <div>
     <div class="detail-data detail-title">
       <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-        搜索法规结果
+        搜索法规
       </div>
       <div class="search-con search-con-top">
         <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>

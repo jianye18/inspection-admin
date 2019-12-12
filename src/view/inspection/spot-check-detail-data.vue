@@ -2,7 +2,7 @@
   <div>
     <div class="detail-data detail-title">
       <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-        搜索抽检结果
+        搜索抽检数据
       </div>
       <div class="search-con search-con-top">
         <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索"

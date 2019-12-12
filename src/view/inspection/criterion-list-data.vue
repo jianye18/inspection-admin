@@ -1,13 +1,13 @@
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
-      搜索标准结果
+      搜索标准
     </div>
     <div class="search-con search-con-top">
       <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
-      <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
+      <!--<Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
         <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-      </Select>
+      </Select>-->
       <Select v-model="formData.status" style="width:120px" placeholder="请选择状态" clearable>
         <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
       </Select>
@@ -37,6 +37,8 @@ export default {
     return {
       modelShow: false,
       formData: {
+        orderName: 'implement_date',
+        orderType: 'desc',
         pageNum: 1, // 当前页
         pageSize: 20, // 一页展示数量
         searchPhrase: '',
@@ -73,18 +75,6 @@ export default {
             }, content)
           }
         },
-        /*{
-          title: '一级分类',
-          align: 'center',
-          key: 'categoryName',
-          width: 120
-        },
-        {
-          title: '二级分类',
-          align: 'center',
-          key: 'typeName',
-          width: 120
-        },*/
         {
           title: '发布单位',
           key: 'publishUnitName',
@@ -124,7 +114,6 @@ export default {
         this.formData[params['key']] = params['value']
       } else {
         this.formData.searchPhrase = params['searchPhrase']
-        this.formData.publishUnit = params['publishUnit']
         this.formData.category = params['category']
         this.formData.type = params['type']
         this.formData.status = params['status']
@@ -153,11 +142,11 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/api/system/getSystemDataByTypeCode/BZ_publishUnit,BZ_status',
+        url: '/api/system/getSystemDataByTypeCode/BZ_status', // BZ_publishUnit
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.publishUnitList = res.data.data['BZ_publishUnit']
+        // this.publishUnitList = res.data.data['BZ_publishUnit']
         this.statusList = res.data.data['BZ_status']
       })
     },

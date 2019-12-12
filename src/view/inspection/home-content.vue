@@ -1,9 +1,9 @@
 <style>
   .search-box{
-    height: 200px;
+    height: 300px;
     /*background-color: #67647D;*/
     margin: 0;
-    padding: 70px 0 0 80px;
+    padding: 130px 0 0 80px;
     background-image: url('../../assets/images/search-box-back.jpg');
   }
   .data-con{
@@ -76,7 +76,6 @@
   }
   .article_class ul li{
     font-size: 13px;
-    font-weight: bold;
     margin-left: 15px;
     height: 45px;
     line-height: 45px;
@@ -111,10 +110,11 @@
         <Content :style="{minHeight: '620px', marginRight: '15px'}">
           <div class="search-box">
             <Select v-model="formData.type" style="width:120px; float: left" placeholder="">
-              <Option value="SC">抽检结果</Option>
-              <Option value="CC">抽检标准</Option>
-              <Option value="LW">抽检法规</Option>
-              <Option value="FC">飞检结果</Option>
+              <Option value="LW">法规</Option>
+              <Option value="CC">标准</Option>
+              <Option value="SC">抽检数据</Option>
+              <Option value="FC">监督检查</Option>
+              <Option value="AC">文章</Option>
             </Select>
             <Input v-model="formData.searchPhrase"
                    search enter-button="搜索"
@@ -126,7 +126,6 @@
             <div class="data-title">
               <span style="font-size: 18px; font-weight: bold;">
                 <Icon type="ios-flask"/>
-                &nbsp;
                 {{item.title}}
               </span>
               <!--<span class="data-type-select">-->
@@ -143,7 +142,7 @@
           </div>
         </Content>
         <Sider hide-trigger :style="{background: '#f5f7f9', height: '100%'}" width="400">
-          <div style="height: 200px">
+          <div style="height: 300px">
             <Carousel
               v-model="value3"
               autoplay
@@ -191,7 +190,7 @@ export default {
   data () {
     return {
       formData: {
-        type: 'SC',
+        type: 'LW',
         searchPhrase: ''
       },
       value3: 0,

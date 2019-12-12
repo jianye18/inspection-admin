@@ -40,7 +40,7 @@ import Tables from '_c/tables'
 import axios from '@/libs/api.request'
 import Editor from '_c/editor'
 export default {
-  name: 'Banner',
+  name: 'Statement',
   components: {
     Tables,
     Editor
@@ -169,6 +169,7 @@ export default {
     handleEditor (row) {
       this.modelShow = true
       this.modelTitle = '编辑声明'
+      this.msgTitle = '编辑声明成功'
       this.formItem = JSON.parse(JSON.stringify(row))
       this.$refs.editor.setHtml(this.formItem.content)
     },

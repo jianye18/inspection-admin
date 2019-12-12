@@ -15,6 +15,13 @@
   .detail-data .ivu-col{
     padding: 5px 0;
   }
+  .detail-data-content p{
+    padding: 5px 0 5px;
+    line-height: 25px;
+  }
+  .detail-data-content p span{
+    line-height: 25px;
+  }
 </style>
 <template>
   <div>

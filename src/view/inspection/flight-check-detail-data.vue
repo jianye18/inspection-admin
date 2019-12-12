@@ -42,6 +42,7 @@
         <tr>
           <td>问题内容</td>
           <td colspan="3" class="detail-content" v-html="flightCheckData.problem"></td>
+          <!--<td colspan="3" class="detail-content">{{flightCheckData.problem}}</td>-->
         </tr>
         <tr>
           <td>来源链接</td>
@@ -176,6 +177,7 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.flightCheckData = res.data.data
+          _this.flightCheckData.problem.replace(/↵/g, '<br/>')
           console.log(_this.flightCheckData)
           _this.getTablePageData(1)
           _this.getTablePageData(2)

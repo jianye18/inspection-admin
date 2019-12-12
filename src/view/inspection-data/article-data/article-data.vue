@@ -80,10 +80,10 @@
                 <a href="#" class="close" @click="deleteArticleSubject(item)"></a>
               </span>
             </FormItem>
-            <FormItem label="发布时间" prop="publishTime">
+            <!--<FormItem label="发布时间" prop="publishTime">
               <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss" @on-change="formItem.publishTime=$event"
                           placeholder="请选择发布时间" :value="formItem.publishTime" transfer style="width:200px"></DatePicker>
-            </FormItem>
+            </FormItem>-->
             <FormItem label="文章内容" prop="content">
               <editor ref="editor" :value="formItem.content" @on-change="handleChange"/>
             </FormItem>
@@ -158,7 +158,16 @@ export default {
           title: '发布时间',
           align: 'center',
           key: 'publishTime',
-          width: 120
+          width: 120,
+          render: function render (h, params) {
+            let publishTime = params.row.publishTime
+            let isPublish = params.row.isPublish + ''
+            if (isPublish === '1') {
+              return h('span', publishTime)
+            } else {
+              return h('span', '—')
+            }
+          }
         },
         {
           title: '状态',
@@ -209,7 +218,7 @@ export default {
               },
               on: {
                 click: () => {
-                  _ths.handleEditor(params)
+                  _ths.handleEditor(params.row.id)
                 }
               }
             }, '编辑'), h('Button', {
@@ -324,24 +333,38 @@ export default {
       this.link = ''
     },
     handleAddData () {
-      this.formItem = {
-        subject: [],
-        links: []
-      }
-      this.$refs.editor.setHtml('')
+      this.clearData()
       this.modelShow = true
       this.$refs['formItem'].resetFields()
       this.modelTitle = '新增文章'
       this.msgTitle = '新增文章成功'
     },
-    handleEditor (params) {
-      this.formItem = JSON.parse(JSON.stringify(params.row))
-      this.formItem.subject = JSON.parse(this.formItem.subject)
-      this.formItem.links = JSON.parse(this.formItem.links)
-      this.$refs.editor.setHtml(this.formItem.content)
-      this.modelShow = true
-      this.modelTitle = '编辑文章'
-      this.msgTitle = '修改文章成功'
+    clearData () {
+      this.formItem = {
+        subject: [],
+        links: []
+      }
+      this.$refs.editor.setHtml('')
+    },
+    handleEditor (id) {
+      this.clearData()
+      const _this = this
+      const option = {
+        url: '/api/article/getArticleById/' + id,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        if (res.data.code === 200) {
+          _this.formItem = JSON.parse(JSON.stringify(res.data.data))
+          _this.formItem.subject = JSON.parse(_this.formItem.subject)
+          _this.formItem.links = JSON.parse(_this.formItem.links)
+          _this.$refs.editor.setHtml(_this.formItem.content)
+          _this.modelShow = true
+          _this.modelTitle = '编辑文章'
+          _this.msgTitle = '修改文章成功'
+          console.log(_this.formItem)
+        }
+      })
     },
     handleDelete (params) {
       this.msgTitle = '删除文章成功'

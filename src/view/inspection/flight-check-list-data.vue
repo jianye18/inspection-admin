@@ -10,7 +10,7 @@
     </div>
     <div class="search-con search-con-top">
       <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase"/>
-      <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
+      <Select v-model="formData.publishUnit" style="width:140px" placeholder="请选择发布机构" clearable>
         <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
       <Select v-model="formData.precautions" style="width:120px" placeholder="请选择处理措施" clearable>
@@ -96,15 +96,15 @@ export default {
         {
           title: '处理措施',
           align: 'center',
-          key: 'precautionsName',
-          width: 100
+          key: 'precautions',
+          width: 160
         },
         {
           title: '发布单位',
           align: 'center',
           key: 'publishUnit',
           tooltip: true,
-          width: 140
+          width: 180
         },
         {
           title: '发布日期',
@@ -118,8 +118,7 @@ export default {
           key: 'status',
           width: 120,
           render: function render (h, params) {
-            let isDefect = params.row.isDefect + ''
-            let content = Global.getLabelByVal(isDefect, _this.defectList)
+            let content = params.row.isDefect
             return h('span', content)
           }
         }
@@ -145,7 +144,7 @@ export default {
       }
     }
     this.getTablePageData()
-    this.getAllSystemDataTypeList()
+    this.getPrecautionsList()
     this.getAllPublishUnit()
   },
   watch: {
@@ -166,13 +165,13 @@ export default {
     handleUploadFile () {
       this.getTablePageData()
     },
-    getAllSystemDataTypeList () {
+    getPrecautionsList () {
       const option = {
-        url: '/api/system/getSystemDataByTypeCode/FJ_precautions',
+        url: '/api/flightCheck/getPrecautionsList',
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.precautionsList = res.data.data['FJ_precautions']
+        this.precautionsList = res.data.data
       })
     },
     getAllPublishUnit () {

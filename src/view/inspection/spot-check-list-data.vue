@@ -76,7 +76,7 @@ export default {
         {
           title: '样品名称',
           key: 'sample',
-          width: 160,
+          width: 200,
           tooltip: true
         },
         /*{
@@ -89,7 +89,7 @@ export default {
         {
           title: '公布机构',
           align: 'center',
-          width: 100,
+          width: 140,
           key: 'institution',
           tooltip: true
         },
@@ -97,12 +97,12 @@ export default {
           title: '抽检结果',
           align: 'center',
           key: 'checkResult',
-          width: 60,
+          width: 80,
           render: function render (h, params) {
-            let checkResult = params.row.checkResult
+            let content = params.row.checkResult
             return h('span', {
               style: {
-                color: checkResult === '否' ? 'red' : ''
+                color: content === '不合格' ? 'red' : ''
               }
             }, content)
           }

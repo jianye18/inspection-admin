@@ -31,6 +31,9 @@
             <FormItem label="名称" prop="name">
                 <Input placeholder="请输入名称" v-model="formItem.name"/>
             </FormItem>
+            <FormItem label="编码" prop="code">
+              <Input placeholder="请输入名称" v-model="formItem.code"/>
+            </FormItem>
             <FormItem label="类型" prop="typeCode">
               <Select v-model="formItem.typeCode">
                 <Option v-for="item in typeCodeList" :value="item.value">{{item.label}}</Option>
@@ -40,6 +43,12 @@
               <Select v-model="formItem.sort">
                 <Option v-for="item in 20" :value="item">{{item}}</Option>
               </Select>
+            </FormItem>
+            <FormItem label="首页展示" prop="isView">
+              <RadioGroup v-model="formItem.isView">
+                <Radio label="1">是</Radio>
+                <Radio label="0">否</Radio>
+              </RadioGroup>
             </FormItem>
             <FormItem label="说明" prop="remark">
                 <Input placeholder="请输入常量说明" v-model="formItem.remark"/>
@@ -130,7 +139,9 @@ export default {
         total: 0,
         pages: 0
       },
-      formItem: {},
+      formItem: {
+        isView: '1'
+      },
       ruleValidate: {
         typeCode: [
           { required: true, message: '类型不能为空', trigger: 'blur' }
@@ -198,6 +209,9 @@ export default {
       this.getTablePageData()
     },
     handleAddData () {
+      this.formItem = {
+        isView: '1'
+      }
       this.modelShow = true
       this.$refs['formItem'].resetFields()
       this.modelTitle = '新增常量'
@@ -205,6 +219,7 @@ export default {
     },
     handleEditor (params) {
       this.formItem = JSON.parse(JSON.stringify(params.row))
+      this.formItem.isView = this.formItem.isView + ''
       this.modelShow = true
       this.modelTitle = '编辑常量'
       this.msgTitle = '修改常量成功'

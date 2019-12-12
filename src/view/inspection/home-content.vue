@@ -201,28 +201,28 @@ export default {
       hotArticleList: [],
       contentData: [
         {
-          title: '抽检结果',
+          title: '抽检分类',
           type: 'SC',
           name: '按产品分类',
           path: 'spotCheck',
           typeList: []
         },
         {
-          title: '具体标准',
+          title: '标准分类',
           type: 'CC',
           name: '按标准分类',
           path: 'criterion',
           typeList: []
         },
         {
-          title: '法律法规',
+          title: '法规分类',
           type: 'LW',
           name: '按法规分类',
           path: 'law',
           typeList: []
         },
         {
-          title: '飞检结果',
+          title: '飞检分类',
           type: 'FC',
           name: '按飞检分类',
           path: 'flightCheck',
@@ -305,6 +305,7 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           let result = res.data.data
+          console.log(result)
           _this.contentData.forEach(function (item, index) {
             _this.contentData[index].typeList = result[_this.contentData[index].type]
           })

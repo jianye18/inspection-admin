@@ -301,6 +301,9 @@ export default {
       axios.request(option).then(res => {
         _this.$Message.success('导入飞检数据成功')
         _this.getTablePageData()
+        _this.getTypeList()
+        _this.getPrecautionsList()
+        _this.getAllPublishUnit()
       }).catch(res => {
         _this.uploadLoading = false
       })

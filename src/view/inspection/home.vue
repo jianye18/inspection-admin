@@ -122,7 +122,7 @@
                 </div>
               </div>
               <div class="ba-content">
-                Copyright叶竹洪博客︱苏ICP备17037083号︱您您是本站第************位访客
+                Copyright叶竹洪博客︱苏ICP备17037083号︱您是本站第************位访客
               </div>
             </Col>
             <Col span="6" style="border-right: 1px ridge #e5e5e5;">

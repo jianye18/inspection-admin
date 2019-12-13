@@ -21,33 +21,33 @@
       </div>
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
-          <td>标准状态</td>
-          <td class="detail-content">{{criterionData.statusName}}</td>
-          <td>标准分类</td>
-          <td class="detail-content">{{criterionData.typeName}}</td>
+          <td colspan="2">标准状态</td>
+          <td colspan="4" class="detail-content">{{criterionData.statusName}}</td>
+          <td colspan="2">标准分类</td>
+          <td colspan="4" class="detail-content">{{criterionData.typeName}}</td>
         </tr>
         <tr>
-          <td>发布日期</td>
-          <td class="detail-content">{{criterionData.publishDate}}</td>
-          <td>实施日期</td>
-          <td class="detail-content">{{criterionData.implementDate}}</td>
+          <td colspan="2">发布日期</td>
+          <td colspan="4" class="detail-content">{{criterionData.publishDate}}</td>
+          <td colspan="2">实施日期</td>
+          <td colspan="4" class="detail-content">{{criterionData.implementDate}}</td>
         </tr>
         <tr>
-          <td>发布单位</td>
-          <td colspan="3" class="detail-content">{{criterionData.publishUnitName}}</td>
+          <td colspan="2">发布单位</td>
+          <td colspan="10" class="detail-content">{{criterionData.publishUnitName}}</td>
         </tr>
         <tr>
-          <td>标准摘要</td>
-          <td colspan="3" class="detail-content">{{criterionData.summary}}</td>
+          <td colspan="2">标准摘要</td>
+          <td colspan="10" class="detail-content">{{criterionData.summary}}</td>
         </tr>
         <tr>
-          <td>附件下载</td>
-          <td colspan="3" class="detail-content">
+          <td colspan="2">附件下载</td>
+          <td colspan="10" class="detail-content">
             <span v-if="criterionData.annexList" v-for="item in criterionData.annexList" :key="item.name" style="margin-right: 15px;">
               {{item.name}}
             </span>
             <!--<Button size="large" type="primary" icon="ios-book-outline" style="float: right; margin-right: 10px;">浏览文件</Button>-->
-            <Button size="large" type="success" icon="ios-download-outline" @click="downloadFile"
+            <Button v-if="criterionData.annexList" size="large" type="success" icon="ios-download-outline" @click="downloadFile"
                     style="float: right; margin-right: 10px; margin-top: 5px;">下载文件</Button>
           </td>
         </tr>

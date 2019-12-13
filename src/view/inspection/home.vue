@@ -71,18 +71,13 @@
     width: 100%;
     height: 140px;
   }
-  .web-about-content{
-    padding: 15px 0 0 30px;
+  .footer_content{
+    border-left: 1px ridge #e5e5e5;
+    border-right: 1px ridge #e5e5e5;
+    height: 140px;
   }
-  .web-about-content span{
-    margin-right: 15px;
-  }
-  .ba-content{
-    height: 30px;
-    font-size: 12px;
-    color: #b3b3b3;
-    line-height: 30px;
-    padding-left: 30px;
+  .footer_content p{
+    padding: 15px 0 0 10px;
   }
 </style>
 <template>
@@ -113,17 +108,10 @@
         </div>
         <div class="web-about">
           <Row>
-            <Col span="18" style="border-left: 1px ridge #e5e5e5; border-right: 1px ridge #e5e5e5;">
-              <div style="height: 114px;">
-                <p style="margin-left: 30px;padding-top: 15px;"><Icon type="ios-keypad" />站点相关</p>
-                <div class="web-about-content">
-                  <span><Icon type="md-radio-button-off" />博主简介</span>
-                  <span><Icon type="md-radio-button-off" />网站声明</span>
-                </div>
-              </div>
-              <div class="ba-content">
-                Copyright叶竹洪博客︱苏ICP备17037083号︱您是本站第************位访客
-              </div>
+            <Col span="18" class="footer_content">
+              <p><Icon type="logo-windows" />Copyright©叶竹洪博客︱苏ICP备17037083号</p>
+              <p><Icon type="md-contact" />手机 / 微信：15850584156 | 网站纠错请邮件：22521453@qq.com</p>
+              <p><Icon type="md-funnel" />您是本站第************位访客</p>
             </Col>
             <Col span="6" style="border-right: 1px ridge #e5e5e5;">
               <p style="margin-left: 30px; margin-top: 15px;">欢迎关注我们</p>

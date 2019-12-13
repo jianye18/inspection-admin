@@ -24,33 +24,33 @@
       </div>
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
-          <td>法规名称</td>
-          <td colspan="3" class="detail-content">{{lawData.name}}</td>
+          <td colspan="2">法规名称</td>
+          <td colspan="10" class="detail-content">{{lawData.name}}</td>
         </tr>
         <tr>
-          <td>发布单位</td>
-          <td class="detail-content">{{lawData.publishUnitName}}</td>
-          <td>文号</td>
-          <td class="detail-content">{{lawData.codeNumber}}</td>
+          <td colspan="2">发布单位</td>
+          <td colspan="4" class="detail-content">{{lawData.publishUnitName}}</td>
+          <td colspan="2">文号</td>
+          <td colspan="4" class="detail-content">{{lawData.codeNumber}}</td>
         </tr>
         <tr>
-          <td>发布日期</td>
-          <td class="detail-content">{{lawData.publishDate}}</td>
-          <td>实施日期</td>
-          <td class="detail-content">{{lawData.implementDate}}</td>
+          <td colspan="2">发布日期</td>
+          <td colspan="4" class="detail-content">{{lawData.publishDate}}</td>
+          <td colspan="2">实施日期</td>
+          <td colspan="4" class="detail-content">{{lawData.implementDate}}</td>
         </tr>
         <tr>
-          <td>法规内容</td>
-          <td colspan="3" class="detail-content" v-html="lawData.content"></td>
+          <td colspan="2">法规内容</td>
+          <td colspan="10" class="detail-content" v-html="lawData.content"></td>
         </tr>
         <tr>
-          <td>附件下载</td>
-          <td colspan="3" class="detail-content">
+          <td colspan="2">附件下载</td>
+          <td colspan="10" class="detail-content">
             <span v-if="lawData.annexList" v-for="item in lawData.annexList" :key="item.name" style="margin-right: 15px;">
               {{item.name}}
             </span>
             <!--<Button size="large" type="primary" icon="ios-book-outline" style="float: right; margin-right: 10px;">浏览文件</Button>-->
-            <Button size="large" type="success" icon="ios-download-outline" @click="downloadFile"
+            <Button v-if="criterionData.annexList" size="large" type="success" icon="ios-download-outline" @click="downloadFile"
                     style="float: right; margin-right: 10px; margin-top: 5px;">下载文件</Button>
           </td>
         </tr>

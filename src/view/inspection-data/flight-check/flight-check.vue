@@ -341,7 +341,10 @@ export default {
     },
     handleEditor (params) {
       this.formItem = JSON.parse(JSON.stringify(params.row))
-      this.formItem.isDefect = this.formItem.isDefect + ''
+      console.log(this.formItem.problem)
+      let problem = this.formItem.problem.replace(/<br\/>/g, "\r\n")
+      console.log(problem)
+      this.formItem.problem = problem
       this.modelShow = true
       this.modelTitle = '编辑飞检'
       this.msgTitle = '修改飞检数据成功'

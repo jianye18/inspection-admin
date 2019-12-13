@@ -24,29 +24,29 @@
       </div>
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
-          <td>企业名称</td>
-          <td colspan="3" class="detail-content">{{flightCheckData.businessName}}</td>
+          <td colspan="2">企业名称</td>
+          <td colspan="10" class="detail-content">{{flightCheckData.businessName}}</td>
         </tr>
         <tr>
-          <td>发布单位</td>
-          <td class="detail-content">{{flightCheckData.publishUnit}}</td>
-          <td>发布时间</td>
-          <td class="detail-content">{{flightCheckData.publishDate}}</td>
+          <td colspan="2">发布单位</td>
+          <td colspan="4" class="detail-content">{{flightCheckData.publishUnit}}</td>
+          <td colspan="2">发布时间</td>
+          <td colspan="4" class="detail-content">{{flightCheckData.publishDate}}</td>
         </tr>
         <tr>
-          <td>飞检类型</td>
-          <td class="detail-content">{{flightCheckData.type}}</td>
-          <td>是否有缺陷</td>
-          <td class="detail-content">{{flightCheckData.isDefect}}</td>
+          <td colspan="2">飞检类型</td>
+          <td colspan="4" class="detail-content">{{flightCheckData.type}}</td>
+          <td colspan="2">是否有缺陷</td>
+          <td colspan="4" class="detail-content">{{flightCheckData.isDefect}}</td>
         </tr>
         <tr>
-          <td>问题内容</td>
-          <td colspan="3" class="detail-content" v-html="flightCheckData.problem"></td>
+          <td colspan="2">问题内容</td>
+          <td colspan="10" class="detail-content" v-html="flightCheckData.problem"></td>
           <!--<td colspan="3" class="detail-content">{{flightCheckData.problem}}</td>-->
         </tr>
         <tr>
-          <td>来源链接</td>
-          <td colspan="3" class="detail-content"><a :href="flightCheckData.sourceLink" target="view_window">{{flightCheckData.sourceLink}}</a></td>
+          <td colspan="2">来源链接</td>
+          <td colspan="10" class="detail-content"><a :href="flightCheckData.sourceLink" target="view_window">{{flightCheckData.sourceLink}}</a></td>
         </tr>
       </table>
       <div>
@@ -177,7 +177,6 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.flightCheckData = res.data.data
-          _this.flightCheckData.problem.replace(/↵/g, '<br/>')
           console.log(_this.flightCheckData)
           _this.getTablePageData(1)
           _this.getTablePageData(2)

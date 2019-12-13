@@ -24,50 +24,50 @@
       </div>
       <table class="detail-con-tab" border="1" cellspacing="0" cellpadding="0">
         <tr>
-          <td>标称生产企业/进口代理商名称</td>
-          <td colspan="3" class="detail-content">{{spotCheckData.producer}}</td>
+          <td colspan="2">标称生产企业/进口代理商名称</td>
+          <td colspan="10" class="detail-content">{{spotCheckData.producer}}</td>
         </tr>
         <tr>
-          <td>委托企业名称</td>
-          <td colspan="3" class="detail-content">{{spotCheckData.company}}</td>
+          <td colspan="2">委托企业名称</td>
+          <td colspan="10" class="detail-content">{{spotCheckData.company}}</td>
         </tr>
         <tr>
-          <td>被采样单位名称</td>
-          <td colspan="3" class="detail-content">{{spotCheckData.unit}}</td>
+          <td colspan="2">被采样单位名称</td>
+          <td colspan="10" class="detail-content">{{spotCheckData.unit}}</td>
         </tr>
         <tr>
-          <td>样品名称</td>
-          <td class="detail-content">{{spotCheckData.sample}}</td>
-          <td>包装规格</td>
-          <td class="detail-content">{{spotCheckData.specification}}</td>
+          <td colspan="2">样品名称</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.sample}}</td>
+          <td colspan="2">包装规格</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.specification}}</td>
         </tr>
         <tr>
-          <td>抽检结果</td>
-          <td class="detail-content">{{spotCheckData.checkResult}}</td>
-          <td>不合格项目</td>
-          <td class="detail-content">{{spotCheckData.subject}}</td>
+          <td colspan="2">抽检结果</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.checkResult}}</td>
+          <td colspan="2">不合格项目</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.subject}}</td>
         </tr>
         <tr>
-          <td>保质期</td>
-          <td class="detail-content">{{spotCheckData.expireTime}}</td>
-          <td>产品分类</td>
-          <td class="detail-content">{{spotCheckData.productType}}</td>
+          <td colspan="2">保质期</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.expireTime}}</td>
+          <td colspan="2">产品分类</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.productType}}</td>
         </tr>
         <tr>
-          <td>产地</td>
-          <td class="detail-content">{{spotCheckData.location}}</td>
-          <td>公布日期</td>
-          <td class="detail-content">{{spotCheckData.publishDate}}</td>
+          <td colspan="2">产地</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.location}}</td>
+          <td colspan="2">公布日期</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.publishDate}}</td>
         </tr>
         <tr>
-          <td>涉嫌假冒</td>
-          <td class="detail-content">{{spotCheckData.isFake}}</td>
-          <td>公布机构</td>
-          <td class="detail-content">{{spotCheckData.institution}}</td>
+          <td colspan="2">涉嫌假冒</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.isFake}}</td>
+          <td colspan="2">公布机构</td>
+          <td colspan="4" class="detail-content">{{spotCheckData.institution}}</td>
         </tr>
         <tr>
-          <td>来源链接</td>
-          <td colspan="3" class="detail-content"><a :href="spotCheckData.sourceLink" target="view_window">{{spotCheckData.sourceLink}}</a></td>
+          <td colspan="2">来源链接</td>
+          <td colspan="10" class="detail-content"><a :href="spotCheckData.sourceLink" target="view_window">{{spotCheckData.sourceLink}}</a></td>
         </tr>
       </table>
       <div>

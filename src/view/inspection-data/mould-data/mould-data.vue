@@ -357,6 +357,7 @@ export default {
     },
     handleEditor (params) {
       this.formItem = JSON.parse(JSON.stringify(params.row))
+      this.formItem.summary = this.formItem.summary.replace(/<br\/>/g, "\r\n")
       this.currentCriterionId = params.row.id
       this.modelShow = true
       this.modelTitle = '编辑标准'

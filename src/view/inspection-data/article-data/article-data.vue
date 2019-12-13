@@ -333,22 +333,19 @@ export default {
       this.link = ''
     },
     handleAddData () {
-      this.clearData()
-      this.modelShow = true
-      this.$refs['formItem'].resetFields()
-      this.modelTitle = '新增文章'
+      this.clearData();
+      this.modelShow = true;
+      this.$refs['formItem'].resetFields();
+      this.modelTitle = '新增文章';
       this.msgTitle = '新增文章成功'
     },
     clearData () {
-      this.formItem = {
-        subject: [],
-        links: []
-      }
+      this.formItem = {};
       this.$refs.editor.setHtml('')
     },
     handleEditor (id) {
-      this.clearData()
-      const _this = this
+      this.clearData();
+      const _this = this;
       const option = {
         url: '/api/article/getArticleById/' + id,
         method: 'get'
@@ -362,7 +359,6 @@ export default {
           _this.modelShow = true
           _this.modelTitle = '编辑文章'
           _this.msgTitle = '修改文章成功'
-          console.log(_this.formItem)
         }
       })
     },

@@ -6,6 +6,9 @@
     padding: 130px 0 0 80px;
     background-image: url('../../assets/images/search-box-back.jpg');
   }
+  .data_count{
+    font-size: 30px;
+  }
   .data-con{
     background-color: #fff;
     /*min-height: 300px;*/
@@ -109,18 +112,28 @@
       <Layout>
         <Content :style="{minHeight: '620px', marginRight: '15px'}">
           <div class="search-box">
-            <Select v-model="formData.type" style="width:120px; float: left" placeholder="">
-              <Option value="LW">法规</Option>
-              <Option value="CC">标准</Option>
-              <Option value="SC">抽检数据</Option>
-              <Option value="FC">监督检查</Option>
-              <Option value="AC">文章</Option>
-            </Select>
-            <Input v-model="formData.searchPhrase"
-                   search enter-button="搜索"
-                   placeholder="请输入您想要查询的关键词"
-                   style="width: 70%"
-                   @on-search="searchToList" />
+            <div style="text-align: center; font-size: 16px;">
+              <span>本系统目前收录了</span>
+              <span class="data_count">{{showCount.lawCount}}</span><span>条法规，</span>
+              <span class="data_count">{{showCount.criterionCount}}</span><span>条标准，</span>
+              <span class="data_count">{{showCount.spotCheckCount}}</span><span>条抽检数据，</span>
+              <span class="data_count">{{showCount.flightCheckCount}}</span><span>条监督检查，</span>
+              <span class="data_count">{{showCount.articleCount}}</span><span>篇文章</span>
+            </div>
+            <div>
+              <Select v-model="formData.type" style="width:120px; float: left" placeholder="">
+                <Option value="LW">法规</Option>
+                <Option value="CC">标准</Option>
+                <Option value="SC">抽检数据</Option>
+                <Option value="FC">监督检查</Option>
+                <Option value="AC">文章</Option>
+              </Select>
+              <Input v-model="formData.searchPhrase"
+                     search enter-button="搜索"
+                     placeholder="请输入您想要查询的关键词"
+                     style="width: 70%"
+                     @on-search="searchToList" />
+            </div>
           </div>
           <div class="data-con" v-for="item in contentData" :key="item.type">
             <div class="data-title">
@@ -200,10 +213,10 @@ export default {
       hotArticleList: [],
       contentData: [
         {
-          title: '抽检分类',
-          type: 'SC',
-          name: '按产品分类',
-          path: 'spotCheck',
+          title: '法规分类',
+          type: 'LW',
+          name: '按法规分类',
+          path: 'law',
           typeList: []
         },
         {
@@ -214,10 +227,10 @@ export default {
           typeList: []
         },
         {
-          title: '法规分类',
-          type: 'LW',
-          name: '按法规分类',
-          path: 'law',
+          title: '抽检分类',
+          type: 'SC',
+          name: '按产品分类',
+          path: 'spotCheck',
           typeList: []
         },
         {
@@ -228,11 +241,13 @@ export default {
           typeList: []
         }
       ],
+      showCount:{lawCount: 0, criterionCount: 0, spotCheckCount: 0, flightCheckCount: 0, articleCount: 0},
       params: {mold: 1, key: '', value: ''},
       viewBannerList: []
     }
   },
   mounted () {
+    this.getShowCount()
     this.getHomePageFilterItem()
     this.getHomeArticleList()
     this.getViewBannerList()
@@ -261,6 +276,18 @@ export default {
       this.$router.push({
         name: path,
         params: this.params
+      })
+    },
+    getShowCount () {
+      const _this = this
+      const option = {
+        url: '/api/show/getShowCount',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        if (res.data.code === 200) {
+          _this.showCount = res.data.data
+        }
       })
     },
     getHomeArticleList () {
@@ -298,7 +325,7 @@ export default {
     getHomePageFilterItem () {
       const _this = this
       const option = {
-        url: '/api/system/getHomeShowSystemData/SC,CC,LW,FC',
+        url: '/api/system/getHomeShowSystemData/LW,CC,SC,FC',
         method: 'get'
       }
       axios.request(option).then(res => {

@@ -73,6 +73,7 @@ export default {
   },
   mounted () {
     this.currentId = this.$route.query.id
+    this.addArticleReadCount()
     this.getArticleById()
   },
   methods: {
@@ -95,6 +96,15 @@ export default {
       this.$router.push({
         name: 'article',
         params: this.formData
+      })
+    },
+    addArticleReadCount () {
+      const option = {
+        url: '/api/article/addArticleReadCount/' + this.currentId,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+
       })
     }
   }

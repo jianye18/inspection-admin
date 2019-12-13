@@ -38,7 +38,7 @@
         </tr>
         <tr>
           <td colspan="2">标准摘要</td>
-          <td colspan="10" class="detail-content">{{criterionData.summary}}</td>
+          <td colspan="10" class="detail-content" v-html="criterionData.summary"></td>
         </tr>
         <tr>
           <td colspan="2">附件下载</td>

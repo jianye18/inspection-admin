@@ -50,7 +50,7 @@
               {{item.name}}
             </span>
             <!--<Button size="large" type="primary" icon="ios-book-outline" style="float: right; margin-right: 10px;">浏览文件</Button>-->
-            <Button v-if="criterionData.annexList" size="large" type="success" icon="ios-download-outline" @click="downloadFile"
+            <Button v-if="lawData.annexList" size="large" type="success" icon="ios-download-outline" @click="downloadFile"
                     style="float: right; margin-right: 10px; margin-top: 5px;">下载文件</Button>
           </td>
         </tr>
@@ -181,6 +181,7 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.lawData = res.data.data
+          console.log(_this.lawData)
           // _this.lawData['annexs'] = _this.lawData.annexList ? _this.lawData.annexList.join(' ') : ''
           _this.getTablePageData(1)
           _this.getTablePageData(2)

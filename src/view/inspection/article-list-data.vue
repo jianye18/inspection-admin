@@ -60,10 +60,7 @@ export default {
               domProps: {title: content},
               on: {
                 click: () => {
-                  _this.$router.push({
-                    name: 'articleDetail',
-                    query: { id: params.row.id }
-                  })
+                  _this.addArticleReadCount(params.row.id)
                 }
               }
             }, content)
@@ -150,6 +147,19 @@ export default {
     handleSearch () {
       this.formData.pageNum = 1
       this.getTablePageData()
+    },
+    addArticleReadCount (id) {
+      let _this = this
+      const option = {
+        url: '/api/article/addArticleReadCount/' + id,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        _this.$router.push({
+          name: 'articleDetail',
+          query: { id: id }
+        })
+      })
     }
   }
 }

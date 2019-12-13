@@ -17,6 +17,8 @@
                 </Upload>
               </Col>
               <Col span="22">
+                <Input @on-change="handleClear" clearable placeholder="输入代理商或被采样单位名称搜索"
+                       class="search-input" v-model="formData.searchPhrase"/>
                 <Select v-model="formData.productType" style="width:200px" placeholder="请选择产品分类" clearable>
                   <Option v-for="item in productTypeList" :value="item.value">{{ item.label }}</Option>
                 </Select>
@@ -26,8 +28,8 @@
                 <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
                   <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
                 </Select>
-                <Input @on-change="handleClear" clearable placeholder="输入代理商或被采样单位名称搜索"
-                       class="search-input" v-model="formData.searchPhrase"/>
+                <DatePicker @on-change="formData.publishDate=$event" type="daterange" placement="bottom-end"
+                            format="yyyy-MM-dd" placeholder="请选择发布日期" style="width: 180px"></DatePicker>
                 <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
               </Col>
             </Row>
@@ -156,18 +158,21 @@ export default {
         {
           title: '包装规格',
           align: 'center',
-          key: 'specification'
+          key: 'specification',
+          tooltip: true
         },
         {
           title: '产品分类',
           align: 'center',
           key: 'productType',
-          width: 80
+          width: 80,
+          tooltip: true
         },
         {
           title: '产地',
           align: 'center',
-          key: 'location'
+          key: 'location',
+          tooltip: true
         },
         {
           title: '抽检结果',
@@ -186,7 +191,8 @@ export default {
         {
           title: '公布机构',
           align: 'center',
-          key: 'institution'
+          key: 'institution',
+          tooltip: true
         },
         {
           title: '公布日期',
@@ -307,6 +313,10 @@ export default {
       })
     },
     getTablePageData () {
+      if (this.formData.publishDate && this.formData.publishDate.length > 0) {
+        this.formData.startDate = this.formData.publishDate[0]
+        this.formData.endDate = this.formData.publishDate[1]
+      }
       const option = {
         url: '/api/spotCheck/getSpotCheckPageList',
         data: this.formData,

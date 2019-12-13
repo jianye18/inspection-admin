@@ -135,6 +135,7 @@ export default {
   },
   watch: {
     '$store.getters.type': function (val) {
+      console.log(val)
       this.type = val
       this.getLeftMenuData()
       this.breadList = this.breadData[val]
@@ -151,6 +152,7 @@ export default {
     initUpMenuActive (val) {
       const _this = this
       let list = _this.leftUpData.menuList
+      _this.upActiveIdx = null
       for (let i = 0; i < list.length; i++) {
         let value = list[i].value
         if (value === val) {
@@ -162,6 +164,7 @@ export default {
     initDownMenuActive (val) {
       const _this = this
       let list = _this.leftDownData.menuList
+      _this.downActiveIdx = null
       for (let i = 0; i < list.length; i++) {
         let value = list[i].value
         if (value === val) {

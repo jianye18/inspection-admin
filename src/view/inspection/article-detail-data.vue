@@ -15,6 +15,9 @@
   .detail-data .ivu-col{
     padding: 5px 0;
   }
+  .detail-data-content{
+    text-align:justify
+  }
   .detail-data-content p{
     padding: 5px 0 5px;
     line-height: 25px;

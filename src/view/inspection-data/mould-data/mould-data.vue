@@ -32,6 +32,7 @@
       <Card>
         <div class="search-con search-con-top">
           <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增标准</Button>
+          <Input @on-change="handleClear" clearable placeholder="输入标准数据名称搜索" class="search-input" v-model="formData.searchPhrase"/>
           <Select v-model="formData.category" style="width:200px" placeholder="请选择一级分类" clearable>
             <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
           </Select>
@@ -44,7 +45,8 @@
           <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
             <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
           </Select>
-          <Input @on-change="handleClear" clearable placeholder="输入标准数据名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+          <DatePicker @on-change="formData.publishDate=$event" type="daterange" placement="bottom-end"
+                      format="yyyy-MM-dd" placeholder="请选择发布日期" style="width: 180px"></DatePicker>
           <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
         </div>
         <tables
@@ -289,6 +291,10 @@ export default {
       })
     },
     getTablePageData () {
+      if (this.formData.publishDate && this.formData.publishDate.length > 0) {
+        this.formData.startDate = this.formData.publishDate[0]
+        this.formData.endDate = this.formData.publishDate[1]
+      }
       const option = {
         url: '/api/criterion/getCriterionPageList',
         data: this.formData,
@@ -343,6 +349,7 @@ export default {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     },
     handleAddData () {

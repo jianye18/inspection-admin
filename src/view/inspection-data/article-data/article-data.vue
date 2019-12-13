@@ -80,10 +80,10 @@
                 <a href="#" class="close" @click="deleteArticleSubject(item)"></a>
               </span>
             </FormItem>
-            <!--<FormItem label="发布时间" prop="publishTime">
-              <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss" @on-change="formItem.publishTime=$event"
+            <FormItem label="发布时间" prop="publishTime">
+              <DatePicker type="date" format="yyyy-MM-dd" @on-change="formItem.publishTime=$event"
                           placeholder="请选择发布时间" :value="formItem.publishTime" transfer style="width:200px"></DatePicker>
-            </FormItem>-->
+            </FormItem>
             <FormItem label="文章内容" prop="content">
               <editor ref="editor" :value="formItem.content" @on-change="handleChange"/>
             </FormItem>

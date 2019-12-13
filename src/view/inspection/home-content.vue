@@ -3,7 +3,7 @@
     height: 300px;
     /*background-color: #67647D;*/
     margin: 0;
-    padding: 130px 0 0 80px;
+    padding: 80px 0 0 80px;
     background-image: url('../../assets/images/search-box-back.jpg');
   }
   .data_count{
@@ -113,12 +113,11 @@
         <Content :style="{minHeight: '620px', marginRight: '15px'}">
           <div class="search-box">
             <div style="text-align: center; font-size: 16px;">
-              <span>本系统目前收录了</span>
+              <span>本博客目前收录了</span>
               <span class="data_count">{{showCount.lawCount}}</span><span>条法规，</span>
               <span class="data_count">{{showCount.criterionCount}}</span><span>条标准，</span>
-              <span class="data_count">{{showCount.spotCheckCount}}</span><span>条抽检数据，</span>
-              <span class="data_count">{{showCount.flightCheckCount}}</span><span>条监督检查，</span>
-              <span class="data_count">{{showCount.articleCount}}</span><span>篇文章</span>
+              <span class="data_count">{{showCount.spotCheckCount}}</span><span>条抽检，</span>
+              <span class="data_count">{{showCount.flightCheckCount}}</span><span>条监督检查数据</span>
             </div>
             <div>
               <Select v-model="formData.type" style="width:120px; float: left" placeholder="">
@@ -177,7 +176,7 @@
                 <ul>
                   <li v-for="item in newArticleList" :title="item.title" @click="toViewArticle(item.id)">{{item.title}}</li>
                 </ul>
-                <div class="article_more">
+                <div class="article_more" @click="toArticlePage">
                   查看更多
                 </div>
               </TabPane>
@@ -185,7 +184,7 @@
                 <ul>
                   <li v-for="item in hotArticleList" :title="item.title" @click="toViewArticle(item.id)">{{item.title}}</li>
                 </ul>
-                <div class="article_more">
+                <div class="article_more" @click="toArticlePage">
                   查看更多
                 </div>
               </TabPane>
@@ -241,7 +240,7 @@ export default {
           typeList: []
         }
       ],
-      showCount:{lawCount: 0, criterionCount: 0, spotCheckCount: 0, flightCheckCount: 0, articleCount: 0},
+      showCount:{lawCount: 0, criterionCount: 0, spotCheckCount: 0, flightCheckCount: 0},
       params: {mold: 1, key: '', value: ''},
       viewBannerList: []
     }
@@ -349,6 +348,12 @@ export default {
       this.$store.dispatch('CreateType', type)
       this.$router.push({
         name: path
+      })
+    },
+    toArticlePage () {
+      this.$store.dispatch('CreateType', 'AC')
+      this.$router.push({
+        name: 'article'
       })
     }
   }

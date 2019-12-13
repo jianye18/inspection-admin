@@ -21,6 +21,8 @@
             </Col>
             <Col span="22">
               <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增</Button>
+              <Input @on-change="handleClear" clearable placeholder="输入代理商或被采样单位名称搜索"
+                     class="search-input" v-model="formData.searchPhrase"/>
               <Select v-model="formData.type" style="width:200px" placeholder="请选择飞检类型" clearable>
                 <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
               </Select>
@@ -30,8 +32,8 @@
               <Select v-model="formData.isDefect" style="width:200px" placeholder="是否有缺陷" clearable>
                 <Option v-for="item in defectList" :value="item.value" :key="item.value">{{item.label}}</Option>
               </Select>
-              <Input @on-change="handleClear" clearable placeholder="输入代理商或被采样单位名称搜索"
-                     class="search-input" v-model="formData.searchPhrase"/>
+              <DatePicker @on-change="formData.publishDate=$event" type="daterange" placement="bottom-end"
+                          format="yyyy-MM-dd" placeholder="请选择发布日期" style="width: 180px"></DatePicker>
               <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
             </Col>
           </Row>
@@ -118,7 +120,8 @@ export default {
         {
           title: '企业名称',
           align: 'center',
-          key: 'businessName'
+          key: 'businessName',
+          tooltip: true
         },
         {
           title: '处理措施',
@@ -135,7 +138,8 @@ export default {
         {
           title: '发布单位',
           align: 'center',
-          key: 'publishUnit'
+          key: 'publishUnit',
+          tooltip: true
         },
         {
           title: '发布日期',
@@ -153,9 +157,19 @@ export default {
           title: '来源链接',
           align: 'center',
           key: 'sourceLink',
+          tooltip: true,
           render: function render (h, params) {
             let content = params.row.sourceLink ? params.row.sourceLink : '—'
-            return h('span', content)
+            return h('span', {
+              class: 'table-span',
+              style: {
+                width: '100%',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              },
+              domProps: {title: content}
+            }, content)
           }
         },
         {
@@ -273,6 +287,10 @@ export default {
       })
     },
     getTablePageData () {
+      if (this.formData.publishDate && this.formData.publishDate.length > 0) {
+        this.formData.startDate = this.formData.publishDate[0]
+        this.formData.endDate = this.formData.publishDate[1]
+      }
       const option = {
         url: '/api/flightCheck/getFlightCheckPageList',
         data: this.formData,
@@ -321,6 +339,7 @@ export default {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     },
     handleChange (html, text) {

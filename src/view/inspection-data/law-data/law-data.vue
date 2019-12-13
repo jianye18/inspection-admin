@@ -35,20 +35,22 @@
       <Card>
         <div class="search-con search-con-top">
           <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增法规</Button>
-          <Select v-model="formData.category" style="width:200px" placeholder="请选择法规分类" clearable>
-            <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
-          </Select>
-          <Select v-if="formData.category" v-model="formData.type" style="width:200px" placeholder="请选择法规类别" clearable>
-            <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
-          </Select>
-          <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
-            <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
-          </Select>
-          <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
-            <Option v-for="item in statusList" :value="item.value" >{{item.label}}</Option>
-          </Select>
           <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索"
                  class="search-input" v-model="formData.searchPhrase"/>
+          <Select v-model="formData.category" style="width:140px" placeholder="请选择法规分类" clearable>
+            <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+          <Select v-if="formData.category" v-model="formData.type" style="width:140px" placeholder="请选择法规类别" clearable>
+            <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+          <Select v-model="formData.publishUnit" style="width:140px" placeholder="请选择发布单位" clearable>
+            <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
+          </Select>
+          <Select v-model="formData.status" style="width:140px" placeholder="请选择状态" clearable>
+            <Option v-for="item in statusList" :value="item.value" >{{item.label}}</Option>
+          </Select>
+          <DatePicker @on-change="formData.publishDate=$event" type="daterange" placement="bottom-end"
+                      format="yyyy-MM-dd" placeholder="请选择发布日期" style="width: 180px"></DatePicker>
           <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
         </div>
         <tables
@@ -347,6 +349,10 @@ export default {
       })
     },
     getTablePageData () {
+      if (this.formData.publishDate && this.formData.publishDate.length > 0) {
+        this.formData.startDate = this.formData.publishDate[0]
+        this.formData.endDate = this.formData.publishDate[1]
+      }
       const option = {
         url: '/api/law/getLawPageList',
         data: this.formData,
@@ -402,6 +408,7 @@ export default {
 
     },
     handleSearch () {
+      this.formData.pageNum = 1
       this.getTablePageData()
     },
     handleChange (html, text) {

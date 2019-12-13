@@ -20,6 +20,9 @@
     font-size: 36px;
     color: #ffffff;
   }
+  .layout-logo:hover{
+    cursor: pointer;
+  }
   .layout-nav{
     /*width: 500px;*/
     margin-left: 480px;
@@ -84,7 +87,7 @@
   <div class="layout">
     <Layout>
       <Header style="background-color: #2c96cd; height: 70px;">
-        <div class="layout-logo">
+        <div class="layout-logo" @click="toHome">
           <img src="../../assets/images/logo.png" style="width: 200px; margin-top: 10px;"/>
         </div>
         <div class="layout-nav">
@@ -99,7 +102,7 @@
         </div>
       </Header>
       <Content>
-        <router-view></router-view>
+        <router-view :key="key"></router-view>
       </Content>
       <Footer class="layout-footer-center">
         <div class="footer-link">
@@ -138,6 +141,11 @@ export default {
       ],
       activeIdx: 0,
       linkList: []
+    }
+  },
+  computed: {
+    key() {
+      return this.$route.name !== undefined? this.$route.name +new Date(): this.$route +new Date()
     }
   },
   created () {
@@ -192,6 +200,24 @@ export default {
       if (_this.activeIdx !== idx) {
         this.$store.dispatch('CreateType', val)
         _this.activeIdx = idx
+      } else {
+        let queryArr = []
+        if (val === 'LW') {
+          queryArr = [{key: 'category', value: ''}, {key: 'type', value: ''}]
+        }
+        if (val === 'CC') {
+          queryArr = [{key: 'category', value: ''}]
+        }
+        if (val === 'SC') {
+          queryArr = [{key: 'productType', value: ''}]
+        }
+        if (val === 'FC') {
+          queryArr = [{key: 'type', value: ''}]
+        }
+        if (val === 'AC') {
+          queryArr = [{key: 'typeCode', value: ''}]
+        }
+        this.$store.dispatch('CreateParam', {type: val, query: queryArr})
       }
       setTimeout(function () {
         _this.$router.push({
@@ -207,6 +233,13 @@ export default {
       }
       axios.request(option).then(res => {
         _this.linkList = res.data.data
+      })
+    },
+    toHome () {
+      this.activeIdx = 0
+      this.$store.dispatch('CreateType', 'main')
+      this.$router.push({
+        name: 'main'
       })
     }
   }

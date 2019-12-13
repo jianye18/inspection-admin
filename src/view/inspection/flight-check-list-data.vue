@@ -88,26 +88,26 @@ export default {
           title: '处理措施',
           align: 'center',
           key: 'precautions',
-          width: 160
+          width: 120
         },
         {
           title: '发布单位',
           align: 'center',
           key: 'publishUnit',
           tooltip: true,
-          width: 180
+          width: 160
         },
         {
           title: '发布日期',
           align: 'center',
-          width: 120,
+          width: 100,
           key: 'publishDate'
         },
         {
           title: '是否有问题',
           align: 'center',
           key: 'status',
-          width: 120,
+          width: 90,
           render: function render (h, params) {
             let content = params.row.isDefect
             return h('span', content)

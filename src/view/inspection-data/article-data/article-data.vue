@@ -161,12 +161,7 @@ export default {
           width: 120,
           render: function render (h, params) {
             let publishTime = params.row.publishTime
-            let isPublish = params.row.isPublish + ''
-            if (isPublish === '1') {
-              return h('span', publishTime)
-            } else {
-              return h('span', '—')
-            }
+            return h('span', publishTime)
           }
         },
         {

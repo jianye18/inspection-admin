@@ -5,7 +5,7 @@
     padding: 20px;
     margin-top: 10px;
   }
-  .detail-con{
+  .detail-data{
     padding-top: 30px;
   }
   .detail-data-title{
@@ -37,7 +37,7 @@
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
       </div>
     </div>
-    <div class="detail-data detail-con">
+    <div class="detail-data">
       <Row style="border-bottom: 1px solid #e5e5e5;">
         <Col span="20" offset="1" class="detail-data-title">{{articleData.title}}</Col>
       </Row>

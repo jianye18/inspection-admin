@@ -114,7 +114,7 @@
             <Col span="18" class="footer_content">
               <p><Icon type="logo-windows" />Copyright©叶竹洪博客︱苏ICP备17037083号</p>
               <p><Icon type="md-contact" />手机 / 微信：15850584156 | 网站纠错请邮件：22521453@qq.com</p>
-              <p><Icon type="md-funnel" />您是本站第************位访客</p>
+              <p><Icon type="md-funnel" />您是本站第{{personalNum}}位访客</p>
             </Col>
             <Col span="6" style="border-right: 1px ridge #e5e5e5;">
               <p style="margin-left: 30px; margin-top: 15px;">欢迎关注我们</p>
@@ -140,7 +140,8 @@ export default {
         { value: 'AC', label: '文章', path: 'article' }
       ],
       activeIdx: 0,
-      linkList: []
+      linkList: [],
+      personalNum: 0
     }
   },
   computed: {
@@ -149,6 +150,7 @@ export default {
     }
   },
   created () {
+    this.getVisitorCount()
     this.getLinkViewList()
     const path = this.$route.path
     if (path.indexOf('main') !== -1) {
@@ -240,6 +242,18 @@ export default {
       this.$store.dispatch('CreateType', 'main')
       this.$router.push({
         name: 'main'
+      })
+    },
+    getVisitorCount () {
+      const _this = this
+      const option = {
+        url: '/visitor/getVisitorCount/2',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        if (res.data.code === 200) {
+          _this.personalNum = res.data.data
+        }
       })
     }
   }

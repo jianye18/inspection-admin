@@ -246,6 +246,7 @@ export default {
     }
   },
   mounted () {
+    this.visitorCount()
     this.getShowCount()
     this.getHomePageFilterItem()
     this.getHomeArticleList()
@@ -280,7 +281,7 @@ export default {
     getShowCount () {
       const _this = this
       const option = {
-        url: '/api/show/getShowCount',
+        url: '/api/show/getShowCount/2',
         method: 'get'
       }
       axios.request(option).then(res => {
@@ -355,6 +356,13 @@ export default {
       this.$router.push({
         name: 'article'
       })
+    },
+    visitorCount () {
+      const option = {
+        url: '/api/show/visitorCount',
+        method: 'get'
+      }
+      axios.request(option).then(res => {})
     }
   }
 }

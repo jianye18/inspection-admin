@@ -73,6 +73,7 @@ export default {
   },
   mounted () {
     this.currentId = this.$route.query.id
+    this.visitorCount()
     this.addArticleReadCount()
     this.getArticleById()
   },
@@ -106,6 +107,13 @@ export default {
       axios.request(option).then(res => {
 
       })
+    },
+    visitorCount () {
+      const option = {
+        url: '/api/show/visitorCount',
+        method: 'get'
+      }
+      axios.request(option).then(res => {})
     }
   }
 }

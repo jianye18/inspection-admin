@@ -15,6 +15,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
+      console.log(this.value)
       let legend = this.value.map(_ => _.name)
       let option = {
         title: {
@@ -24,7 +25,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '{b} : {c} ({d}%)'
         },
         legend: {
           orient: 'vertical',
@@ -48,7 +49,9 @@ export default {
         ]
       }
       let dom = echarts.init(this.$refs.dom, 'tdTheme')
-      dom.setOption(option)
+      setTimeout(function () {
+        dom.setOption(option)
+      }, 500)
     })
   }
 }

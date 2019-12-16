@@ -11,6 +11,7 @@ export default {
     }
   },
   mounted () {
+    this.visitorCount()
     this.getOneViewStatement()
   },
   methods: {
@@ -24,6 +25,13 @@ export default {
         _this.statementContent = res.data.data.content
         console.log(res.data.data)
       })
+    },
+    visitorCount () {
+      const option = {
+        url: '/api/show/visitorCount',
+        method: 'get'
+      }
+      axios.request(option).then(res => {})
     }
   }
 }

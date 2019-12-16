@@ -155,7 +155,8 @@ export default {
         {
           title: '名称',
           align: 'center',
-          key: 'name'
+          key: 'name',
+          tooltip: true
         },
         {
           title: '一级分类',
@@ -172,25 +173,27 @@ export default {
         {
           title: '发布单位',
           align: 'center',
-          key: 'publishUnitName'
+          key: 'publishUnitName',
+          tooltip: true,
+          width: 160
         },
         {
           title: '发布日期',
           align: 'center',
           key: 'publishDate',
-          width: 120
+          width: 100
         },
         {
           title: '实施日期',
           align: 'center',
           key: 'implementDate',
-          width: 120
+          width: 100
         },
         {
           title: '状态',
           align: 'center',
           key: 'statusName',
-          width: 120
+          width: 80
         },
         {
           title: '操作',

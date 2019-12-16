@@ -130,7 +130,8 @@ export default {
         {
           title: '标题',
           align: 'center',
-          key: 'title'
+          key: 'title',
+          tooltip: true
         },
         {
           title: '分类',
@@ -144,15 +145,21 @@ export default {
           key: 'author',
           width: 120
         },
-        {
+        /*{
           title: '关键词',
           align: 'center',
           key: 'subject',
-          width: 250,
+          width: 160,
           render: function render (h, params) {
             let subject = JSON.parse(params.row.subject)
             return h('span', subject.join(' '))
           }
+        },*/
+        {
+          title: '阅读量',
+          align: 'center',
+          key: 'readCount',
+          width: 100
         },
         {
           title: '发布时间',
@@ -179,9 +186,8 @@ export default {
           title: '操作',
           align: 'center',
           key: 'operation',
-          width: 220,
+          width: 150,
           render: function render (h, params) {
-            let isPublish = params.row.isPublish + ''
             return h('div', [h('Button', {
               props: {
                 type: 'error',
@@ -191,8 +197,7 @@ export default {
               },
               style: {
                 marginLeft: '10px',
-                marginBottom: '5px',
-                display: isPublish === '1' ? 'none' : ''
+                marginBottom: '5px'
               },
               on: {
                 click: () => {
@@ -208,31 +213,14 @@ export default {
               },
               style: {
                 marginLeft: '10px',
-                marginBottom: '5px',
-                display: isPublish === '1' ? 'none' : ''
+                marginBottom: '5px'
               },
               on: {
                 click: () => {
                   _ths.handleEditor(params.row.id)
                 }
               }
-            }, '编辑'), h('Button', {
-              props: {
-                type: 'primary',
-                icon: isPublish === '1' ? 'ios-undo-outline' : 'ios-share-alt-outline',
-                disabled: false,
-                size: 'small'
-              },
-              style: {
-                marginLeft: '10px',
-                marginBottom: '5px'
-              },
-              on: {
-                click: () => {
-                  _ths.handlePublish(isPublish, params.row.id)
-                }
-              }
-            }, isPublish === '1' ? '取消发布' : '发布')])
+            }, '编辑')])
           }
         }
       ],

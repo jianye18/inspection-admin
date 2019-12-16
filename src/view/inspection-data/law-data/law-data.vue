@@ -90,7 +90,7 @@
           </Select>
         </FormItem>
         <FormItem label="发布单位" prop="publishUnit">
-          <Select v-model="formItem.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
+          <Select v-model="formItem.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable transfer>
             <Option v-for="item in publishUnitList" :value="item.value">{{item.label}}</Option>
           </Select>
         </FormItem>
@@ -164,17 +164,20 @@ export default {
         {
           title: '名称',
           align: 'center',
-          key: 'name'
+          key: 'name',
+          tooltip: true
         },
         {
           title: '一级分类',
           align: 'center',
-          key: 'categoryName'
+          key: 'categoryName',
+          width: 120
         },
         {
           title: '二级分类',
           align: 'center',
           key: 'typeName',
+          width: 120,
           render: function render (h, params) {
             var content = ''
             if (params.row.typeName) {
@@ -188,7 +191,8 @@ export default {
         {
           title: '发布单位',
           align: 'center',
-          key: 'publishUnitName'
+          key: 'publishUnitName',
+          width: 180
         },
         {
           title: '发布日期',

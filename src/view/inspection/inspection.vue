@@ -100,6 +100,7 @@ export default {
     }
   },
   created () {
+    this.visitorCount()
     const path = this.$route.path
     if (path.indexOf('spotCheck') !== -1) {
       this.type = 'SC'
@@ -243,6 +244,13 @@ export default {
           params: params
         })
       }
+    },
+    visitorCount () {
+      const option = {
+        url: '/api/show/visitorCount',
+        method: 'get'
+      }
+      axios.request(option).then(res => {})
     }
   }
 }

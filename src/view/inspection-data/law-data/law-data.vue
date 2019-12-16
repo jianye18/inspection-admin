@@ -266,7 +266,7 @@ export default {
               },
               on: {
                 click: () => {
-                  _ths.handleEditor(params)
+                  _ths.handleEditor(params.row.id)
                 }
               }
             }, '编辑')])
@@ -433,13 +433,27 @@ export default {
       this.msgTitle = '新增法规数据成功'
       console.log(this.formItem)
     },
-    handleEditor (params) {
-      this.formItem = JSON.parse(JSON.stringify(params.row))
-      this.formItem.type = this.formItem.type + ''
-      this.$refs.editor.setHtml(this.formItem.content)
-      this.modelShow = true
-      this.modelTitle = '编辑法规'
-      this.msgTitle = '修改法规数据成功'
+    clearData () {
+      this.formItem = {};
+      this.$refs.editor.setHtml('')
+    },
+    handleEditor (id) {
+      this.clearData();
+      const _this = this;
+      const option = {
+        url: '/api/law/getLawById/' + id,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        if (res.data.code === 200) {
+          _this.formItem = JSON.parse(JSON.stringify(res.data.data))
+          _this.formItem.type = this.formItem.type + ''
+          _this.$refs.editor.setHtml(this.formItem.content)
+          _this.modelShow = true
+          _this.modelTitle = '编辑法规'
+          _this.msgTitle = '修改法规数据成功'
+        }
+      })
     },
     handleDelete (params) {
       this.msgTitle = '删除标准数据成功'

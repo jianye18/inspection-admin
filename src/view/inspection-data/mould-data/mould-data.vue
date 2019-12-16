@@ -230,7 +230,7 @@ export default {
               },
               on: {
                 click: () => {
-                  _ths.handleEditor(params)
+                  _ths.handleEditor(params.row.id)
                 }
               }
             }, '编辑')])
@@ -365,13 +365,26 @@ export default {
       this.modelTitle = '新增标准'
       this.msgTitle = '新增标准数据成功'
     },
-    handleEditor (params) {
-      this.formItem = JSON.parse(JSON.stringify(params.row))
-      this.formItem.summary = this.formItem.summary.replace(/<br\/>/g, "\r\n")
-      this.currentCriterionId = params.row.id
-      this.modelShow = true
-      this.modelTitle = '编辑标准'
-      this.msgTitle = '修改标准数据成功'
+    clearData () {
+      this.formItem = {};
+    },
+    handleEditor (id) {
+      this.clearData();
+      const _this = this;
+      const option = {
+        url: '/api/criterion/getCriterionById/' + id,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        if (res.data.code === 200) {
+          _this.formItem = JSON.parse(JSON.stringify(res.data.data))
+          _this.formItem.summary = _this.formItem.summary.replace(/<br\/>/g, "\r\n")
+          _this.currentCriterionId = id
+          _this.modelShow = true
+          _this.modelTitle = '编辑标准'
+          _this.msgTitle = '修改标准数据成功'
+        }
+      })
     },
     handleDelete (params) {
       this.msgTitle = '删除标准数据成功'

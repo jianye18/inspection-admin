@@ -112,7 +112,7 @@
       <Layout>
         <Content :style="{minHeight: '620px', marginRight: '15px'}">
           <div class="search-box">
-            <div style="text-align: center; font-size: 16px;">
+            <div style="text-align: left; font-size: 16px;">
               <span>本博客目前收录了</span>
               <span class="data_count">{{showCount.lawCount}}</span><span>条法规，</span>
               <span class="data_count">{{showCount.criterionCount}}</span><span>条标准，</span>

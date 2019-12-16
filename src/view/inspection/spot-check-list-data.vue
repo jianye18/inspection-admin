@@ -38,6 +38,8 @@ export default {
     return {
       modelShow: false,
       formData: {
+        orderName: 'publish_date',
+        orderType: 'desc',
         pageNum: 1, // 当前页
         pageSize: 20, // 一页展示数量
         searchPhrase: '',

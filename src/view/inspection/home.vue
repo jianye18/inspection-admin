@@ -238,11 +238,15 @@ export default {
       })
     },
     toHome () {
-      this.activeIdx = 0
-      this.$store.dispatch('CreateType', 'main')
-      this.$router.push({
-        name: 'main'
-      })
+      if (this.activeIdx === 0) {
+        window.location.reload()
+      } else {
+        this.activeIdx = 0
+        this.$store.dispatch('CreateType', 'main')
+        this.$router.push({
+          name: 'main'
+        })
+      }
     },
     getVisitorCount () {
       const _this = this

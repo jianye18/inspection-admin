@@ -207,7 +207,7 @@ export default {
               },
               on: {
                 click: () => {
-                  _ths.handleEditor(params)
+                  _ths.handleEditor(params.row.id)
                 }
               }
             }, '编辑')])
@@ -358,15 +358,26 @@ export default {
       this.modelTitle = '新增飞检'
       this.msgTitle = '新增飞检数据成功'
     },
-    handleEditor (params) {
-      this.formItem = JSON.parse(JSON.stringify(params.row))
-      console.log(this.formItem.problem)
-      let problem = this.formItem.problem.replace(/<br\/>/g, "\r\n")
-      console.log(problem)
-      this.formItem.problem = problem
-      this.modelShow = true
-      this.modelTitle = '编辑飞检'
-      this.msgTitle = '修改飞检数据成功'
+    clearData () {
+      this.formItem = {};
+    },
+    handleEditor (id) {
+      this.clearData();
+      const _this = this;
+      const option = {
+        url: '/api/flightCheck/getFlightCheckById/' + id,
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        if (res.data.code === 200) {
+          _this.formItem = JSON.parse(JSON.stringify(res.data.data))
+          let problem = _this.formItem.problem.replace(/<br\/>/g, "\r\n")
+          _this.formItem.problem = problem
+          _this.modelShow = true
+          _this.modelTitle = '编辑飞检'
+          _this.msgTitle = '修改飞检数据成功'
+        }
+      })
     },
     handleDelete (params) {
       this.msgTitle = '删除飞检数据成功'

@@ -186,8 +186,9 @@ export default {
           title: '操作',
           align: 'center',
           key: 'operation',
-          width: 150,
+          width: 220,
           render: function render (h, params) {
+            let isPublish = params.row.isPublish + ''
             return h('div', [h('Button', {
               props: {
                 type: 'error',
@@ -197,7 +198,8 @@ export default {
               },
               style: {
                 marginLeft: '10px',
-                marginBottom: '5px'
+                marginBottom: '5px',
+                display: isPublish === '1' ? 'none' : ''
               },
               on: {
                 click: () => {
@@ -213,14 +215,31 @@ export default {
               },
               style: {
                 marginLeft: '10px',
-                marginBottom: '5px'
+                marginBottom: '5px',
+                display: isPublish === '1' ? 'none' : ''
               },
               on: {
                 click: () => {
                   _ths.handleEditor(params.row.id)
                 }
               }
-            }, '编辑')])
+            }, '编辑'), h('Button', {
+              props: {
+                type: 'primary',
+                icon: isPublish === '1' ? 'ios-undo-outline' : 'ios-share-alt-outline',
+                disabled: false,
+                size: 'small'
+              },
+              style: {
+                marginLeft: '10px',
+                marginBottom: '5px'
+              },
+              on: {
+                click: () => {
+                  _ths.handlePublish(isPublish, params.row.id)
+                }
+              }
+            }, isPublish === '1' ? '取消发布' : '发布')])
           }
         }
       ],

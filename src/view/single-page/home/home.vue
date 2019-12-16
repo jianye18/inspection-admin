@@ -116,7 +116,7 @@ export default {
     getVisitorCount () {
       const _this = this
       const option = {
-        url: '/visitor/getVisitorCount/1',
+        url: '/api/visitor/getVisitorCount/1',
         method: 'get'
       }
       axios.request(option).then(res => {

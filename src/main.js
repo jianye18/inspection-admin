@@ -7,7 +7,7 @@ import store from './store'
 import iView from 'iview'
 import i18n from '@/locale'
 import config from '@/config'
-import importDirective from '@/directive'
+/* import importDirective from '@/directive' */
 import 'iview/dist/styles/iview.css'
 import './index.less'
 import '@/assets/icons/iconfont.css'
@@ -27,7 +27,7 @@ Vue.prototype.$config = config
 /**
  * 注册指令
  */
-importDirective(Vue)
+// importDirective(Vue)*/
 
 /* eslint-disable no-new */
 new Vue({

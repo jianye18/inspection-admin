@@ -2,7 +2,7 @@
   "name": "inspection",
   "version": "1.0.0",
   "description": "springboot实例项目",
-  "author": "pastor<jian.ye@future-data.cn>",
+  "author": "pastor<892211637@qq.com>",
   "private": false,
   "scripts": {
     "dev": "vue-cli-service serve --open --port=8080",
@@ -13,24 +13,16 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "clipboard": "^2.0.0",
-    "codemirror": "^5.38.0",
-    "countup": "^1.8.2",
-    "cropperjs": "^1.2.2",
     "echarts": "^4.0.4",
-    "html2canvas": "^1.0.0-alpha.12",
+    "countup": "^1.8.2",
     "iview": "^3.0.0",
     "iview-area": "^1.5.17",
     "js-cookie": "^2.2.0",
-    "simplemde": "^1.11.2",
-    "sortablejs": "^1.7.0",
     "vue": "^2.5.10",
     "vue-i18n": "^7.8.0",
     "vue-router": "^3.0.1",
-    "vuedraggable": "^2.16.0",
     "vuex": "^3.0.1",
-    "wangeditor": "^3.1.1",
-    "xlsx": "^0.13.3"
+    "wangeditor": "^3.1.1"
   },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.0.0-rc.1",

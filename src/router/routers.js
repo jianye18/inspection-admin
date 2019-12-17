@@ -20,7 +20,8 @@ export default [
       title: 'Login - 登录',
       hideInMenu: true
     },
-    component: () => import('@/view/login/login.vue')
+    // component: resolve => import('@/view/login/login.vue')
+    component:resolve => require(['@/view/login/login.vue'],resolve)
   },
   {
     path: '/',

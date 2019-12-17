@@ -3,11 +3,11 @@
     height: 300px;
     /*background-color: #67647D;*/
     margin: 0;
-    padding: 80px 0 0 80px;
+    padding: 120px 0 0 80px;
     background-image: url('../../assets/images/search-box-back.jpg');
   }
   .data_count{
-    font-size: 30px;
+    font-size: 22px;
   }
   .data-con{
     background-color: #fff;
@@ -206,7 +206,7 @@ export default {
         searchPhrase: ''
       },
       value3: 0,
-      autoplaySpeed: 2500,
+      autoplaySpeed: 4000,
       orderName: 'create_time',
       newArticleList: [],
       hotArticleList: [],
@@ -312,7 +312,7 @@ export default {
       const option = {
         url: '/api/show/getViewBannerList',
         method: 'post',
-        data: {isView: 1, limit: 4}
+        data: {isView: 1, limit: 5}
       }
       axios.request(option).then(res => {
         if (res.data.code === 200) {

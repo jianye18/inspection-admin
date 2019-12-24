@@ -202,30 +202,14 @@ export default {
       if (_this.activeIdx !== idx) {
         this.$store.dispatch('CreateType', val)
         _this.activeIdx = idx
+        setTimeout(function () {
+          _this.$router.push({
+            name: path
+          })
+        }, 300)
       } else {
-        let queryArr = []
-        if (val === 'LW') {
-          queryArr = [{key: 'category', value: ''}, {key: 'type', value: ''}]
-        }
-        if (val === 'CC') {
-          queryArr = [{key: 'category', value: ''}]
-        }
-        if (val === 'SC') {
-          queryArr = [{key: 'productType', value: ''}]
-        }
-        if (val === 'FC') {
-          queryArr = [{key: 'type', value: ''}]
-        }
-        if (val === 'AC') {
-          queryArr = [{key: 'typeCode', value: ''}]
-        }
-        this.$store.dispatch('CreateParam', {type: val, query: queryArr})
+        window.location.reload()
       }
-      setTimeout(function () {
-        _this.$router.push({
-          name: path
-        })
-      }, 300)
     },
     getLinkViewList () {
       let _this = this

@@ -19,6 +19,8 @@ router.beforeEach((to, from, next) => {
   // 过滤展示页无需权限的白名单
   if (!token && FILTER_PAGE_NAME.indexOf(to.name) !== -1) {
     next() // 跳转
+  } else if (token && FILTER_PAGE_NAME.indexOf(to.name) !== -1) {
+    next() // 跳转
   } else if (!token && to.name !== LOGIN_PAGE_NAME) {
     // 未登录且要跳转的页面不是登录页
     next({

@@ -33,16 +33,16 @@
         <div class="search-con search-con-top">
           <Button @click="handleAddData" class="search-btn" type="primary"><Icon type="md-add"/>&nbsp;&nbsp;新增标准</Button>
           <Input @on-change="handleClear" clearable placeholder="输入标准数据名称搜索" class="search-input" v-model="formData.searchPhrase"/>
-          <Select v-model="formData.category" style="width:200px" placeholder="请选择一级分类" clearable>
+          <Select v-model="formData.category" style="width:160px" placeholder="请选择一级分类" clearable>
             <Option v-for="item in categoryList" :value="item.value">{{ item.label }}</Option>
           </Select>
-          <Select v-model="formData.type" style="width:200px" placeholder="请选择二级分类" clearable>
+          <Select v-model="formData.type" style="width:160px" placeholder="请选择二级分类" clearable>
             <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
           </Select>
-          <Select v-model="formData.publishUnit" style="width:200px" placeholder="请选择发布单位" clearable>
+          <Select v-model="formData.publishUnit" style="width:160px" placeholder="请选择发布单位" clearable>
             <Option v-for="item in publishUnitList" :value="item.value">{{ item.label }}</Option>
           </Select>
-          <Select v-model="formData.status" style="width:200px" placeholder="请选择状态" clearable>
+          <Select v-model="formData.status" style="width:160px" placeholder="请选择状态" clearable>
             <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
           </Select>
           <DatePicker @on-change="formData.publishDate=$event" type="daterange" placement="bottom-end"
@@ -140,7 +140,7 @@ export default {
       }
     }
     return {
-      typeCode: "BZ_category,BZ_type,BZ_publishUnit,BZ_status",
+      typeCode: 'BZ_category,BZ_type,BZ_publishUnit,BZ_status',
       modelShow: false,
       formData: {
         pageNum: 1, // 当前页
@@ -287,10 +287,10 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.categoryList = res.data.data["BZ_category"]
-        this.typeList = res.data.data["BZ_type"]
-        this.publishUnitList = res.data.data["BZ_publishUnit"]
-        this.statusList = res.data.data["BZ_status"]
+        this.categoryList = res.data.data['BZ_category']
+        this.typeList = res.data.data['BZ_type']
+        this.publishUnitList = res.data.data['BZ_publishUnit']
+        this.statusList = res.data.data['BZ_status']
       })
     },
     getTablePageData () {
@@ -366,11 +366,11 @@ export default {
       this.msgTitle = '新增标准数据成功'
     },
     clearData () {
-      this.formItem = {};
+      this.formItem = {}
     },
     handleEditor (id) {
-      this.clearData();
-      const _this = this;
+      this.clearData()
+      const _this = this
       const option = {
         url: '/api/criterion/getCriterionById/' + id,
         method: 'get'
@@ -378,7 +378,7 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.formItem = JSON.parse(JSON.stringify(res.data.data))
-          _this.formItem.summary = _this.formItem.summary.replace(/<br\/>/g, "\r\n")
+          _this.formItem.summary = _this.formItem.summary.replace(/<br\/>/g, '\r\n')
           _this.currentCriterionId = id
           _this.modelShow = true
           _this.modelTitle = '编辑标准'

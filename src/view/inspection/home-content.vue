@@ -3,8 +3,10 @@
     height: 300px;
     /*background-color: #67647D;*/
     margin: 0;
-    padding: 120px 0 0 80px;
+    padding: 100px 0 0 80px;
     background-image: url('../../assets/images/search-box-back.jpg');
+    background-repeat:no-repeat;
+    background-size:100% 100%;
   }
   .data_count{
     font-size: 22px;
@@ -112,6 +114,9 @@
       <Layout>
         <Content :style="{minHeight: '620px', marginRight: '15px'}">
           <div class="search-box">
+            <div style="text-align: left; font-size: 20px; color: #000000;">
+              <span>法规标准 | 政府抽查数据平台</span>
+            </div>
             <div style="text-align: left; font-size: 16px;">
               <span>本博客目前收录了</span>
               <span class="data_count">{{showCount.lawCount}}</span><span>条法规，</span>

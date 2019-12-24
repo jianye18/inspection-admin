@@ -17,7 +17,7 @@
 
 <script>
 import LoginForm from '_c/login-form'
-import { setToken } from '@/libs/util'
+import { setToken, removeToken } from '@/libs/util'
 import { mapActions } from 'vuex'
 import axios from '@/libs/api.request'
 export default {
@@ -32,17 +32,17 @@ export default {
     handleSubmit ({ userName, password }) {
       const _ths = this
       this.handleLogin({ userName, password }).then(res => {
-        console.log(res)
-        _ths.saveUserLoginLog()
-        setToken(res.data.data)
-        // this.getUserInfo().then(res => {
-        this.$router.push({
-          // path: '/home'
-          name: 'home'
-        })
-        // })
-      }).catch(rej => {
-
+        let result = res.data
+        if (result.code === 200) {
+          _ths.saveUserLoginLog()
+          setToken(res.data.data)
+          this.$router.push({
+            name: 'home'
+          })
+        } else {
+          removeToken('token')
+          _ths.$Message.error(result.msg)
+        }
       })
     },
     saveUserLoginLog () {

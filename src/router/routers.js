@@ -20,8 +20,8 @@ export default [
       title: 'Login - 登录',
       hideInMenu: true
     },
-    // component: resolve => import('@/view/login/login.vue')
-    component:resolve => require(['@/view/login/login.vue'],resolve)
+    component: resolve => import('@/view/login/login.vue')
+    //component:resolve => require(['@/view/login/login.vue'],resolve)
   },
   {
     path: '/',
@@ -32,6 +32,7 @@ export default [
       notCache: true
     },
     component: () => import('@/view/inspection/home.vue'),
+    //component:resolve => require(['@/view/inspection/home.vue'],resolve),
     children: [
       {
         path: '/main',
@@ -41,6 +42,7 @@ export default [
           hideInMenu: true
         },
         component: () => import('@/view/inspection/home-content.vue')
+        //component:resolve => require(['@/view/inspection/home-content.vue'],resolve)
       },
       {
         path: '/',
@@ -50,6 +52,7 @@ export default [
           hideInMenu: true
         },
         component: () => import('@/view/inspection/inspection.vue'),
+        //component:resolve => require(['@/view/inspection/inspection.vue'],resolve),
         children: [
           {
             path: 'spotCheck',
@@ -58,6 +61,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/spot-check-list-data.vue')
+            //component:resolve => require(['@/view/inspection/spot-check-list-data.vue'],resolve)
           },
           {
             path: 'spotCheckDetail',
@@ -66,6 +70,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/spot-check-detail-data.vue')
+            //component:resolve => require(['@/view/inspection/spot-check-detail-data.vue'],resolve)
           },
           {
             path: 'criterion',
@@ -74,6 +79,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/criterion-list-data.vue')
+            //component:resolve => require(['@/view/inspection/criterion-list-data.vue'],resolve)
           },
           {
             path: 'criterionDetail',
@@ -82,6 +88,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/criterion-detail-data.vue')
+            //component:resolve => require(['@/view/inspection/criterion-detail-data.vue'],resolve)
           },
           {
             path: 'law',
@@ -90,6 +97,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/law-list-data.vue')
+            //component:resolve => require(['@/view/inspection/law-list-data.vue'],resolve)
           },
           {
             path: 'lawDetail',
@@ -98,6 +106,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/law-detail-data.vue')
+            //component:resolve => require(['@/view/inspection/law-detail-data.vue'],resolve)
           },
           {
             path: 'lawView',
@@ -106,6 +115,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/law-view-data.vue')
+            //component:resolve => require(['@/view/inspection/law-view-data.vue'],resolve)
           },
           {
             path: 'flightCheck',
@@ -114,6 +124,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/flight-check-list-data.vue')
+            //component:resolve => require(['@/view/inspection/flight-check-list-data.vue'],resolve)
           },
           {
             path: 'flightCheckDetail',
@@ -122,6 +133,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/flight-check-detail-data.vue')
+            //component:resolve => require(['@/view/inspection/flight-check-detail-data.vue'],resolve)
           },
           {
             path: 'article',
@@ -130,6 +142,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/article-list-data.vue')
+            //component:resolve => require(['@/view/inspection/article-list-data.vue'],resolve)
           },
           {
             path: 'articleDetail',
@@ -138,6 +151,7 @@ export default [
               notCache: true
             },
             component: () => import('@/view/inspection/article-detail-data.vue')
+            //component:resolve => require(['@/view/inspection/article-detail-data.vue'],resolve)
           }
         ]
       }
@@ -162,285 +176,10 @@ export default [
           notCache: true
         },
         component: () => import('@/view/single-page/home')
+        //component:resolve => require(['@/view/single-page/home'],resolve)
       }
     ]
   },
-  /*{
-    path: '',
-    name: 'doc',
-    meta: {
-      title: '文档',
-      href: 'https://lison16.github.io/iview-admin-doc/#/',
-      icon: 'ios-book'
-    }
-  },
-  {
-    path: '/join',
-    name: 'join',
-    component: Main,
-    children: [
-      {
-        path: 'join_page',
-        name: 'join_page',
-        meta: {
-          icon: '_qq',
-          title: 'QQ群'
-        },
-        component: () => import('@/view/join-page.vue')
-      }
-    ]
-  },
-  {
-    path: '/components',
-    name: 'components',
-    meta: {
-      icon: 'logo-buffer',
-      title: '组件'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'count_to_page',
-        name: 'count_to_page',
-        meta: {
-          icon: 'md-trending-up',
-          title: '数字渐变'
-        },
-        component: () => import('@/view/components/count-to/count-to.vue')
-      },
-      {
-        path: 'drag_list_page',
-        name: 'drag_list_page',
-        meta: {
-          icon: 'ios-infinite',
-          title: '拖拽列表'
-        },
-        component: () => import('@/view/components/drag-list/drag-list.vue')
-      },
-      {
-        path: 'tables_page',
-        name: 'tables_page',
-        meta: {
-          icon: 'md-grid',
-          title: '多功能表格'
-        },
-        component: () => import('@/view/components/tables/tables.vue')
-      },
-      {
-        path: 'split_pane_page',
-        name: 'split_pane_page',
-        meta: {
-          icon: 'md-pause',
-          title: '分割窗口'
-        },
-        component: () => import('@/view/components/split-pane/split-pane.vue')
-      },
-      {
-        path: 'markdown_page',
-        name: 'markdown_page',
-        meta: {
-          icon: 'logo-markdown',
-          title: 'Markdown编辑器'
-        },
-        component: () => import('@/view/components/markdown/markdown.vue')
-      },
-      {
-        path: 'editor_page',
-        name: 'editor_page',
-        meta: {
-          icon: 'ios-create',
-          title: '富文本编辑器'
-        },
-        component: () => import('@/view/components/editor/editor.vue')
-      },
-      {
-        path: 'icons_page',
-        name: 'icons_page',
-        meta: {
-          icon: '_bear',
-          title: '自定义图标'
-        },
-        component: () => import('@/view/components/icons/icons.vue')
-      }
-    ]
-  },
-  {
-    path: '/update',
-    name: 'update',
-    meta: {
-      icon: 'md-cloud-upload',
-      title: '数据上传'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'update_table_page',
-        name: 'update_table_page',
-        meta: {
-          icon: 'ios-document',
-          title: '上传Csv'
-        },
-        component: () => import('@/view/update/update-table.vue')
-      },
-      {
-        path: 'update_paste_page',
-        name: 'update_paste_page',
-        meta: {
-          icon: 'md-clipboard',
-          title: '粘贴表格数据'
-        },
-        component: () => import('@/view/update/update-paste.vue')
-      }
-    ]
-  },
-  {
-    path: '/excel',
-    name: 'excel',
-    meta: {
-      icon: 'ios-stats',
-      title: 'EXCEL导入导出'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'upload-excel',
-        name: 'upload-excel',
-        meta: {
-          icon: 'md-add',
-          title: '导入EXCEL'
-        },
-        component: () => import('@/view/excel/upload-excel.vue')
-      },
-      {
-        path: 'export-excel',
-        name: 'export-excel',
-        meta: {
-          icon: 'md-download',
-          title: '导出EXCEL'
-        },
-        component: () => import('@/view/excel/export-excel.vue')
-      }
-    ]
-  },
-  {
-    path: '/tools_methods',
-    name: 'tools_methods',
-    meta: {
-      hide: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'tools_methods_page',
-        name: 'tools_methods_page',
-        meta: {
-          icon: 'ios-hammer',
-          title: '工具方法'
-        },
-        component: () => import('@/view/tools-methods/tools-methods.vue')
-      }
-    ]
-  },
-  {
-    path: '/directive',
-    name: 'directive',
-    meta: {
-      hide: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'directive_page',
-        name: 'directive_page',
-        meta: {
-          icon: 'ios-navigate',
-          title: '指令'
-        },
-        component: () => import('@/view/directive/directive.vue')
-      }
-    ]
-  },
-  {
-    path: '/multilevel',
-    name: 'multilevel',
-    meta: {
-      icon: 'md-menu',
-      title: '多级菜单'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'level_2_1',
-        name: 'level_2_1',
-        meta: {
-          icon: 'md-funnel',
-          title: '二级-1'
-        },
-        component: () => import('@/view/multilevel/level-2-1.vue')
-      },
-      {
-        path: 'level_2_2',
-        name: 'level_2_2',
-        meta: {
-          access: ['super_admin'],
-          icon: 'md-funnel',
-          showAlways: true,
-          title: '二级-2'
-        },
-        component: parentView,
-        children: [
-          {
-            path: 'level_2_2_1',
-            name: 'level_2_2_1',
-            meta: {
-              icon: 'md-funnel',
-              title: '三级'
-            },
-            component: () => import('@/view/multilevel/level-2-2/level-3-1.vue')
-          }
-        ]
-      },
-      {
-        path: 'level_2_3',
-        name: 'level_2_3',
-        meta: {
-          icon: 'md-funnel',
-          title: '二级-3'
-        },
-        component: () => import('@/view/multilevel/level-2-3.vue')
-      },
-    ]
-  },
-  {
-    path: '/argu',
-    name: 'argu',
-    meta: {
-      hideInMenu: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'params/:id',
-        name: 'params',
-        meta: {
-          icon: 'md-flower',
-          title: '动态路由',
-          notCache: true
-        },
-        component: () => import('@/view/argu-page/params.vue')
-      },
-      {
-        path: 'query',
-        name: 'query',
-        meta: {
-          icon: 'md-flower',
-          title: '带参路由',
-          notCache: true
-        },
-        component: () => import('@/view/argu-page/query.vue')
-      }
-    ]
-  },*/
   {
     path: '/',
     name: 'data',
@@ -459,6 +198,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/inspection-data/spot-check/spot-check.vue')
+        //component:resolve => require(['@/view/inspection-data/spot-check/spot-check.vue'],resolve)
       },
       {
         path: 'flight-check',
@@ -469,6 +209,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/inspection-data/flight-check/flight-check.vue')
+        //component:resolve => require(['@/view/inspection-data/flight-check/flight-check.vue'],resolve)
       },
       {
         path: 'mould-data',
@@ -479,6 +220,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/inspection-data/mould-data/mould-data.vue')
+        //component:resolve => require(['@/view/inspection-data/mould-data/mould-data.vue'],resolve)
       },
       {
         path: 'law-data',
@@ -489,6 +231,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/inspection-data/law-data/law-data.vue')
+        //component:resolve => require(['@/view/inspection-data/law-data/law-data.vue'],resolve)
       },
       {
         path: 'article-data',
@@ -499,6 +242,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/inspection-data/article-data/article-data.vue')
+        //component:resolve => require(['@/view/inspection-data/article-data/article-data.vue'],resolve)
       }
     ]
   },
@@ -520,6 +264,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/user/user.vue')
+        //component:resolve => require(['@/view/system-manager/user/user.vue'],resolve)
       },
       {
         path: 'role',
@@ -530,6 +275,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/role/role.vue')
+        //component:resolve => require(['@/view/system-manager/role/role.vue'],resolve)
       },
       {
         path: 'permission',
@@ -540,6 +286,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/permission/permission.vue')
+        //component:resolve => require(['@/view/system-manager/permission/permission.vue'],resolve)
       },
       {
         path: 'banner',
@@ -550,6 +297,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/banner/banner.vue')
+        //component:resolve => require(['@/view/system-manager/banner/banner.vue'],resolve)
       },
       {
         path: 'link',
@@ -560,6 +308,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/links/link.vue')
+        //component:resolve => require(['@/view/system-manager/links/link.vue'],resolve)
       },
       {
         path: 'statement',
@@ -570,6 +319,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/statement/statement.vue')
+        //component:resolve => require(['@/view/system-manager/statement/statement.vue'],resolve)
       },
       {
         path: 'data-type',
@@ -580,6 +330,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/constant/data-type.vue')
+        //component:resolve => require(['@/view/system-manager/constant/data-type.vue'],resolve)
       },
       {
         path: 'user-log',
@@ -590,6 +341,7 @@ export default [
           notCache: true
         },
         component: () => import('@/view/system-manager/userLog/userLog.vue')
+        //component:resolve => require(['@/view/system-manager/userLog/userLog.vue'],resolve)
       }/*,
       {
         path: 'menu',

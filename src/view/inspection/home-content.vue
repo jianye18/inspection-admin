@@ -107,6 +107,9 @@
     color: #2d8cf0;
     cursor: pointer;
   }
+  .demo-carousel img:hover{
+    cursor: pointer;
+  }
 </style>
 <template>
   <Layout style="padding: 10px 180px 0px; max-top: 15px;">
@@ -162,15 +165,15 @@
           <div style="height: 300px">
             <Carousel
               v-model="value3"
-              autoplay
+              :autoplay="autoplay"
               :autoplay-speed="autoplaySpeed"
               dots="inside"
               radius-dot
               trigger="hover"
               arrow="hover">
-              <CarouselItem v-for="item in viewBannerList">
+              <CarouselItem v-for="item in viewBannerList" :key="item.id">
                 <div class="demo-carousel">
-                  <img :src="item"/>
+                  <img :src="item.path" @click="toAdvert(item.link)" @mouseenter="hover(1)" @mouseleave="hover(2)"/>
                 </div>
               </CarouselItem>
             </Carousel>
@@ -211,6 +214,7 @@ export default {
         searchPhrase: ''
       },
       value3: 0,
+      autoplay: true,
       autoplaySpeed: 4000,
       orderName: 'create_time',
       newArticleList: [],
@@ -322,7 +326,7 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           res.data.data.forEach(function (item) {
-            _this.viewBannerList.push(Global.resourcesBasePath + item.path + item.name)
+            _this.viewBannerList.push({ id: item.id, path: Global.resourcesBasePath + item.path + item.name, link: item.link })
           })
         }
       })
@@ -368,6 +372,18 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {})
+    },
+    toAdvert (link) {
+      if (link) {
+        window.open(link)
+      }
+    },
+    hover (status) {
+      if (status === 1) {
+        this.autoplay = false
+      } else {
+        this.autoplay = true
+      }
     }
   }
 }

@@ -233,7 +233,6 @@ export default {
           }
         }
         axios.request(option).then(res => {
-          console.log(res)
           _this.formItem.oldBannerName = _this.formItem.name ? res.data.data.name : ''
           _this.formItem.name = res.data.data.name
           _this.formItem.path = res.data.data.path
@@ -292,7 +291,6 @@ export default {
         method: 'post'
       }
       axios.request(option).then(res => {
-        console.log(res)
         this.tableData.list = res.data.data.list
         this.tableData.pageNum = res.data.data.pageNum
         this.tableData.total = res.data.data.total
@@ -324,7 +322,6 @@ export default {
     },
     handleView (row) {
       this.formItem = JSON.parse(JSON.stringify(row))
-      console.log(this.formItem)
       this.modelShow = true
       this.modelTitle = '编辑轮播图'
       this.viewUrl = Global.resourcesBasePath + this.formItem.path + this.formItem.name

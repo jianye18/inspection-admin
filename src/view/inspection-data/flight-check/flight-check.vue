@@ -127,7 +127,15 @@ export default {
           title: '处理措施',
           align: 'center',
           key: 'precautions',
-          width: 100
+          width: 100,
+          render: function render (h, params) {
+            let content = params.row.precautions
+            return h('span', {
+              style: {
+                color: content === '停产整改' ? 'red' : ''
+              }
+            }, content)
+          }
         },
         {
           title: '飞检类型',

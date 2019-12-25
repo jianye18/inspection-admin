@@ -88,7 +88,15 @@ export default {
           title: '处理措施',
           align: 'center',
           key: 'precautions',
-          width: 120
+          width: 120,
+          render: function render (h, params) {
+            let content = params.row.precautions
+            return h('span', {
+              style: {
+                color: content === '停产整改' ? 'red' : ''
+              }
+            }, content)
+          }
         },
         {
           title: '发布单位',

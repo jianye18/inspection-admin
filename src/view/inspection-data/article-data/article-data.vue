@@ -145,16 +145,6 @@ export default {
           key: 'author',
           width: 120
         },
-        /*{
-          title: '关键词',
-          align: 'center',
-          key: 'subject',
-          width: 160,
-          render: function render (h, params) {
-            let subject = JSON.parse(params.row.subject)
-            return h('span', subject.join(' '))
-          }
-        },*/
         {
           title: '阅读量',
           align: 'center',

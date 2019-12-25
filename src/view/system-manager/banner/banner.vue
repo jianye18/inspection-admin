@@ -25,7 +25,8 @@
     <Modal
       v-model="modelShow"
       :title="modelTitle"
-      :mask-closable="false">
+      :mask-closable="false"
+      width="820px">
       <Form ref="formItem" :model="formItem" :label-width="80" action="">
         <FormItem label="链接地址" prop="link">
           <Input placeholder="请输入链接地址" v-model="formItem.link"/>
@@ -34,7 +35,7 @@
           <Upload action="" :before-upload="handleBeforeUpload" accept=".jpg, .png, .gif">
             <Button icon="ios-cloud-upload-outline" :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
           </Upload>
-          <img v-if="viewUrl" :src="viewUrl"/>
+          <img v-if="viewUrl" :src="viewUrl" style="max-width: 600px; max-height: 600px"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -107,22 +108,6 @@ export default {
           }
         },
         {
-          title: '备注',
-          align: 'center',
-          key: 'remark',
-          render: function render (h, params) {
-            // console.log(params.row)
-            let content = ''
-            let remark = params.row.remark
-            if (remark) {
-              content = remark
-            } else {
-              content = '-'
-            }
-            return h('span', content)
-          }
-        },
-        {
           title: '状态',
           align: 'center',
           key: 'isView',
@@ -143,7 +128,7 @@ export default {
           title: '操作',
           align: 'center',
           key: 'operation',
-          width: 180,
+          width: 220,
           render: function render (h, params) {
             let isView = params.row.isView
             return h('div', [h('Button', {
@@ -233,11 +218,12 @@ export default {
           }
         }
         axios.request(option).then(res => {
-          _this.formItem.oldBannerName = _this.formItem.name ? res.data.data.name : ''
+          _this.formItem.oldBannerName = _this.formItem.name ? _this.formItem.name : ''
           _this.formItem.name = res.data.data.name
           _this.formItem.path = res.data.data.path
           _this.formItem.size = res.data.data.size
           _this.formItem.type = res.data.data.type
+          _this.viewUrl = Global.resourcesBasePath + _this.formItem.path + _this.formItem.name
           // _this.getTablePageData()
         }).catch(res => {
           _this.uploadLoading = false

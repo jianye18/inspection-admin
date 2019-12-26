@@ -138,7 +138,7 @@
               <Input v-model="formData.searchPhrase"
                      search enter-button="搜索"
                      placeholder="请输入您想要查询的关键词"
-                     style="width: 70%"
+                     style="width: 70%; top: 0;"
                      @on-search="searchToList" />
             </div>
           </div>
@@ -182,7 +182,7 @@
             <Tabs v-model="orderName">
               <TabPane label="最新文章" name="create_time">
                 <ul>
-                  <li v-for="item in newArticleList" :title="item.title" @click="toViewArticle(item.id)">{{item.title}}</li>
+                  <li v-for="item in newArticleList" :key="item.id" :title="item.title" @click="toViewArticle(item.id)">{{item.title}}</li>
                 </ul>
                 <div class="article_more" @click="toArticlePage">
                   查看更多
@@ -190,7 +190,7 @@
               </TabPane>
               <TabPane label="热门文章" name="read_count">
                 <ul>
-                  <li v-for="item in hotArticleList" :title="item.title" @click="toViewArticle(item.id)">{{item.title}}</li>
+                  <li v-for="item in hotArticleList" :key="item.id" :title="item.title" @click="toViewArticle(item.id)">{{item.title}}</li>
                 </ul>
                 <div class="article_more" @click="toArticlePage">
                   查看更多
@@ -249,7 +249,7 @@ export default {
           typeList: []
         }
       ],
-      showCount:{lawCount: 0, criterionCount: 0, spotCheckCount: 0, flightCheckCount: 0},
+      showCount: {lawCount: 0, criterionCount: 0, spotCheckCount: 0, flightCheckCount: 0},
       params: {mold: 1, key: '', value: ''},
       viewBannerList: []
     }
@@ -263,7 +263,6 @@ export default {
   },
   watch: {
     'orderName': function (val) {
-      console.log(val)
       this.getHomeArticleList()
     }
   },

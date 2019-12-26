@@ -77,16 +77,6 @@ export default {
           key: 'author',
           width: 200
         },
-        /*{
-          title: '关键词',
-          align: 'center',
-          key: 'subject',
-          width: 250,
-          render: function render (h, params) {
-            let subject = JSON.parse(params.row.subject)
-            return h('span', subject.join(' '))
-          }
-        },*/
         {
           title: '发布时间',
           align: 'center',

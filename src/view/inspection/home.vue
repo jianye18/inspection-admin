@@ -102,7 +102,7 @@
         </div>
       </Header>
       <Content>
-        <router-view :key="key"></router-view>
+        <router-view></router-view>
       </Content>
       <Footer class="layout-footer-center">
         <div class="footer-link">
@@ -142,11 +142,6 @@ export default {
       activeIdx: 0,
       linkList: [],
       personalNum: 0
-    }
-  },
-  computed: {
-    key() {
-      return this.$route.name !== undefined? this.$route.name +new Date(): this.$route +new Date()
     }
   },
   created () {
@@ -202,13 +197,33 @@ export default {
       if (_this.activeIdx !== idx) {
         this.$store.dispatch('CreateType', val)
         _this.activeIdx = idx
+      } else {
+        let params = []
+        if (val === 'LW') {
+          params = [{key: 'category', value: ''}]
+        }
+        if (val === 'CC') {
+          params = [{key: 'category', value: ''}, {key: 'type', value: ''}]
+        }
+        if (val === 'SC') {
+          params = [{key: 'productType', value: ''}]
+        }
+        if (val === 'FC') {
+          params = [{key: 'type', value: ''}]
+        }
+        if (val === 'AC') {
+          params = [{key: 'typeCode', value: ''}]
+        }
+        this.$store.dispatch('CreateParam', {type: val, query: params})
+      }
+      if (this.$route.name === path) {
+        window.location.reload()
+      } else {
         setTimeout(function () {
           _this.$router.push({
             name: path
           })
         }, 300)
-      } else {
-        window.location.reload()
       }
     },
     getLinkViewList () {

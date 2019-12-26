@@ -17,14 +17,18 @@ router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
   // 过滤展示页无需权限的白名单
-  if (!token && FILTER_PAGE_NAME.indexOf(to.name) !== -1) {
+  if (!to.name) {
+    next({
+      name: MAIN_PAGE_NAME // 跳转到展示首页
+    })
+  } else if (!token && FILTER_PAGE_NAME.indexOf(to.name) !== -1) {
     next() // 跳转
   } else if (token && FILTER_PAGE_NAME.indexOf(to.name) !== -1) {
     next() // 跳转
   } else if (!token && to.name !== LOGIN_PAGE_NAME) {
     // 未登录且要跳转的页面不是登录页
     next({
-      name: MAIN_PAGE_NAME // 跳转到登录页
+      name: MAIN_PAGE_NAME // 跳转到展示首页
     })
   } else if (!token && to.name === LOGIN_PAGE_NAME) {
     // 未登陆且要跳转的页面是登录页

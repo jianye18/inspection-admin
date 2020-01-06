@@ -7,10 +7,10 @@
       <div class="search-con search-con-top">
         <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索"
                class="search-input" v-model="formData.searchPhrase"/>
-        <Select v-model="formData.institution" style="width:120px" placeholder="请选择公布机构" clearable>
+        <!--<Select v-model="formData.institution" style="width:120px" placeholder="请选择公布机构" clearable>
           <Option value="" key="">全部</Option>
           <Option v-for="item in institutionList" :value="item.label" :key="item.value">{{ item.label }}</Option>
-        </Select>
+        </Select>-->
         <Select v-model="formData.checkResult" style="width:120px; margin-left: 2px;" placeholder="请选择抽检结果" clearable>
           <Option value="1" key="1">合格</Option>
           <Option value="0" key="0">不合格</Option>
@@ -164,7 +164,7 @@ export default {
     }
   },
   mounted () {
-    this.getAllSystemDataTypeList()
+    // this.getAllSystemDataTypeList()
     this.currentId = this.$route.query.id
     this.getSpotCheckById()
   },

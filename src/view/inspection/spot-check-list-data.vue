@@ -5,10 +5,10 @@
     </div>
     <div class="search-con search-con-top">
       <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索"
-             class="search-input" v-model="formData.searchPhrase"/>
-      <Select v-model="formData.institution" style="width:120px" placeholder="请选择公布机构" clearable>
+             class="search-input" v-model="formData.searchPhrase" style="width:200px"/>
+      <!--<Select v-model="formData.institution" style="width:120px" placeholder="请选择公布机构" clearable>
         <Option v-for="item in institutionList" :value="item.label" :key="item.value">{{ item.label }}</Option>
-      </Select>
+      </Select>-->
       <Select v-model="formData.checkResult" style="width:120px" placeholder="请选择抽检结果" clearable>
         <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
@@ -130,7 +130,7 @@ export default {
       }
     }
     this.getTablePageData()
-    this.getAllSystemDataTypeList()
+    // this.getAllSystemDataTypeList()
   },
   watch: {
     '$store.getters.param': function (params) {

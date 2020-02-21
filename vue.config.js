@@ -31,34 +31,34 @@ module.exports = {
       .set('_c', resolve('src/components'))
       .set('_conf', resolve('config'))
   },
-  configureWebpack: config => {
-    // 用cdn方式引入
-    config.externals = {
-      'vue': 'Vue',
-      'vuex': 'Vuex',
-      'vue-router': 'VueRouter',
-      'axios': 'axios',
-      'echarts': 'echarts'
-    }
-  },
+  // configureWebpack: config => {
+  //   // 用cdn方式引入
+  //   config.externals = {
+  //     'vue': 'Vue',
+  //     'vuex': 'Vuex',
+  //     'vue-router': 'VueRouter',
+  //     'axios': 'axios',
+  //     'echarts': 'echarts'
+  //   }
+  // },
   // 打包时不生成.map文件
   productionSourceMap: false,
   // 这里写你调用接口的基础路径，来解决跨域，如果设置了代理，那你本地开发环境的axios的baseUrl要写为 '' ，即空字符串
-  // devServer: {
-  //   // proxy: 'http://localhost:8090'
-  //   proxy: 'http://www.yezhuhongblog.com'
-  // }
   devServer: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8090',
-        ws: true,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': '/'
-        }
-      }
-    }
+    // proxy: 'http://localhost:8090'
+    proxy: 'http://www.yezhuhongblog.com'
   }
+  // devServer: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://localhost:8090',
+  //       ws: true,
+  //       changeOrigin: true,
+  //       pathRewrite: {
+  //         '^/api': '/'
+  //       }
+  //     }
+  //   }
+  // }
 
 }

@@ -342,6 +342,16 @@ export default [
         },
         component: () => import('@/view/system-manager/userLog/userLog.vue')
         //component:resolve => require(['@/view/system-manager/userLog/userLog.vue'],resolve)
+      },
+      {
+        path: 'database',
+        name: 'database',
+        meta: {
+          icon: 'md-flower',
+          title: '数据备份',
+          notCache: true
+        },
+        component: () => import('@/view/system-manager/database/database.vue')
       }/*,
       {
         path: 'menu',

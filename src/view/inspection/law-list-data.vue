@@ -145,7 +145,7 @@ export default {
       }
     }
     this.getTablePageData()
-    // this.getAllSystemDataTypeList()
+    this.getAllSystemDataTypeList()
     this.getLawTypeList(this.formData.category)
   },
   watch: {
@@ -171,11 +171,11 @@ export default {
     },
     getAllSystemDataTypeList () {
       const option = {
-        url: '/api/system/getSystemDataByTypeCode/FG_publishUnit,FG_status',
+        url: '/api/system/getSystemDataByTypeCode/FG_status', // FG_publishUnit,
         method: 'get'
       }
       axios.request(option).then(res => {
-        this.publishUnitList = res.data.data['FG_publishUnit']
+        // this.publishUnitList = res.data.data['FG_publishUnit']
         this.statusList = res.data.data['FG_status']
       })
     },

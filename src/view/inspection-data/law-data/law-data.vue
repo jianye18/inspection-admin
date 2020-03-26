@@ -434,12 +434,12 @@ export default {
       console.log(this.formItem)
     },
     clearData () {
-      this.formItem = {};
+      this.formItem = {}
       this.$refs.editor.setHtml('')
     },
     handleEditor (id) {
-      this.clearData();
-      const _this = this;
+      // this.clearData()
+      const _this = this
       const option = {
         url: '/api/law/getLawById/' + id,
         method: 'get'

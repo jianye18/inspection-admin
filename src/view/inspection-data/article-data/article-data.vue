@@ -70,7 +70,7 @@
             </FormItem>
             <FormItem label="类型" prop="typeCode">
               <Select v-model="formItem.typeCode" style="width:200px" placeholder="请选择文章分类" clearable>
-                <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
+                <Option v-for="item in typeList" :key="item.value" :value="item.value">{{ item.label }}</Option>
               </Select>
             </FormItem>
             <FormItem label="关键词" prop="subject" style="word-wrap: break-word">
@@ -93,6 +93,15 @@
                 {{item}}
                 <a href="#" class="close" @click="deleteArticleLinks(item)" style="left: 600px;"></a>
               </span>
+            </FormItem>
+            <FormItem label="附件">
+                <span v-if="formItem.annexList" v-for="item in formItem.annexList" :key="item.name" style="margin-right: 15px;">
+                  {{item.name}}
+                  <a href="#" class="close" @click="deleteAnnex(item.name)"></a>
+                </span>
+              <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx, .doc, .docx, .pdf, .txt">
+                <Button :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
+              </Upload>
             </FormItem>
         </Form>
         <div slot="footer">
@@ -243,7 +252,8 @@ export default {
       link: '',
       formItem: {
         subject: [],
-        links: []
+        links: [],
+        annexList: []
       },
       uploadLoading: false,
       ruleValidate: {
@@ -325,19 +335,19 @@ export default {
       this.link = ''
     },
     handleAddData () {
-      this.clearData();
-      this.modelShow = true;
-      this.$refs['formItem'].resetFields();
-      this.modelTitle = '新增文章';
+      this.clearData()
+      this.modelShow = true
+      this.$refs['formItem'].resetFields()
+      this.modelTitle = '新增文章'
       this.msgTitle = '新增文章成功'
     },
     clearData () {
-      this.formItem = {};
+      this.formItem = {}
       this.$refs.editor.setHtml('')
     },
     handleEditor (id) {
-      this.clearData();
-      const _this = this;
+      // this.clearData()
+      const _this = this
       const option = {
         url: '/api/article/getArticleById/' + id,
         method: 'get'
@@ -460,6 +470,58 @@ export default {
       _this.formItem.links.forEach(function (item, index) {
         if (item === link) {
           _this.formItem.links.splice(index, 1)
+        }
+      })
+    },
+    handleBeforeUpload (file) {
+      const _this = this
+      let fileFormData = new FormData()
+      fileFormData.append('file', file)
+      const option = {
+        url: '/api/common/uploadSingleFile',
+        data: fileFormData,
+        method: 'post',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      axios.request(option).then(res => {
+        _this.uploadLoading = false
+        if (res.data.code === 200) {
+          _this.$Message.success('上传成功！')
+          let annex = {name: res.data.data}
+          if (_this.formItem.annexList) {
+            _this.formItem.annexList.push(annex)
+          } else {
+            _this.formItem.annexList = [annex]
+          }
+          console.log(_this.formItem)
+        } else {
+          _this.$Message.error('上传失败，请稍后重试')
+        }
+      }).catch(res => {
+        _this.uploadLoading = false
+      })
+      return false
+    },
+    handleUploadFile () {
+      // this.getTablePageData()
+    },
+    deleteAnnex (fileName) {
+      const _this = this
+      axios.request({
+        url: '/api/common/deleteFile/' + fileName,
+        method: 'delete'
+      }).then(res => {
+        if (res.data.code === 200) {
+          _this.formItem.annexList.forEach(function (item, index) {
+            if (fileName === item.name) {
+              _this.formItem.annexList.splice(index, 1)
+            }
+          })
+          console.log(_this.formItem.annexList)
+        } else {
+          _this.$Message.error('网络异常，请稍后重试')
         }
       })
     }

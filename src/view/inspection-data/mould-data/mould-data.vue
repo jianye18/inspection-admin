@@ -341,7 +341,7 @@ export default {
       return false
     },
     handleUploadFile () {
-      this.getTablePageData()
+      // this.getTablePageData()
     },
     // 翻页钩子
     changePage (page) {
@@ -369,7 +369,7 @@ export default {
       this.formItem = {}
     },
     handleEditor (id) {
-      this.clearData()
+      // this.clearData()
       const _this = this
       const option = {
         url: '/api/criterion/getCriterionById/' + id,

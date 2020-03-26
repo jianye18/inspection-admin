@@ -367,11 +367,11 @@ export default {
       this.msgTitle = '新增飞检数据成功'
     },
     clearData () {
-      this.formItem = {};
+      this.formItem = {}
     },
     handleEditor (id) {
-      this.clearData();
-      const _this = this;
+      // this.clearData()
+      const _this = this
       const option = {
         url: '/api/flightCheck/getFlightCheckById/' + id,
         method: 'get'

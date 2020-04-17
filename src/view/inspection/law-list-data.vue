@@ -9,7 +9,7 @@
       搜索法规
     </div>
     <div class="search-con search-con-top">
-      <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+      <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
       <!--<Select v-model="formData.type" style="width:120px" placeholder="请选择二级分类" clearable>
         <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
       </Select>

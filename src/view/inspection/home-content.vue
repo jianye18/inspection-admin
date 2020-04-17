@@ -139,7 +139,7 @@
                      search enter-button="搜索"
                      placeholder="请输入您想要查询的关键词"
                      style="width: 70%; top: 0;"
-                     @on-search="searchToList" />
+                     @on-search="searchToList" @on-enter="searchToList" />
             </div>
           </div>
           <div class="data-con" v-for="item in contentData" :key="item.type">

@@ -111,14 +111,15 @@
         </div>
         <div class="web-about">
           <Row>
-            <Col span="18" class="footer_content">
+            <Col span="16" class="footer_content">
               <p><Icon type="logo-windows" />Copyright©叶竹洪博客︱苏ICP备17037083号</p>
               <p><Icon type="md-contact" />手机 / 微信：15850584156 | 网站纠错请邮件：22521453@qq.com</p>
               <p><Icon type="md-funnel" />您是本站第{{personalNum}}位访客</p>
             </Col>
-            <Col span="6" style="border-right: 1px ridge #e5e5e5;">
+            <Col span="8" style="border-right: 1px ridge #e5e5e5;">
               <p style="margin-left: 30px; margin-top: 15px;">欢迎关注我们</p>
               <img src="../../assets/images/gongzhonghao.jpg" style="margin-left: 25px; width: 102px; height: 102px;" />
+              <img src="../../assets/images/xiaochengxu.jpg" style="margin-left: 15px; width: 102px; height: 102px;" />
             </Col>
           </Row>
         </div>

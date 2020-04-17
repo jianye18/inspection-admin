@@ -24,7 +24,7 @@
         搜索法规结果
       </div>
       <div class="search-con search-con-top">
-        <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase"/>
+        <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
         <Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
           <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>

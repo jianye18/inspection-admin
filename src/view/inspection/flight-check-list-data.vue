@@ -9,13 +9,13 @@
       搜索监督检查
     </div>
     <div class="search-con search-con-top">
-      <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase"/>
-      <Select v-model="formData.publishUnit" style="width:140px" placeholder="请选择发布机构" clearable>
+      <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
+      <!--<Select v-model="formData.publishUnit" style="width:140px" placeholder="请选择发布机构" clearable>
         <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
       <Select v-model="formData.precautions" style="width:120px" placeholder="请选择处理措施" clearable>
         <Option v-for="item in precautionsList" :value="item.value">{{item.label}}</Option>
-      </Select>
+      </Select>-->
       <Select v-model="formData.isDefect" style="width:120px" placeholder="是否有缺陷" clearable>
         <Option v-for="item in defectList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>

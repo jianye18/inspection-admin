@@ -9,7 +9,7 @@
       搜索文章数据
     </div>
     <div class="search-con search-con-top">
-      <Input @on-change="handleClear" clearable placeholder="输入文章标题搜索" class="search-input" v-model="formData.searchPhrase"/>
+      <Input @on-change="handleClear" clearable placeholder="输入文章标题搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
     </div>
     <tables

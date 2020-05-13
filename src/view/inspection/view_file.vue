@@ -15,8 +15,12 @@ export default {
     // 暂时
     let path = this.$route.query.path
     let index = path.lastIndexOf('/')
-    this.viewSrc = this.viewSrc + path.substring(index + 1, path.length)
+    let viewPath = path.substring(index + 1, path.length)
+    this.viewSrc = this.viewSrc + viewPath
     console.log(this.viewSrc)
+    if (viewPath.indexOf('pdf') > 0) {
+      window.location.href = 'https://www.yezhuhongblog.com/api/images/docs/' + viewPath
+    }
   }
 }
 </script>

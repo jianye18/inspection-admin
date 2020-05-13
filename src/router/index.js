@@ -21,6 +21,10 @@ router.beforeEach((to, from, next) => {
     next({
       name: MAIN_PAGE_NAME // 跳转到展示首页
     })
+  } else if (!token && to.name === 'view') {
+    next({
+      name: 'main' // 跳转到home页
+    })
   } else if (!token && FILTER_PAGE_NAME.indexOf(to.name) !== -1) {
     next() // 跳转
   } else if (token && FILTER_PAGE_NAME.indexOf(to.name) !== -1) {
@@ -36,7 +40,7 @@ router.beforeEach((to, from, next) => {
   } else if (token && to.name === LOGIN_PAGE_NAME) {
     // 已登录且要跳转的页面是登录页
     next({
-      name: 'home' // 跳转到home页
+      name: 'main' // 跳转到home页
     })
   } else {
     next()

@@ -45,9 +45,19 @@
         <Col span="6" offset="1">文章类型：{{articleData.typeName}}</Col>
         <Col span="6" offset="1">阅读量：{{articleData.readCount}}</Col>
       </Row>
-      <Row style="border-bottom: 1px solid #e5e5e5;">
+      <Row>
         <Col span="6" offset="1">来源：{{articleData.author}}</Col>
         <Col span="6" offset="1">发布时间：{{articleData.publishTime}}</Col>
+      </Row>
+      <Row style="border-bottom: 1px solid #e5e5e5;">
+        <Col span="12" offset="1">附件：
+          <span v-if="articleData.annexList" v-for="item in articleData.annexList" :key="item.name" style="margin-right: 15px;">
+              <router-link target="_blank" :to="{path:'/view_file',query:{path:  item.path}}">{{item.name}}</router-link>
+            </span>
+          <!--<Button size="large" type="primary" icon="ios-book-outline" style="float: right; margin-right: 10px;">浏览文件</Button>-->
+          <Button v-if="articleData.annexList" size="large" type="success" icon="ios-download-outline" @click="downloadFile"
+                  style="float: right; margin-right: 10px; margin-top: 5px;">下载文件</Button>
+        </Col>
       </Row>
       <Row>
         <Col span="20" offset="1" class="detail-data-content" v-html="articleData.content"></Col>
@@ -114,6 +124,35 @@ export default {
         method: 'get'
       }
       axios.request(option).then(res => {})
+    },
+    downloadFile () {
+      const _this = this
+      const option = {
+        url: '/api/show/downloadFile?businessId=' + this.currentId + '&baseType=5',
+        method: 'get',
+        responseType: 'arraybuffer'
+      }
+      axios.request(option).then(res => {
+        let l = _this.criterionData.annexList.length
+        if (l > 0) {
+          let fileName = ''
+          if (l === 1) {
+            fileName = _this.criterionData.annexList[0].name
+          } else {
+            fileName = Date.parse(new Date()) + '.zip'
+          }
+          const blob = new Blob([res.data], { type: 'application/stream;charset=UTF-8' })
+          if (window.navigator.msSaveOrOpenBlob) {
+            navigator.msSaveBlob(blob, fileName)
+          } else {
+            const link = document.createElement('a')
+            link.href = window.URL.createObjectURL(blob)
+            link.download = fileName
+            link.click()
+            window.URL.revokeObjectURL(link.href)
+          }
+        }
+      })
     }
   }
 }

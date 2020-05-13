@@ -5,7 +5,7 @@
         搜索法规
       </div>
       <div class="search-con search-con-top">
-        <Input @on-change="handleClear" clearable placeholder="输入标准名称搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
+        <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
         <!--<Select v-model="formData.type" style="width:120px" placeholder="请选择二级分类" clearable>
           <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
         </Select>
@@ -13,7 +13,7 @@
           <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>-->
         <Select v-model="formData.status" style="width:120px; margin-left: 2px;" placeholder="请选择状态" clearable>
-          <Option v-for="item in statusList" :value="item.value">{{item.label}}</Option>
+          <Option v-for="item in statusList" :key="item.value" :value="item.value">{{item.label}}</Option>
         </Select>
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
       </div>
@@ -47,7 +47,7 @@
           <td colspan="2">附件下载</td>
           <td colspan="10" class="detail-content">
             <span v-if="lawData.annexList" v-for="item in lawData.annexList" :key="item.name" style="margin-right: 15px;">
-              {{item.name}}
+              <router-link target="_blank" :to="{path:'/view_file',query:{path:  item.path}}">{{item.name}}</router-link>
             </span>
             <!--<Button size="large" type="primary" icon="ios-book-outline" style="float: right; margin-right: 10px;">浏览文件</Button>-->
             <Button v-if="lawData.annexList" size="large" type="success" icon="ios-download-outline" @click="downloadFile"
@@ -269,6 +269,11 @@ export default {
             window.URL.revokeObjectURL(link.href)
           }
         }
+      })
+    },
+    viewData () {
+      this.$router.push({
+        name: 'view_file'
       })
     }
   }

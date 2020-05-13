@@ -9,7 +9,8 @@
     overflow-y: auto
   }
   .layout-logo{
-    width: 300px;
+    /*width: 300px;*/
+    width: 15%;
     height: 30px;
     /*background: #5b6270;*/
     border-radius: 3px;
@@ -25,7 +26,8 @@
   }
   .layout-nav{
     /*width: 500px;*/
-    margin-left: 480px;
+    /*margin-left: 480px;*/
+    margin-left: 25%;
   }
   .layout-nav ul{
     list-style: none;
@@ -33,7 +35,7 @@
   .layout-nav ul li{
     text-align: center;
     color: #ffffff;
-    font-size: 14px;
+    font-size: 1rem;
     width: 105px;
     line-height: 70px;
     float: left;
@@ -88,7 +90,7 @@
     <Layout>
       <Header style="background-color: #2c96cd; height: 70px;">
         <div class="layout-logo" @click="toHome">
-          <img src="../../assets/images/logo.png" style="width: 200px; margin-top: 10px;"/>
+          <img src="../../assets/images/logo.png" style="width: 100%; margin-top: 10px;"/>
         </div>
         <div class="layout-nav">
           <ul>
@@ -117,9 +119,16 @@
               <p><Icon type="md-funnel" />您是本站第{{personalNum}}位访客</p>
             </Col>
             <Col span="8" style="border-right: 1px ridge #e5e5e5;">
-              <p style="margin-left: 30px; margin-top: 15px;">欢迎关注我们</p>
-              <img src="../../assets/images/gongzhonghao.jpg" style="margin-left: 25px; width: 102px; height: 102px;" />
-              <img src="../../assets/images/xiaochengxu.jpg" style="margin-left: 15px; width: 102px; height: 102px;" />
+              <Row>
+                <Col span="12" style="text-align: center;">
+                  <p style="margin-top: 15px;">微信订阅号</p>
+                  <img src="../../assets/images/gongzhonghao.jpg" style="width: 102px; height: 102px;" />
+                </Col>
+                <Col span="12" style="text-align: center;">
+                  <p style="margin-top: 15px;">微信小程序</p>
+                  <img src="../../assets/images/xiaochengxu.jpg" style="width: 102px; height: 102px;" />
+                </Col>
+              </Row>
             </Col>
           </Row>
         </div>

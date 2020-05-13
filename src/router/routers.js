@@ -12,7 +12,6 @@ import Main from '@/view/main'
  */
 
 export default [
-
   {
     path: '/login',
     name: 'login',
@@ -22,6 +21,15 @@ export default [
     },
     component: resolve => import('@/view/login/login.vue')
     //component:resolve => require(['@/view/login/login.vue'],resolve)
+  },
+  {
+    path: '/view_file',
+    name: 'view_file',
+    meta: {
+      title: '预览页',
+      hideInMenu: true
+    },
+    component: resolve => import('@/view/inspection/view_file.vue')
   },
   {
     path: '/',

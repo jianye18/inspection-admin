@@ -225,28 +225,92 @@ export default {
           type: 'LW',
           name: '按法规分类',
           path: 'law',
-          typeList: []
+          typeList: [
+            {
+              code: 'FG_category',
+              label: '国家法规',
+              value: '1574147128850'
+            },
+            {
+              code: 'FG_category',
+              label: '地方法规',
+              value: '1574147128851'
+            }
+          ]
         },
         {
           title: '标准分类',
           type: 'CC',
           name: '按标准分类',
           path: 'criterion',
-          typeList: []
+          typeList: [
+            {
+              code: 'BZ_category',
+              label: '国家标准',
+              value: '1574147128834'
+            },
+            {
+              code: 'BZ_category',
+              label: '行业标准',
+              value: '1574147128835'
+            },
+            {
+              code: 'BZ_category',
+              label: '地方标准',
+              value: '1574147128836'
+            },
+            {
+              code: 'BZ_category',
+              label: '团体标准',
+              value: '1574147128837'
+            }
+          ]
         },
         {
           title: '抽检分类',
           type: 'SC',
           name: '按产品分类',
           path: 'spotCheck',
-          typeList: []
+          typeList: [
+            {
+              code: 'ZJ_productType',
+              label: '皮肤用化妆品',
+              value: '皮肤用化妆品'
+            },
+            {
+              code: 'ZJ_productType',
+              label: '毛发用化妆品',
+              value: '毛发用化妆品'
+            },
+            {
+              code: 'ZJ_productType',
+              label: '口唇用化妆品',
+              value: '口唇用化妆品'
+            },
+            {
+              code: 'ZJ_productType',
+              label: '指（趾）甲用化妆品',
+              value: '指（趾）甲用化妆品'
+            }
+          ]
         },
         {
           title: '飞检分类',
           type: 'FC',
           name: '按飞检分类',
           path: 'flightCheck',
-          typeList: []
+          typeList: [
+            {
+              code: 'FJ_type',
+              label: '国家飞检',
+              value: '国家飞检'
+            },
+            {
+              code: 'FJ_type',
+              label: '地方飞检',
+              value: '地方飞检'
+            }
+          ]
         }
       ],
       showCount: {lawCount: 0, criterionCount: 0, spotCheckCount: 0, flightCheckCount: 0},
@@ -257,7 +321,7 @@ export default {
   mounted () {
     this.visitorCount()
     this.getShowCount()
-    this.getHomePageFilterItem()
+    // this.getHomePageFilterItem()
     this.getHomeArticleList()
     this.getViewBannerList()
   },
@@ -343,6 +407,7 @@ export default {
           _this.contentData.forEach(function (item, index) {
             _this.contentData[index].typeList = result[_this.contentData[index].type]
           })
+          console.log(_this.contentData)
         }
       })
     },

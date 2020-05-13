@@ -44,7 +44,7 @@
           <td colspan="2">附件下载</td>
           <td colspan="10" class="detail-content">
             <span v-if="criterionData.annexList" v-for="item in criterionData.annexList" :key="item.name" style="margin-right: 15px;">
-              {{item.name}}
+              <router-link target="_blank" :to="{path:'/view_file',query:{path:  item.path}}">{{item.name}}</router-link>
             </span>
             <!--<Button size="large" type="primary" icon="ios-book-outline" style="float: right; margin-right: 10px;">浏览文件</Button>-->
             <Button v-if="criterionData.annexList" size="large" type="success" icon="ios-download-outline" @click="downloadFile"

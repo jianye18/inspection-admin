@@ -11,7 +11,7 @@ const router = new Router({
 })
 const LOGIN_PAGE_NAME = 'login'
 const MAIN_PAGE_NAME = 'main'
-const FILTER_PAGE_NAME = 'main、spotCheck、spotCheckDetail、criterion、criterionDetail、law、lawDetail、lawView、flightCheck、flightCheckDetail、article、articleDetail'
+const FILTER_PAGE_NAME = 'main、spotCheck、spotCheckDetail、criterion、criterionDetail、law、lawDetail、lawView、flightCheck、flightCheckDetail、article、articleDetail、view_file'
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()

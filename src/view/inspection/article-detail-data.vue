@@ -9,7 +9,7 @@
     padding-top: 30px;
   }
   .detail-data-title{
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
   }
   .detail-data .ivu-col{
@@ -19,11 +19,15 @@
     text-align:justify
   }
   .detail-data-content p{
+    font-size: 14px;
     padding: 5px 0 5px;
     line-height: 25px;
   }
   .detail-data-content p span{
     line-height: 25px;
+  }
+  .article_font{
+    font-size: 14px;
   }
 </style>
 <template>
@@ -42,15 +46,15 @@
         <Col span="20" offset="1" class="detail-data-title">{{articleData.title}}</Col>
       </Row>
       <Row>
-        <Col span="6" offset="1">文章类型：{{articleData.typeName}}</Col>
-        <Col span="6" offset="1">阅读量：{{articleData.readCount}}</Col>
+        <Col span="6" offset="1" class="article_font">文章类型：{{articleData.typeName}}</Col>
+        <Col span="6" offset="1" class="article_font">阅读量：{{articleData.readCount}}</Col>
       </Row>
       <Row>
-        <Col span="6" offset="1">来源：{{articleData.author}}</Col>
-        <Col span="6" offset="1">发布时间：{{articleData.publishTime}}</Col>
+        <Col span="6" offset="1" class="article_font">来源：{{articleData.author}}</Col>
+        <Col span="6" offset="1" class="article_font">发布时间：{{articleData.publishTime}}</Col>
       </Row>
       <Row style="border-bottom: 1px solid #e5e5e5;">
-        <Col span="12" offset="1">附件：
+        <Col span="12" offset="1" class="article_font">附件：
           <span v-if="articleData.annexList" v-for="item in articleData.annexList" :key="item.name" style="margin-right: 15px;">
               <router-link target="_blank" :to="{path:'/view_file',query:{path:  item.path}}">{{item.name}}</router-link>
             </span>

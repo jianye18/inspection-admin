@@ -97,7 +97,8 @@
             <li v-for="(item, idx) in menuList"
                 :key="item.value"
                 :class="idx === activeIdx ? 'active_class' : ''"
-                @click="changeMenu(item.value, item.path, idx)">
+                @click="changeMenu(item.value, item.path, idx)"
+                style="font-size: 18px;">
               {{item.label}}
             </li>
           </ul>
@@ -148,6 +149,7 @@ export default {
         { value: 'SC', label: '抽检数据', path: 'spotCheck' },
         { value: 'FC', label: '监督检查', path: 'flightCheck' },
         { value: 'AC', label: '文章', path: 'article' }
+        // { value: 'info', label: '行业需求', path: 'information' }
       ],
       activeIdx: 0,
       linkList: [],
@@ -180,17 +182,15 @@ export default {
   watch: {
     $route: {
       handler: function (to, form) {
-        if (typeof form !== 'undefined') {
-          let bp = document.createElement('script')
-          let curProtocol = window.location.protocol.split(':')[0]
-          if (curProtocol === 'https') {
-            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
-          } else {
-            bp.src = 'http://push.zhanzhang.baidu.com/push.js'
-          }
-          let s = document.getElementsByTagName('script')[0]
-          s.parentNode.insertBefore(bp, s)
+        let bp = document.createElement('script')
+        let curProtocol = window.location.protocol.split(':')[0]
+        if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+        } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js'
         }
+        let s = document.getElementsByTagName('script')[0]
+        s.parentNode.insertBefore(bp, s)
       },
       // 立即先去执行handler方法
       immediate: true
@@ -227,21 +227,21 @@ export default {
       } else {
         let params = []
         if (val === 'LW') {
-          params = [{key: 'category', value: ''}]
+          params = [{ key: 'category', value: '' }]
         }
         if (val === 'CC') {
-          params = [{key: 'category', value: ''}, {key: 'type', value: ''}]
+          params = [{ key: 'category', value: '' }, { key: 'type', value: '' }]
         }
         if (val === 'SC') {
-          params = [{key: 'productType', value: ''}]
+          params = [{ key: 'productType', value: '' }]
         }
         if (val === 'FC') {
-          params = [{key: 'type', value: ''}]
+          params = [{ key: 'type', value: '' }]
         }
         if (val === 'AC') {
-          params = [{key: 'typeCode', value: ''}]
+          params = [{ key: 'typeCode', value: '' }]
         }
-        this.$store.dispatch('CreateParam', {type: val, query: params})
+        this.$store.dispatch('CreateParam', { type: val, query: params })
       }
       if (this.$route.name === path) {
         window.location.reload()

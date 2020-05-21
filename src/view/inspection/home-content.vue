@@ -9,7 +9,7 @@
     background-size:100% 100%;
   }
   .data_count{
-    font-size: 22px;
+    font-size: 23px;
   }
   .data-con{
     background-color: #fff;
@@ -26,7 +26,7 @@
     border-bottom: 1px solid #f2f2f2;
   }
   .data-type-select{
-    font-size: 12px;
+    font-size: 13px;
     float: right;
     margin-right: 10px;
     color: #bcbcbc;
@@ -37,7 +37,7 @@
     display: inline-block;
   }
   .data-list span{
-    font-size: 13px;
+    font-size: 14px;
     width: 80px;
     height: 50px;
     left: 20px;
@@ -72,7 +72,7 @@
     height: 60px;
   }
   .article_class .ivu-tabs-bar .ivu-tabs-nav-scroll .nav-text div.ivu-tabs-tab{
-    font-size: 20px;
+    font-size: 21px;
     font-weight: bold;
     line-height: 40px;
   }
@@ -80,7 +80,7 @@
     list-style: none;
   }
   .article_class ul li{
-    font-size: 13px;
+    font-size: 14px;
     margin-left: 15px;
     height: 45px;
     line-height: 45px;
@@ -99,7 +99,7 @@
     width: 200px;
     line-height: 50px;
     text-align: center;
-    font-size: 14px;
+    font-size: 15px;
     border: 1px solid #e5e5e5;
     margin: 10px 100px 10px 100px;
   }
@@ -117,7 +117,7 @@
       <Layout>
         <Content :style="{minHeight: '620px', marginRight: '15px'}">
           <div class="search-box">
-            <div style="text-align: left; font-size: 20px; color: #000000;">
+            <div style="text-align: left; font-size: 22px; color: #000000;">
               <span>法规标准 | 政府抽查数据平台</span>
             </div>
             <div style="text-align: left; font-size: 16px;">
@@ -128,7 +128,7 @@
               <span class="data_count">{{showCount.flightCheckCount}}</span><span>条监督检查数据</span>
             </div>
             <div>
-              <Select v-model="formData.type" style="width:120px; float: left" placeholder="">
+              <Select v-model="formData.type" style="width:120px; float: left; font-size: 14px;" placeholder="">
                 <Option value="LW">法规</Option>
                 <Option value="CC">标准</Option>
                 <Option value="SC">抽检数据</Option>
@@ -144,7 +144,7 @@
           </div>
           <div class="data-con" v-for="item in contentData" :key="item.type">
             <div class="data-title">
-              <span style="font-size: 18px; font-weight: bold;">
+              <span style="font-size: 20px; font-weight: bold;">
                 <Icon type="ios-flask"/>
                 {{item.title}}
               </span>
@@ -313,8 +313,8 @@ export default {
           ]
         }
       ],
-      showCount: {lawCount: 0, criterionCount: 0, spotCheckCount: 0, flightCheckCount: 0},
-      params: {mold: 1, key: '', value: ''},
+      showCount: { lawCount: 0, criterionCount: 0, spotCheckCount: 0, flightCheckCount: 0 },
+      params: { mold: 1, key: '', value: '' },
       viewBannerList: []
     }
   },
@@ -342,7 +342,7 @@ export default {
     },
     toShowList (type, path, param, val) {
       this.$store.dispatch('CreateType', type)
-      this.$store.dispatch('CreateParam', {type: type, query: [{key: param.split('_')[1], value: val}]})
+      this.$store.dispatch('CreateParam', { type: type, query: [{ key: param.split('_')[1], value: val }] })
       this.params.key = param.split('_')[1]
       this.params.value = val
       this.$router.push({
@@ -384,7 +384,7 @@ export default {
       const option = {
         url: '/api/show/getViewBannerList',
         method: 'post',
-        data: {isView: 1, limit: 5}
+        data: { isView: 1, limit: 5 }
       }
       axios.request(option).then(res => {
         if (res.data.code === 200) {
@@ -403,11 +403,11 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           let result = res.data.data
-          console.log(result)
+          // console.log(result)
           _this.contentData.forEach(function (item, index) {
             _this.contentData[index].typeList = result[_this.contentData[index].type]
           })
-          console.log(_this.contentData)
+          // console.log(_this.contentData)
         }
       })
     },

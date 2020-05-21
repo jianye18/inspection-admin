@@ -136,12 +136,12 @@ export default {
   },
   watch: {
     '$store.getters.type': function (val) {
-      console.log(val)
       this.type = val
       this.getLeftMenuData()
       this.breadList = this.breadData[val]
     },
     '$store.getters.param': function (params) {
+      console.log(params)
       let query = params.query
       this.initUpMenuActive(query[0].value)
       if (query.length > 1) {
@@ -231,7 +231,7 @@ export default {
         this.breadList = this.breadData[this.type]
         this.upActiveIdx = null
         this.downActiveIdx = null
-        this.$store.dispatch('CreateParam', {type: this.type, query:[{key: key, value: ''}]})
+        this.$store.dispatch('CreateParam', { type: this.type, query: [{ key: key, value: '' }] })
         this.toList(null)
       }
     },

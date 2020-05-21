@@ -31,7 +31,7 @@ module.exports = {
       .set('_c', resolve('src/components'))
       .set('_conf', resolve('config'))
   },
-  // configureWebpack: config => {
+  configureWebpack: config => {
   //   // 用cdn方式引入
   //   config.externals = {
   //     'vue': 'Vue',
@@ -40,7 +40,28 @@ module.exports = {
   //     'axios': 'axios',
   //     'echarts': 'echarts'
   //   }
-  // },
+  //   config.plugins = [
+  //     // Ignore all locale files of moment.js
+  //     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+  //     new UglifyJsPlugin({
+  //       uglifyOptions: {
+  //         compress: {
+  //           drop_debugger: true,
+  //           drop_console: true
+  //         }
+  //       },
+  //       sourceMap: false,
+  //       parallel: true
+  //     }),
+  //     // 配置compression-webpack-plugin压缩
+  //     new CompressionWebpackPlugin({
+  //       algorithm: 'gzip',
+  //       test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+  //       threshold: 10240,
+  //       minRatio: 0.8
+  //     })
+  //   ]
+  },
   // 打包时不生成.map文件
   productionSourceMap: false,
   // 这里写你调用接口的基础路径，来解决跨域，如果设置了代理，那你本地开发环境的axios的baseUrl要写为 '' ，即空字符串

@@ -106,7 +106,7 @@
           </div>
         </div>
       </div>
-      <statement></statement>
+<!--      <statement></statement>-->
     </div>
   </div>
 </template>
@@ -117,7 +117,7 @@ import './search.less'
 import './detail.less'
 export default {
   name: 'CriterionDetail',
-  components:{
+  components: {
     statement
   },
   data () {
@@ -218,7 +218,7 @@ export default {
         this.formData.publishUnit = this.criterionData.publishUnit
       }
       if (param === 2) {
-        this.$store.dispatch('CreateParam', {type: 'SC', query: [{key: 'category', value: this.criterionData.category}]})
+        this.$store.dispatch('CreateParam', { type: 'SC', query: [{ key: 'category', value: this.criterionData.category }] })
         this.formData.category = this.criterionData.category
       }
       this.handleSearch()

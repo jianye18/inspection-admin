@@ -109,7 +109,7 @@
           </div>
         </div>
       </div>
-      <statement></statement>
+<!--      <statement></statement>-->
     </div>
   </div>
 </template>
@@ -181,7 +181,7 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.lawData = res.data.data
-          console.log(_this.lawData)
+          // console.log(_this.lawData)
           // _this.lawData['annexs'] = _this.lawData.annexList ? _this.lawData.annexList.join(' ') : ''
           _this.getTablePageData(1)
           _this.getTablePageData(2)

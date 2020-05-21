@@ -121,7 +121,7 @@
         </div>
       </div>
       <!--<div class="statement-con" v-html="statementContent"></div>-->
-      <statement></statement>
+<!--      <statement></statement>-->
     </div>
   </div>
 </template>
@@ -228,7 +228,7 @@ export default {
     },
     getMoreAboutData (param) {
       if (param === 1) {
-        this.$store.dispatch('CreateParam', {type: 'SC', query: [{key: 'productType', value: this.spotCheckData.productType}]})
+        this.$store.dispatch('CreateParam', { type: 'SC', query: [{ key: 'productType', value: this.spotCheckData.productType }] })
         this.formData.productType = this.spotCheckData.productType
       }
       if (param === 2) {

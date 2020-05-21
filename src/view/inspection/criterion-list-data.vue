@@ -63,7 +63,7 @@ export default {
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
               },
-              domProps: {title: content},
+              domProps: { title: content },
               on: {
                 click: () => {
                   _this.$router.push({

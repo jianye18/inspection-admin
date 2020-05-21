@@ -99,7 +99,7 @@
           </div>
         </div>
       </div>
-      <statement></statement>
+<!--      <statement></statement>-->
     </div>
   </div>
 </template>
@@ -177,7 +177,7 @@ export default {
       axios.request(option).then(res => {
         if (res.data.code === 200) {
           _this.flightCheckData = res.data.data
-          console.log(_this.flightCheckData)
+          // console.log(_this.flightCheckData)
           _this.getTablePageData(1)
           _this.getTablePageData(2)
         }
@@ -219,7 +219,7 @@ export default {
     },
     getMoreAboutData (param) {
       if (param === 1) {
-        this.$store.dispatch('CreateParam', {type: 'FC', query: [{key: 'type', value: this.flightCheckData.type}]})
+        this.$store.dispatch('CreateParam', { type: 'FC', query: [{ key: 'type', value: this.flightCheckData.type }] })
         this.formData.type = this.flightCheckData.type
       }
       if (param === 2) {

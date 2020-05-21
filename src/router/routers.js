@@ -63,7 +63,7 @@ export default [
         //component:resolve => require(['@/view/inspection/inspection.vue'],resolve),
         children: [
           {
-            path: 'spotCheck',
+            path: '/spotCheck',
             name: 'spotCheck',
             meta: {
               notCache: true
@@ -72,7 +72,7 @@ export default [
             //component:resolve => require(['@/view/inspection/spot-check-list-data.vue'],resolve)
           },
           {
-            path: 'spotCheckDetail',
+            path: '/spotCheckDetail',
             name: 'spotCheckDetail',
             meta: {
               notCache: true
@@ -81,7 +81,7 @@ export default [
             //component:resolve => require(['@/view/inspection/spot-check-detail-data.vue'],resolve)
           },
           {
-            path: 'criterion',
+            path: '/criterion',
             name: 'criterion',
             meta: {
               notCache: true
@@ -90,7 +90,7 @@ export default [
             //component:resolve => require(['@/view/inspection/criterion-list-data.vue'],resolve)
           },
           {
-            path: 'criterionDetail',
+            path: '/criterionDetail',
             name: 'criterionDetail',
             meta: {
               notCache: true
@@ -99,7 +99,7 @@ export default [
             //component:resolve => require(['@/view/inspection/criterion-detail-data.vue'],resolve)
           },
           {
-            path: 'law',
+            path: '/law',
             name: 'law',
             meta: {
               notCache: true
@@ -108,7 +108,7 @@ export default [
             //component:resolve => require(['@/view/inspection/law-list-data.vue'],resolve)
           },
           {
-            path: 'lawDetail',
+            path: '/lawDetail',
             name: 'lawDetail',
             meta: {
               notCache: true
@@ -117,7 +117,7 @@ export default [
             //component:resolve => require(['@/view/inspection/law-detail-data.vue'],resolve)
           },
           {
-            path: 'lawView',
+            path: '/lawView',
             name: 'lawView',
             meta: {
               notCache: true
@@ -126,7 +126,7 @@ export default [
             //component:resolve => require(['@/view/inspection/law-view-data.vue'],resolve)
           },
           {
-            path: 'flightCheck',
+            path: '/flightCheck',
             name: 'flightCheck',
             meta: {
               notCache: true
@@ -135,7 +135,7 @@ export default [
             //component:resolve => require(['@/view/inspection/flight-check-list-data.vue'],resolve)
           },
           {
-            path: 'flightCheckDetail',
+            path: '/flightCheckDetail',
             name: 'flightCheckDetail',
             meta: {
               notCache: true
@@ -144,7 +144,7 @@ export default [
             //component:resolve => require(['@/view/inspection/flight-check-detail-data.vue'],resolve)
           },
           {
-            path: 'article',
+            path: '/article',
             name: 'article',
             meta: {
               notCache: true
@@ -153,7 +153,7 @@ export default [
             //component:resolve => require(['@/view/inspection/article-list-data.vue'],resolve)
           },
           {
-            path: 'articleDetail',
+            path: '/articleDetail',
             name: 'articleDetail',
             meta: {
               notCache: true
@@ -198,7 +198,7 @@ export default [
     component: Main,
     children: [
       {
-        path: 'spot-check',
+        path: '/spot-check',
         name: 'spot-check',
         meta: {
           icon: 'ios-contact',
@@ -209,7 +209,7 @@ export default [
         //component:resolve => require(['@/view/inspection-data/spot-check/spot-check.vue'],resolve)
       },
       {
-        path: 'flight-check',
+        path: '/flight-check',
         name: 'flight-check',
         meta: {
           icon: 'ios-browsers',
@@ -220,7 +220,7 @@ export default [
         //component:resolve => require(['@/view/inspection-data/flight-check/flight-check.vue'],resolve)
       },
       {
-        path: 'mould-data',
+        path: '/mould-data',
         name: 'mould-data',
         meta: {
           icon: 'ios-browsers',
@@ -231,7 +231,7 @@ export default [
         //component:resolve => require(['@/view/inspection-data/mould-data/mould-data.vue'],resolve)
       },
       {
-        path: 'law-data',
+        path: '/law-data',
         name: 'law-data',
         meta: {
           icon: 'ios-browsers',
@@ -242,7 +242,7 @@ export default [
         //component:resolve => require(['@/view/inspection-data/law-data/law-data.vue'],resolve)
       },
       {
-        path: 'article-data',
+        path: '/article-data',
         name: 'article-data',
         meta: {
           icon: 'ios-browsers',
@@ -264,7 +264,7 @@ export default [
     component: Main,
     children: [
       {
-        path: 'user',
+        path: '/user',
         name: 'user',
         meta: {
           icon: 'ios-contact',
@@ -275,7 +275,7 @@ export default [
         //component:resolve => require(['@/view/system-manager/user/user.vue'],resolve)
       },
       {
-        path: 'role',
+        path: '/role',
         name: 'role',
         meta: {
           icon: 'md-contacts',
@@ -286,7 +286,7 @@ export default [
         //component:resolve => require(['@/view/system-manager/role/role.vue'],resolve)
       },
       {
-        path: 'permission',
+        path: '/permission',
         name: 'permission',
         meta: {
           icon: 'md-flower',
@@ -297,7 +297,7 @@ export default [
         //component:resolve => require(['@/view/system-manager/permission/permission.vue'],resolve)
       },
       {
-        path: 'banner',
+        path: '/banner',
         name: 'banner',
         meta: {
           icon: 'md-flower',
@@ -308,7 +308,7 @@ export default [
         //component:resolve => require(['@/view/system-manager/banner/banner.vue'],resolve)
       },
       {
-        path: 'link',
+        path: '/link',
         name: 'link',
         meta: {
           icon: 'md-flower',
@@ -319,7 +319,7 @@ export default [
         //component:resolve => require(['@/view/system-manager/links/link.vue'],resolve)
       },
       {
-        path: 'statement',
+        path: '/statement',
         name: 'statement',
         meta: {
           icon: 'md-flower',
@@ -330,7 +330,7 @@ export default [
         //component:resolve => require(['@/view/system-manager/statement/statement.vue'],resolve)
       },
       {
-        path: 'data-type',
+        path: '/data-type',
         name: 'data-type',
         meta: {
           icon: 'md-flower',
@@ -341,7 +341,7 @@ export default [
         //component:resolve => require(['@/view/system-manager/constant/data-type.vue'],resolve)
       },
       {
-        path: 'user-log',
+        path: '/user-log',
         name: 'user-log',
         meta: {
           icon: 'md-flower',
@@ -352,7 +352,7 @@ export default [
         //component:resolve => require(['@/view/system-manager/userLog/userLog.vue'],resolve)
       },
       {
-        path: 'database',
+        path: '/database',
         name: 'database',
         meta: {
           icon: 'md-flower',

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="detail-data detail-title">
-      <div style="font-size: 16px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
+      <div style="font-size: 18px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
         搜索监督检查
       </div>
       <div class="search-con search-con-top">

@@ -103,7 +103,7 @@ export default {
           align: 'center',
           key: 'publishUnit',
           tooltip: true,
-          width: 160
+          width: 200
         },
         {
           title: '发布日期',

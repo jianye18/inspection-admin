@@ -110,6 +110,9 @@
   .demo-carousel img:hover{
     cursor: pointer;
   }
+  .ivu-tabs-tab{
+    font-size: 20px;
+  }
 </style>
 <template>
   <Layout style="padding: 10px 180px 0px; max-top: 15px;">

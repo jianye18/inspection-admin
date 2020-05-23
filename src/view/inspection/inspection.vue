@@ -38,18 +38,36 @@
     cursor: pointer;
   }
 </style>
+<style lang="less" scoped>
+  @media screen and (max-width: 980px) {
+    .breadcrumb{
+      margin: 10px 15px !important;
+    }
+    .layout{
+      padding: 0 !important;
+    }
+    .sider {
+      display: none;
+    }
+    .classify{
+      display: block !important;
+      margin: 10px;
+      box-sizing: border-box;
+    }
+  }
+</style>
 <template>
-  <Layout style="padding: 0 180px 0; height: auto; min-height:calc(75vh) ">
-    <Breadcrumb separator=">" :style="{margin: '10px 0'}">
+  <Layout style="padding: 0 180px 0; height: auto; min-height:calc(75vh) " class="layout">
+    <Breadcrumb separator=">" :style="{margin: '10px 0'}" class="breadcrumb">
       <BreadcrumbItem
-        v-for="(item, index) in breadList"
+        v-for="(item) in breadList"
         :key="item.name">  <!--:class="index === 1 ? 'bread_active_class' : ''"  @click="backList(item.value)" -->
         <span>{{item.name}}</span>
       </BreadcrumbItem>
     </Breadcrumb>
     <Content>
       <Layout class="main-layout-con">
-        <Sider hide-trigger style="background-color: #f5f7f9; margin-right: 15px;">
+        <Sider hide-trigger style="background-color: #f5f7f9; margin-right: 15px;" class="sider">
           <div style="border: 1px solid #dcdee2; margin-bottom: 15px;">
             <div class="menu-title">
               <Icon type="md-chatbubbles" />
@@ -72,6 +90,20 @@
           </div>
         </Sider>
         <Content>
+          <div class="classify" style="display: none;">
+            <Select @change="(item) => {toRouter('up', item.code, idx, item.value)}"
+                    placeholder="请选择分类"
+                    v-model="value">
+              <Option :value="menu.value"
+                      v-for="(menu, index) in leftUpData.menuList"
+                      @click.native="toRouter('up', menu.code, index, menu.value)"
+                      :key="menu.value" >{{menu.label}}</Option>
+              <Option :value="menu.value"
+                      v-for="(menu, index) in leftDownData.menuList"
+                      @click.native="toRouter('down', menu.code, index, menu.value)"
+                      :key="menu.value" v-if="type === 'CC'">{{menu.label}}</Option>
+            </Select>
+          </div>
           <router-view/>
         </Content>
       </Layout>
@@ -96,7 +128,8 @@ export default {
       leftUpData: {},
       leftDownData: {},
       upActiveIdx: null,
-      downActiveIdx: null
+      downActiveIdx: null,
+      value: ''
     }
   },
   created () {

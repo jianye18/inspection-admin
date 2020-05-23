@@ -114,11 +114,34 @@
     font-size: 20px;
   }
 </style>
+<style scoped lang="less">
+  @media screen and (max-width: 980px) {
+    .Layout{
+      padding: 10px 0 0!important;
+    }
+    .body{
+      display: none;
+    }
+    .sider{
+      flex: initial !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .article_class ul li{
+      margin-right: 15px;
+      width: ~'calc(100% - 40px)';
+      max-width: ~'calc(100% - 40px)';
+    }
+    .article_more{
+      width: initial;
+    }
+  }
+</style>
 <template>
-  <Layout style="padding: 10px 180px 0px; max-top: 15px;">
+  <Layout style="padding: 10px 180px 0px; max-top: 15px;" class="Layout">
     <Content>
       <Layout>
-        <Content :style="{minHeight: '620px', marginRight: '15px'}">
+        <Content :style="{minHeight: '620px', marginRight: '15px'}" class="body">
           <div class="search-box">
             <div style="text-align: left; font-size: 22px; color: #000000;">
               <span>法规标准 | 政府抽查数据平台</span>
@@ -164,7 +187,7 @@
             </div>
           </div>
         </Content>
-        <Sider hide-trigger :style="{background: '#f5f7f9', height: '100%'}" width="400">
+        <Sider hide-trigger :style="{background: '#f5f7f9', height: '100%'}" width="400" class="sider">
           <div style="height: 300px">
             <Carousel
               v-model="value3"

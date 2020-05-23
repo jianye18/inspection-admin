@@ -85,15 +85,67 @@
     padding: 15px 0 0 10px;
   }
 </style>
+
+<style scoped  lang="less">
+  @media screen and (min-width: 980px) {
+    .menu-icon{
+      display: none;
+    }
+  }
+  @media screen and (max-width: 980px) {
+    .header-wrap{
+      text-align: center;
+      position: relative;
+      .menu-icon {
+        margin-top: 8px;
+        font-size: 40px;
+        position: absolute;
+        left: 8px;
+        top: 0;
+        padding: 8px;
+      }
+    }
+    .layout-logo{
+      width: 60%;
+      max-height: 40px;
+      position: initial;
+      display: inline-block;
+      float: initial;
+    }
+    .layout-nav {
+      .nav{
+        display:none;
+      }
+    }
+    .drawer-nav-item{
+      line-height: 40px;
+    }
+  }
+</style>
+
 <template>
   <div class="layout">
     <Layout>
-      <Header style="background-color: #2c96cd; height: 70px;">
+      <Header style="background-color: #2c96cd; height: 70px;" class="header-wrap">
+        <Icon type="md-menu" class="menu-icon" @click="drawer = true"/>
+        <Drawer placement="left" :closable="false" v-model="drawer">
+          <div class="" style="border-bottom: 1px solid #ccc;">
+            <img src="../../assets/images/logo.png" style="max-width: 100%;max-height: 40px; margin-top: 10px;"/>
+          </div>
+          <div v-for="(item, idx) in menuList"
+              :key="item.value"
+              :class="idx === activeIdx ? 'active_class' : ''"
+              @click="changeMenu(item.value, item.path, idx)"
+               class="drawer-nav-item"
+              style="font-size: 18px;">
+            {{item.label}}
+          </div>
+        </Drawer>
         <div class="layout-logo" @click="toHome">
-          <img src="../../assets/images/logo.png" style="width: 100%; margin-top: 10px;"/>
+          <img src="../../assets/images/logo.png" style="max-width: 100%;max-height: 40px; margin-top: 10px;"/>
         </div>
         <div class="layout-nav">
-          <ul>
+          <ul class="nav">
             <li v-for="(item, idx) in menuList"
                 :key="item.value"
                 :class="idx === activeIdx ? 'active_class' : ''"
@@ -127,7 +179,7 @@
                 </Col>
                 <Col span="12" style="text-align: center;">
                   <p style="margin-top: 15px;">微信小程序</p>
-                  <img src="../../assets/images/xiaochengxu.jpg" style="width: 102px; height: 102px;" />
+                  <!--<img src="../../assets/images/xiaochengxu.jpg" style="width: 102px; height: 102px;" />-->
                 </Col>
               </Row>
             </Col>
@@ -153,7 +205,8 @@ export default {
       ],
       activeIdx: 0,
       linkList: [],
-      personalNum: 0
+      personalNum: 0,
+      drawer: false
     }
   },
   created () {
@@ -252,6 +305,7 @@ export default {
           })
         }, 300)
       }
+      this.drawer = false
     },
     getLinkViewList () {
       let _this = this

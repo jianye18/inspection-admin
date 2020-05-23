@@ -120,6 +120,9 @@
     .drawer-nav-item{
       line-height: 40px;
     }
+    .layout-footer-center{
+      display: none;
+    }
   }
 </style>
 

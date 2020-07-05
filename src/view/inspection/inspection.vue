@@ -39,7 +39,7 @@
   }
 </style>
 <style lang="less" scoped>
-  @media screen and (max-width: 980px) {
+  @media screen and (max-width: 768px) {
     .breadcrumb{
       margin: 10px 15px !important;
     }
@@ -90,7 +90,7 @@
           </div>
         </Sider>
         <Content>
-          <div class="classify" style="display: none;">
+          <div class="classify" style="display: none !important;">
             <Select @change="(item) => {toRouter('up', item.code, idx, item.value)}"
                     placeholder="请选择分类"
                     v-model="value">

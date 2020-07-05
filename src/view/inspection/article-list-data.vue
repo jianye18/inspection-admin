@@ -3,19 +3,47 @@
     cursor: pointer;
   }
 </style>
+<style lang="less" scoped>
+  @media screen and (max-width: 768px) {
+    .search-pc{
+      display: none;
+    }
+    .app{
+      display: block !important;
+      margin: 16px 0 0;
+    }
+    .app .search-input{
+      width: 100%;
+    }
+  }
+</style>
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 18px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
       搜索文章数据
     </div>
-    <div class="search-con search-con-top">
+    <div class="search-con search-con-top search-pc">
       <Input @on-change="handleClear" clearable placeholder="输入文章标题搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
+    </div>
+    <div class="search-box app" style="display: none; margin: 16px 0;">
+      <Input @on-change="handleClear"
+             clearable placeholder="输入文章标题搜索"
+             class="search-input"
+             v-model="formData.searchPhrase"
+             search
+             @on-search="handleSearch"
+             @on-clear="handleSearch"
+             enter-button="搜索"
+             @on-enter="handleSearch"/>
     </div>
     <tables
       ref="tables"
       editable
-      search-place="top" v-model="tableData.list" :columns="columns" no-data-text="暂无相关内容，建议您检查输入内容是否正确"/>
+      search-place="top"
+      v-model="tableData.list"
+      :columns="columns"
+      no-data-text="暂无相关内容，建议您检查输入内容是否正确"/>
     <div style="padding-top: 15px; float: right">
       <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
     </div>
@@ -49,6 +77,7 @@ export default {
           title: '标题',
           key: 'title',
           tooltip: true,
+          minWidth: 150,
           render: function render (h, params) {
             let content = params.row.title
             return h('span', {

@@ -2,13 +2,29 @@
   .ivu-table-cell .ivu-icon-ios-search-outline:hover{
     cursor: pointer;
   }
+  .ivu-input-group-large > .ivu-input-group-prepend,
+  .ivu-input-group-large > .ivu-input-group-append {
+    padding: 5px 7px;
+  }
+  @media screen and (max-width: 768px) {
+    .search-pc{
+      display: none;
+    }
+    .app{
+      display: block !important;
+      margin: 16px 0 0;
+    }
+    .app .search-input{
+      width: 100%;
+    }
+  }
 </style>
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 18px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
       搜索法规
     </div>
-    <div class="search-con search-con-top">
+    <div class="search-con search-con-top search-pc">
       <Input @on-change="handleClear" clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
       <!--<Select v-model="formData.type" style="width:120px" placeholder="请选择二级分类" clearable>
         <Option v-for="item in typeList" :value="item.value">{{ item.label }}</Option>
@@ -20,6 +36,20 @@
         <Option v-for="item in statusList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
+    </div>
+    <div style="margin: 16px 0; display: none" class="app">
+      <i-input clearable placeholder="输入法规名称搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch">
+        <i-select slot="prepend"
+                  v-model="formData.status"
+                  style="width:90px"
+                  placeholder="请选择状态"
+                  clearable>
+          <Option v-for="item in statusList" :value="item.value" :key="item.value">{{item.label}}</Option>
+        </i-select>
+        <i-button slot="append"
+                  @click="handleSearch"
+                  class="search-btn">搜索</i-button>
+      </i-input>
     </div>
     <tables
       ref="tables"

@@ -1,9 +1,28 @@
+<style>
+  @media screen and (max-width: 768px) {
+    .ivu-input-group-large > .ivu-input-group-prepend,
+    .ivu-input-group-large > .ivu-input-group-append {
+      padding: 5px 7px;
+    }
+    .search-pc{
+      display: none;
+    }
+    .app{
+      display: block !important;
+      margin: 16px 0 0;
+    }
+    .app .search-input{
+      width: 100%;
+    }
+  }
+</style>
+
 <template>
   <div style="padding: 24px 24px 60px 24px; background: #fff">
     <div style="font-size: 18px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
       搜索抽检数据
     </div>
-    <div class="search-con search-con-top">
+    <div class="search-con search-con-top search-pc">
       <Input @on-change="handleClear" clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索"
              class="search-input" v-model="formData.searchPhrase" style="width:280px" @on-enter="handleSearch"/>
       <!--<Select v-model="formData.institution" style="width:120px" placeholder="请选择公布机构" clearable>
@@ -13,6 +32,20 @@
         <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
+    </div>
+    <div style="margin: 16px 0; display: none" class="app">
+      <i-input clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch">
+        <i-select slot="prepend"
+                  v-model="formData.checkResult"
+                  style="width:90px"
+                  placeholder="请选择抽检结果"
+                  clearable>
+          <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
+        </i-select>
+        <i-button slot="append"
+                  @click="handleSearch"
+                  class="search-btn">搜索</i-button>
+      </i-input>
     </div>
     <tables
       ref="tables"
@@ -53,6 +86,8 @@ export default {
         {
           title: '标称生产企业/进口代理商名称',
           key: 'producer',
+          tooltip: true,
+          minWidth: 200,
           render: function render (h, params) {
             let content = params.row.producer
             return h('span', {

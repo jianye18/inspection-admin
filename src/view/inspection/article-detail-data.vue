@@ -29,6 +29,18 @@
   .article_font{
     font-size: 14px;
   }
+  @media screen and (max-width: 768px) {
+    .search-pc{
+      display: none;
+    }
+    .app{
+      display: block !important;
+      margin: 16px 0 0;
+    }
+    .app .search-input{
+      width: 100%;
+    }
+  }
 </style>
 <template>
   <div>
@@ -36,9 +48,18 @@
       <div style="font-size: 18px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
         搜索文章数据
       </div>
-      <div class="search-con search-con-top">
+      <div class="search-con search-con-top search-pc">
         <Input @on-change="handleClear" clearable placeholder="输入文章标题搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
+      </div>
+      <div class="app" style="display: none;">
+        <Input clearable placeholder="输入文章标题搜索"
+               class="search-input"
+               v-model="formData.searchPhrase"
+               search
+               @on-search="handleSearch"
+               @on-clear="handleSearch"
+               enter-button="搜索"/>
       </div>
     </div>
     <div class="detail-data">

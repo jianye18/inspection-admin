@@ -113,6 +113,20 @@
   .ivu-tabs-tab{
     font-size: 20px;
   }
+
+  @media screen and (max-width: 768px) {
+    .ivu-input-group-large > .ivu-input-group-prepend,
+    .ivu-input-group-large > .ivu-input-group-append {
+      padding: 5px 7px;
+    }
+    .app{
+      display: block !important;
+      margin: 16px 0 0;
+    }
+    .app .search-input{
+      width: 100%;
+    }
+  }
 </style>
 <style scoped lang="less">
   @media screen and (max-width: 980px) {
@@ -204,7 +218,31 @@
               </CarouselItem>
             </Carousel>
           </div>
-          <div class="article_class">
+          <div class="article_class" style="border-top: 1px solid transparent">
+            <div style="width:calc(100% - 55px);margin: 16px;box-sizing: border-box">
+              <div style=" display: none" class="app">
+                <i-input clearable placeholder="输入标称生产企业/进口代理商名称/样品名称搜索"
+                         class="search-input"
+                         v-model="formData.searchPhrase"
+                         @on-enter="searchToList">
+                  <i-select slot="prepend"
+                            v-model="formData.type"
+                            style="width:90px"
+                            placeholder="是否有缺陷"
+                            clearable>
+                    <Option value="LW">法规</Option>
+                    <Option value="CC">标准</Option>
+                    <Option value="SC">抽检数据</Option>
+                    <Option value="FC">监督检查</Option>
+                    <Option value="AC">文章</Option>
+                  </i-select>
+                  <i-button slot="append"
+                            @click="searchToList"
+
+                            class="search-btn">搜索</i-button>
+                </i-input>
+              </div>
+            </div>
             <Tabs v-model="orderName">
               <TabPane label="最新文章" name="create_time">
                 <ul>

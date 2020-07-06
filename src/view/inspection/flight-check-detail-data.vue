@@ -1,10 +1,18 @@
+<style>
+  @media screen and (max-width: 768px) {
+    .data-detail-about{
+      width: 100%;
+    }
+  }
+</style>
+
 <template>
   <div>
     <div class="detail-data detail-title">
       <div style="font-size: 18px; height: 16px; line-height: 16px; padding-left: 5px; font-weight: bold;border-left: 9px solid #1788bc;">
         搜索监督检查
       </div>
-      <div class="search-con search-con-top">
+      <div class="search-con search-con-top search-pc">
         <Input @on-change="handleClear" clearable placeholder="输入企业名称搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
         <!--<Select v-model="formData.publishUnit" style="width:120px" placeholder="请选择发布机构" clearable>
           <Option v-for="item in publishUnitList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -17,6 +25,24 @@
         </Select>
         <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
       </div>
+      <div style="margin: 16px 0; display: none" class="app">
+        <i-input clearable placeholder="输入企业名称搜索"
+                 class="search-input"
+                 v-model="formData.searchPhrase"
+                 @on-enter="handleSearch">
+          <i-select slot="prepend"
+                    v-model="formData.isDefect"
+                    style="width:90px"
+                    placeholder="是否有缺陷"
+                    clearable>
+            <Option v-for="item in defectList" :value="item.value" :key="item.value">{{item.label}}</Option>
+          </i-select>
+          <i-button slot="append"
+                    @click="handleSearch"
+                    class="search-btn">搜索</i-button>
+        </i-input>
+      </div>
+
     </div>
     <div class="detail-data detail-con">
       <div>

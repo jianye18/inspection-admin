@@ -1,4 +1,5 @@
 <style scoped>
+  @import "./list.less";
   .main-layout-con ul{
     width: 198px !important;
   }

@@ -91,6 +91,7 @@ export default {
         {
           title: '法规名称',
           key: 'name',
+          minWidth: 80,
           render: function render (h, params) {
             let content = params.row.name
             return h('span', {

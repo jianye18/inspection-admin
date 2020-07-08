@@ -5,8 +5,19 @@
 </template>
 
 <script>
+  import { mapMutations } from 'vuex'
 export default {
-  name: 'App'
+  name: 'App',
+  mounted(){
+    const width = document.documentElement.clientWidth
+    if(width < 768){
+      console.log(width)
+      this.setMobile(true)
+    }
+  },
+  methods: {
+    ...mapMutations(['setMobile'])
+  }
 }
 </script>
 

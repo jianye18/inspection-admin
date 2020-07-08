@@ -41,7 +41,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   getters: {
     type: state => state.base.type,
-    param: state => state.params.param
+    param: state => state.params.param,
   },
   modules: {
     user,

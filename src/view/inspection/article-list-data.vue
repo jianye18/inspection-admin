@@ -15,6 +15,10 @@
     .app .search-input{
       width: 100%;
     }
+    .mobile-page{
+      float:initial !important;
+      text-align: center;
+    }
   }
 </style>
 <template>
@@ -26,7 +30,7 @@
       <Input @on-change="handleClear" clearable placeholder="输入文章标题搜索" class="search-input" v-model="formData.searchPhrase" @on-enter="handleSearch"/>
       <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="md-search"/>&nbsp;&nbsp;搜索</Button>
     </div>
-    <div class="search-box app" style="display: none; margin: 16px 0;">
+    <div class="app" style="display: none; margin: 16px 0;">
       <Input @on-change="handleClear"
              clearable placeholder="输入文章标题搜索"
              class="search-input"
@@ -44,8 +48,8 @@
       v-model="tableData.list"
       :columns="columns"
       no-data-text="暂无相关内容，建议您检查输入内容是否正确"/>
-    <div style="padding-top: 15px; float: right">
-      <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
+    <div style="padding-top: 15px; float: right" class="mobile-page">
+      <Page :total="tableData.total" :current="tableData.pageNum" :simple="isMobile"  :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
     </div>
   </div>
 </template>
@@ -53,6 +57,7 @@
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
 import './list.less'
+import {mapGetters} from 'vuex'
 export default {
   name: 'Law',
   components: {
@@ -172,6 +177,9 @@ export default {
       this.formData.pageNum = 1
       this.getTablePageData()
     }
+  },
+  computed:{
+    ...mapGetters(['isMobile'])
   }
 }
 </script>

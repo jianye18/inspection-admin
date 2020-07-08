@@ -87,12 +87,15 @@
 </style>
 
 <style scoped  lang="less">
-  @media screen and (min-width: 980px) {
+  @media screen and (min-width: 768px) {
     .menu-icon{
       display: none;
     }
   }
-  @media screen and (max-width: 980px) {
+  @media screen and (max-width: 768px) {
+    .layout{
+      overflow: hidden  ;
+    }
     .header-wrap{
       text-align: center;
       position: relative;
@@ -122,6 +125,11 @@
     }
     .layout-footer-center{
       display: none;
+    }
+    .body{
+      height: ~'calc(100vh - 70px)' !important;
+      min-height: initial;
+      overflow: auto;
     }
   }
 </style>
@@ -159,7 +167,7 @@
           </ul>
         </div>
       </Header>
-      <Content>
+      <Content class="body">
         <router-view></router-view>
       </Content>
       <Footer class="layout-footer-center">

@@ -41,6 +41,9 @@
 </style>
 <style lang="less" scoped>
   @media screen and (max-width: 768px) {
+    .main-layout{
+      overflow: hidden;
+    }
     .breadcrumb{
       margin: 10px 15px !important;
     }
@@ -55,10 +58,15 @@
       margin: 10px;
       box-sizing: border-box;
     }
+    .body{
+      height: ~'calc(100vh - 70px)' !important;
+      min-height: initial;
+      overflow: auto;
+    }
   }
 </style>
 <template>
-  <Layout style="padding: 0 180px 0; height: auto; min-height:calc(75vh) " class="layout">
+  <Layout style="padding: 0 180px 0; " class="layout body main-layout" >
     <Breadcrumb separator=">" :style="{margin: '10px 0'}" class="breadcrumb">
       <BreadcrumbItem
         v-for="(item) in breadList"

@@ -10,6 +10,10 @@
     .app .search-input{
       width: 100%;
     }
+    .mobile-page{
+      float:initial !important;
+      text-align: center;
+    }
   }
 </style>
 
@@ -46,8 +50,8 @@
       ref="tables"
       editable
       search-place="top" v-model="tableData.list" :columns="columns" no-data-text="暂无相关内容，建议您检查输入内容是否正确"/>
-    <div style="padding-top: 15px; float: right">
-      <Page :total="tableData.total" :current="tableData.pageNum" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
+    <div style="padding-top: 15px; float: right" class="mobile-page">
+      <Page :total="tableData.total" :current="tableData.pageNum" :simple="isMobile" :page-size="formData.pageSize" @on-change="changePage" show-total></Page>
     </div>
   </div>
 </template>
@@ -55,6 +59,7 @@
 import Tables from '_c/tables'
 import axios from '@/libs/api.request'
 import Global from '@/store/global'
+import {mapGetters} from 'vuex'
 import './list.less'
 export default {
   name: 'Criterion',
@@ -206,6 +211,9 @@ export default {
       this.formData.pageNum = 1
       this.getTablePageData()
     }
+  },
+  computed:{
+    ...mapGetters(['isMobile'])
   }
 }
 </script>

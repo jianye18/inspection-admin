@@ -2,7 +2,7 @@
   @media screen and (max-width: 768px) {
     .ivu-input-group-large > .ivu-input-group-prepend,
     .ivu-input-group-large > .ivu-input-group-append {
-      padding: 5px 7px;
+      padding: 1px 7px;
     }
     .search-pc{
       display: none;
@@ -226,7 +226,7 @@ export default {
       this.getTablePageData()
     }
   },
-  computed:{
+  computed: {
     ...mapGetters(['isMobile'])
   }
 }

@@ -4,7 +4,7 @@
   }
   .ivu-input-group-large > .ivu-input-group-prepend,
   .ivu-input-group-large > .ivu-input-group-append {
-    padding: 5px 7px;
+    padding: 1px 7px;
   }
   @media screen and (max-width: 768px) {
     .search-pc{
@@ -16,6 +16,10 @@
     }
     .app .search-input{
       width: 100%;
+    }
+    .app input{
+      height: 36px;
+      line-height: 36px;
     }
     .mobile-page{
       float:initial !important;
@@ -258,7 +262,7 @@ export default {
       this.getTablePageData()
     }
   },
-  computed:{
+  computed: {
     ...mapGetters(['isMobile'])
   }
 }

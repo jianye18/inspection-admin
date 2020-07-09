@@ -127,7 +127,7 @@
       display: none;
     }
     .body{
-      height: ~'calc(100vh - 70px)' !important;
+      height: ~'calc(100vh - 150px)' !important;
       min-height: initial;
       overflow: auto;
     }

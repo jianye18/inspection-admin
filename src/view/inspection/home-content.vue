@@ -140,6 +140,7 @@
       flex: initial !important;
       width: 100% !important;
       max-width: 100% !important;
+      min-width: initial !important;
     }
     .article_class ul li{
       margin-right: 15px;
@@ -148,6 +149,9 @@
     }
     .article_more{
       width: initial;
+    }
+    .carousel /deep/ img{
+      max-width: 100%!important;
     }
   }
 </style>
@@ -210,6 +214,7 @@
               dots="inside"
               radius-dot
               trigger="hover"
+              class="carousel"
               arrow="hover">
               <CarouselItem v-for="item in viewBannerList" :key="item.id">
                 <div class="demo-carousel">

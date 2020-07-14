@@ -5,8 +5,9 @@
     position: relative;
     /*border-radius: 4px;*/
     overflow: hidden;
-    max-height: calc(100vh);
-    overflow-y: auto
+    /*max-height: calc(100vh);*/
+    /*overflow-y: auto*/
+    min-height: calc(100vh - 170px);
   }
   .layout-logo{
     /*width: 300px;*/
@@ -83,6 +84,10 @@
   }
   .footer_content p{
     padding: 15px 0 0 10px;
+  }
+  .template{
+    height: calc(100vh - 70px);
+    overflow: auto;
   }
 </style>
 
@@ -168,36 +173,38 @@
           </ul>
         </div>
       </Header>
-      <Content class="body">
-        <router-view></router-view>
-      </Content>
-      <Footer class="layout-footer-center">
-        <div class="footer-link">
-          <span class="footer-link-title"><Icon type="ios-link" />友情链接：</span>
-          <a class="footer-link-content" target="view_window" v-for="item in linkList" :key="item.id" :href="item.path" >{{item.name}}</a>
-        </div>
-        <div class="web-about">
-          <Row>
-            <Col span="16" class="footer_content">
+      <div class="template">
+        <Content class="body">
+          <router-view></router-view>
+        </Content>
+        <Footer class="layout-footer-center">
+          <div class="footer-link">
+            <span class="footer-link-title"><Icon type="ios-link" />友情链接：</span>
+            <a class="footer-link-content" target="view_window" v-for="item in linkList" :key="item.id" :href="item.path" >{{item.name}}</a>
+          </div>
+          <div class="web-about">
+            <Row>
+              <Col span="16" class="footer_content">
               <p><Icon type="logo-windows" />Copyright©叶竹洪博客︱苏ICP备17037083号</p>
               <p><Icon type="md-contact" />手机 / 微信：15850584156 | 网站纠错请邮件：22521453@qq.com</p>
               <p><Icon type="md-funnel" />您是本站第{{personalNum}}位访客</p>
-            </Col>
-            <Col span="8" style="border-right: 1px ridge #e5e5e5;">
+              </Col>
+              <Col span="8" style="border-right: 1px ridge #e5e5e5;">
               <Row>
                 <Col span="12" style="text-align: center;">
-                  <p style="margin-top: 15px;">微信订阅号</p>
-                  <img src="../../assets/images/gongzhonghao.jpg" style="width: 102px; height: 102px;" />
+                <p style="margin-top: 15px;">微信订阅号</p>
+                <img src="../../assets/images/gongzhonghao.jpg" style="width: 102px; height: 102px;" />
                 </Col>
                 <Col span="12" style="text-align: center;">
-                  <p style="margin-top: 15px;">微信小程序</p>
-                  <!--<img src="../../assets/images/xiaochengxu.jpg" style="width: 102px; height: 102px;" />-->
+                <p style="margin-top: 15px;">微信小程序</p>
+                <!--<img src="../../assets/images/xiaochengxu.jpg" style="width: 102px; height: 102px;" />-->
                 </Col>
               </Row>
-            </Col>
-          </Row>
-        </div>
-      </Footer>
+              </Col>
+            </Row>
+          </div>
+        </Footer>
+      </div>
     </Layout>
   </div>
 </template>

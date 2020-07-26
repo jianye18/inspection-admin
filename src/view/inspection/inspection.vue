@@ -159,19 +159,21 @@ export default {
     if (path.indexOf('article') !== -1) {
       this.type = 'AC'
     }
-    this.getLeftMenuData().then(res => {
-      if (JSON.stringify(this.$route.params) !== '{}') {
-        let params = this.$route.params
-        if (Number(params['mold']) === 1) {
-          if (this.type === 'CC' && params['key'] === 'type') {
-            this.initDownMenuActive(params['value'])
-          } else {
-            this.initUpMenuActive(params['value'])
+    if (this.type) {
+      this.getLeftMenuData().then(res => {
+        if (JSON.stringify(this.$route.params) !== '{}') {
+          let params = this.$route.params
+          if (Number(params['mold']) === 1) {
+            if (this.type === 'CC' && params['key'] === 'type') {
+              this.initDownMenuActive(params['value'])
+            } else {
+              this.initUpMenuActive(params['value'])
+            }
           }
         }
-      }
-    })
-    this.breadList = this.breadData[this.type]
+      })
+      this.breadList = this.breadData[this.type]
+    }
   },
   mounted () {
 

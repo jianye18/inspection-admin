@@ -96,7 +96,6 @@
     .menu-icon{
       display: none;
     }
-
   }
   @media screen and (max-width: 768px) {
     .layout{
@@ -185,21 +184,21 @@
           <div class="web-about">
             <Row>
               <Col span="16" class="footer_content">
-              <p><Icon type="logo-windows" />Copyright©叶竹洪博客︱苏ICP备17037083号</p>
-              <p><Icon type="md-contact" />手机 / 微信：15850584156 | 网站纠错请邮件：22521453@qq.com</p>
-              <p><Icon type="md-funnel" />您是本站第{{personalNum}}位访客</p>
+                <p><Icon type="logo-windows" />Copyright©叶竹洪博客︱苏ICP备17037083号</p>
+                <p><Icon type="md-contact" />手机 / 微信：15850584156 | 网站纠错请邮件：22521453@qq.com</p>
+                <p><Icon type="md-funnel" />您是本站第{{personalNum}}位访客</p>
               </Col>
               <Col span="8" style="border-right: 1px ridge #e5e5e5;">
-              <Row>
-                <Col span="12" style="text-align: center;">
-                <p style="margin-top: 15px;">微信订阅号</p>
-                <img src="../../assets/images/gongzhonghao.jpg" style="width: 102px; height: 102px;" />
-                </Col>
-                <Col span="12" style="text-align: center;">
-                <p style="margin-top: 15px;">微信小程序</p>
-                <!--<img src="../../assets/images/xiaochengxu.jpg" style="width: 102px; height: 102px;" />-->
-                </Col>
-              </Row>
+                <Row>
+                  <Col span="12" style="text-align: center;">
+                    <p style="margin-top: 15px;">微信订阅号</p>
+                    <img src="../../assets/images/gongzhonghao.jpg" style="width: 102px; height: 102px;" />
+                  </Col>
+                  <Col span="12" style="text-align: center;">
+                    <p style="margin-top: 15px;">微信小程序</p>
+                    <img src="../../assets/images/xiaochengxu.jpg" style="width: 102px; height: 102px;" />
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </div>

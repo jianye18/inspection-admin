@@ -25,6 +25,9 @@
                 <Select v-model="formData.institution" style="width:200px" placeholder="请选择公布机构" clearable>
                   <Option v-for="item in institutionList" :value="item.value">{{ item.label }}</Option>
                 </Select>
+                <Select v-model="formData.subject" style="width:200px; max-width: 200px;" placeholder="请选择不合格项目" clearable>
+                  <Option v-for="item in subjectList" :value="item.value">{{ item.label }}</Option>
+                </Select>
                 <Select v-model="formData.checkResult" style="width:200px" placeholder="请选择抽检结果" clearable>
                   <Option v-for="item in checkResultList" :value="item.value" :key="item.value">{{item.label}}</Option>
                 </Select>
@@ -125,11 +128,13 @@ export default {
         searchPhrase: '',
         productType: '',
         institution: '',
+        subject: '',
         checkResult: ''
       },
       checkResultList: Global.spotCheckStatusList,
       productTypeList: [],
       institutionList: [],
+      subjectList: [],
       columns: [
         {
           title: '标称委托企业',
@@ -258,6 +263,7 @@ export default {
     this.getTablePageData()
     this.getAllProductType()
     this.getAllInstitution()
+    this.getAllSubject()
   },
   methods: {
     handleBeforeUpload (file) {
@@ -310,6 +316,15 @@ export default {
       }
       axios.request(option).then(res => {
         this.institutionList = res.data.data
+      })
+    },
+    getAllSubject () {
+      const option = {
+        url: '/api/spotCheck/getAllSubject',
+        method: 'get'
+      }
+      axios.request(option).then(res => {
+        this.subjectList = res.data.data
       })
     },
     getTablePageData () {

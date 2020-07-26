@@ -25,6 +25,14 @@ router.beforeEach((to, from, next) => {
     next({
       name: 'main' // 跳转到home页
     })
+  } else if (token && to.name === 'view') {
+    next({
+      name: 'main' // 跳转到home页
+    })
+  } else if (token && to.name === LOGIN_PAGE_NAME) {
+    next({
+      name: 'home'
+    })
   } else if (!token && FILTER_PAGE_NAME.indexOf(to.name) !== -1) {
     next() // 跳转
   } else if (token && FILTER_PAGE_NAME.indexOf(to.name) !== -1) {

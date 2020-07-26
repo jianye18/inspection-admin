@@ -2,6 +2,7 @@
   @media screen and (max-width: 768px) {
     .data-detail-about{
       width: 100%;
+      margin-left: 0px !important;
     }
   }
 </style>

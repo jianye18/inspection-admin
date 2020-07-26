@@ -318,17 +318,17 @@ export default [
         component: () => import('@/view/system-manager/links/link.vue')
         //component:resolve => require(['@/view/system-manager/links/link.vue'],resolve)
       },
-      {
-        path: '/statement',
-        name: 'statement',
-        meta: {
-          icon: 'md-flower',
-          title: '负责声明',
-          notCache: true
-        },
-        component: () => import('@/view/system-manager/statement/statement.vue')
-        //component:resolve => require(['@/view/system-manager/statement/statement.vue'],resolve)
-      },
+      // {
+      //   path: '/statement',
+      //   name: 'statement',
+      //   meta: {
+      //     icon: 'md-flower',
+      //     title: '负责声明',
+      //     notCache: true
+      //   },
+      //   component: () => import('@/view/system-manager/statement/statement.vue')
+      //   //component:resolve => require(['@/view/system-manager/statement/statement.vue'],resolve)
+      // },
       {
         path: '/data-type',
         name: 'data-type',

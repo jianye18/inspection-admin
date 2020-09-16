@@ -132,7 +132,6 @@
       display: none;
     }
     .body{
-      height: ~'calc(100vh - 150px)' !important;
       min-height: initial;
       overflow: auto;
     }
